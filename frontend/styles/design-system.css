@@ -1,0 +1,966 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #31b98f;
+  --color-secondary: #684b9e;
+  --color-accent: #00bfde;
+  --color-bg: #0a0a1a;
+  --color-surface: #0f172a;
+  --color-surface-elevated: #151b2e;
+  --color-glass: rgba(15, 23, 42, 0.6);
+  --color-glass-border: rgba(255, 255, 255, 0.08);
+  --color-border: rgba(255, 255, 255, 0.08);
+
+  --animate-marquee: marquee 30s linear infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-glow: glow 4s ease-in-out infinite;
+
+  @keyframes marquee {
+    0% {
+      transform: translateX(0%);
+    }
+
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
+  @keyframes float {
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+
+  @keyframes glow {
+
+    0%,
+    100% {
+      opacity: 0.5;
+      filter: blur(20px);
+    }
+
+    50% {
+      opacity: 0.8;
+      filter: blur(40px);
+    }
+  }
+}
+
+@layer base {
+  :root {
+    --color-text: #f1f5f9;
+    --color-text-muted: #94a3b8;
+  }
+
+  html.light {
+    --color-bg: #f0f4f8;
+    --color-surface: #ffffff;
+    --color-surface-elevated: #e8eef5;
+    --color-text: #0f172a;
+    --color-text-muted: #475569;
+    --color-glass: rgba(255, 255, 255, 0.88);
+    --color-glass-border: rgba(15, 23, 42, 0.12);
+    --color-border: rgba(15, 23, 42, 0.12);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
+
+  *,
+  ::before,
+  ::after {
+    transition-property: background-color, border-color, color, fill, stroke, box-shadow;
+    transition-duration: 0.5s;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    overflow-x: hidden;
+    font-family: var(--font-outfit), sans-serif;
+  }
+
+  /* Smoother anchor scrolling */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+}
+
+/* ─── Glass Effect ──────────────────────────────────── */
+.glass-effect {
+  backdrop-filter: blur(24px);
+  background-color: var(--color-glass);
+  border: 1px solid var(--color-glass-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
+}
+
+html.light .glass-effect {
+  box-shadow: 0 4px 24px 0 rgba(15, 23, 42, 0.10);
+}
+
+/* ─── Navigation ────────────────────────────────────── */
+.nav-link {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text);
+  transition: all 0.3s ease;
+  position: relative;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.nav-link:hover {
+  opacity: 1;
+  color: var(--color-primary);
+  transform: scale(1.05);
+}
+
+/* ─── Footer Links ──────────────────────────────────── */
+.footer-link {
+  position: relative;
+  padding-left: 1.4rem;
+}
+
+.footer-link::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%) scale(0.5);
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 9999px;
+  background: var(--color-primary);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.footer-link:hover::before,
+.footer-link:focus-visible::before {
+  transform: translateY(-50%) scale(1);
+  opacity: 1;
+}
+
+/* ─── Buttons ───────────────────────────────────────── */
+.btn-primary {
+  padding: 0.75rem 2rem;
+  background: linear-gradient(135deg,
+      var(--color-primary),
+      var(--color-secondary));
+  color: white;
+  font-weight: 700;
+  border-radius: 1rem;
+  transition: all 0.3s;
+  box-shadow: 0 4px 24px rgba(39, 185, 144, 0.2);
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 32px rgba(39, 185, 144, 0.35);
+}
+
+.btn-primary:active {
+  transform: scale(0.95);
+}
+
+html.light .btn-primary {
+  box-shadow: 0 4px 16px rgba(39, 185, 144, 0.15);
+}
+
+html.light .btn-primary:hover {
+  box-shadow: 0 8px 24px rgba(39, 185, 144, 0.25);
+}
+
+.btn-outline {
+  padding: 0.75rem 2rem;
+  border: 1.5px solid var(--color-border);
+  color: var(--color-text);
+  font-weight: 700;
+  border-radius: 1rem;
+  transition: all 0.4s;
+  background: transparent;
+  cursor: pointer;
+}
+
+.btn-outline:hover {
+  color: white;
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+html.light .btn-outline {
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+html.light .btn-outline:hover,
+html.light .btn-primary:hover,
+html.light button:hover {
+  color: white;
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+/* ─── Layout ────────────────────────────────────────── */
+.section-padding {
+  padding-top: 7rem;
+  padding-bottom: 7rem;
+}
+
+@media (max-width: 768px) {
+  .section-padding {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+}
+
+/* ─── Reveal Animation ──────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.9s cubic-bezier(0.22, 0.61, 0.36, 1), transform 0.9s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Typography ────────────────────────────────────── */
+.heading-1 {
+  font-size: 2.5rem;
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  background: linear-gradient(to bottom, var(--color-text), var(--color-text-muted));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+html.light .heading-1 {
+  background: linear-gradient(to bottom, #0f172a, #334155);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@media (min-width: 768px) {
+  .heading-1 {
+    font-size: 5rem;
+  }
+}
+
+.heading-2 {
+  font-size: 2rem;
+  font-weight: 900;
+  margin-bottom: 2rem;
+  text-align: center;
+  background: linear-gradient(135deg,
+      #0ea5a0,
+      var(--color-primary),
+      var(--color-secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* heading-2 stays vibrant on both themes — the gradient already reads well on light */
+
+@media (min-width: 768px) {
+  .heading-2 {
+    font-size: 3.75rem;
+  }
+}
+
+/* ─── Cards ─────────────────────────────────────────── */
+.card-premium {
+  backdrop-filter: blur(24px);
+  background-color: var(--color-glass);
+  border: 1px solid var(--color-glass-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
+  border-radius: 2.5rem;
+  padding: 2.5rem;
+  transition: all 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+html.light .card-premium {
+  box-shadow: 0 4px 20px 0 rgba(15, 23, 42, 0.10);
+}
+
+.card-premium:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 60px 0 rgba(0, 0, 0, 0.35);
+}
+
+html.light .card-premium:hover {
+  box-shadow: 0 12px 40px 0 rgba(15, 23, 42, 0.16);
+}
+
+.card-premium::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom right,
+      rgba(39, 185, 144, 0.08),
+      transparent);
+  opacity: 0;
+  transition: opacity 0.5s;
+  pointer-events: none;
+}
+
+.card-premium:hover::before {
+  opacity: 1;
+}
+
+/* ─── Portfolio Cards ─────────────────────────────────── */
+.portfolio-card {
+  background-color: var(--color-surface);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), 0 0 20px rgba(39, 185, 144, 0.1);
+  border: none;
+  border-radius: 2.5rem;
+  transition: all 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.portfolio-card:hover {
+  transform: translateY(-12px);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4), 0 0 30px rgba(39, 185, 144, 0.2);
+}
+
+html.light .portfolio-card {
+  background-color: #ffffff;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  border: none;
+}
+
+html.light .portfolio-card:hover {
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+}
+
+.portfolio-gradient {
+  background: linear-gradient(to top, var(--color-surface) 10%, transparent 60%);
+}
+
+html.light .portfolio-gradient {
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.5) 25%, transparent 50%);
+}
+
+html.light .portfolio-title {
+  color: var(--color-text);
+}
+
+.portfolio-view-link:hover {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  color: #ffffff !important;
+}
+
+/* ─── Service Cards ─────────────────────────────────── */
+.service-card {
+  position: relative;
+  padding: 0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-glass-border);
+  box-shadow: 0 36px 90px rgba(0, 0, 0, 0.28);
+  border-radius: 2rem;
+  width: 100%;
+  max-width: 380px;
+  height: 520px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+}
+
+@media (max-width: 480px) {
+  .service-card {
+    max-width: 320px;
+    height: 440px;
+  }
+}
+
+.service-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top left, rgba(39, 185, 144, 0.1), transparent 22%),
+    radial-gradient(circle at bottom right, rgba(104, 75, 158, 0.08), transparent 26%);
+  pointer-events: none;
+}
+
+.service-card-image-wrapper {
+  width: 100%;
+  height: 60%;
+  overflow: hidden;
+}
+
+.service-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+.service-card:hover .service-card-image {
+  transform: scale(1.06);
+}
+
+.service-card-description-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 1.5rem;
+  background: var(--color-surface);
+  transform: translateY(100%);
+  opacity: 0;
+  transition: transform 0.35s ease, opacity 0.35s ease;
+  z-index: 2;
+}
+
+.service-card:hover .service-card-description-panel {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.service-card-description-panel p {
+  color: var(--color-text-muted);
+  line-height: 1.75;
+  font-size: 0.98rem;
+  margin: 0;
+}
+
+.service-card-bottom {
+  position: relative;
+  z-index: 1;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-glass-border);
+  padding: 1.25rem 1.5rem;
+  text-align: center;
+  transition: transform 0.35s ease, opacity 0.35s ease;
+}
+
+.service-card-bottom span {
+  display: block;
+  font-size: 1.25rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.service-card:hover .service-card-bottom {
+  opacity: 0;
+  transform: translateY(40%);
+}
+
+/* ─── Input Fields ──────────────────────────────────── */
+.input-field {
+  width: 100%;
+  background-color: var(--color-glass);
+  border: 1px solid var(--color-glass-border);
+  border-radius: 1rem;
+  padding: 1rem 1.5rem;
+  color: var(--color-text);
+  transition: all 0.3s;
+}
+
+html.light .input-field {
+  background-color: #ffffff;
+  border-color: rgba(15, 23, 42, 0.15);
+}
+
+.input-field::placeholder {
+  color: var(--color-text-muted);
+  opacity: 0.7;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(39, 185, 144, 0.15);
+}
+
+/* Fix select option background for light mode */
+html.light .input-field option {
+  background-color: #ffffff;
+  color: #0f172a;
+}
+
+/* ─── Gradient Text ─────────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg,
+      var(--color-primary),
+      var(--color-secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  /* Gradient text reads well on both light and dark backgrounds */
+}
+
+/* ─── Services Slider ───────────────────────────────── */
+.services-slider-wrapper {
+  position: relative;
+}
+
+.services-slider-container {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  padding-bottom: 0.5rem;
+  -webkit-overflow-scrolling: touch;
+  cursor: grab;
+  scroll-snap-type: x proximity;
+}
+
+@media (max-width: 768px) {
+  .services-slider-container {
+    gap: 1rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    scroll-snap-type: x mandatory;
+    scroll-padding: 0 1rem;
+  }
+
+  .service-card {
+    scroll-snap-align: center;
+  }
+}
+
+.services-slider-container.dragging {
+  cursor: grabbing;
+  user-select: none;
+  scroll-snap-type: none;
+}
+
+.services-slider-container.dragging .service-card {
+  pointer-events: none;
+}
+
+.services-slider-container::-webkit-scrollbar {
+  height: 4px;
+}
+
+.services-slider-container::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 9999px;
+}
+
+.services-slider-container::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 9999px;
+}
+
+.services-slider-container {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary) transparent;
+}
+
+.slider-nav-btn {
+  width: 3rem;
+  height: 3rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid var(--color-glass-border);
+  background: var(--color-glass);
+  color: var(--color-text);
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+html.light .slider-nav-btn {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.15);
+}
+
+.slider-nav-btn:hover {
+  background: var(--color-primary);
+  color: white;
+  transform: scale(1.1);
+}
+
+/* ─── Global Scrollbar ──────────────────────────────── */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-secondary);
+  background-clip: padding-box;
+}
+
+/* ─── Light Theme: section backgrounds ──────────────── */
+/* About & FAQ sections use slate-950 bg — override for light */
+html.light #about,
+html.light #faq {
+  background-color: transparent;
+}
+
+/* Fix hardcoded dark text colors in component inline styles */
+html.light .text-white {
+  color: var(--color-text) !important;
+}
+
+html.light .text-slate-400,
+html.light .text-slate-300 {
+  color: var(--color-text-muted) !important;
+}
+
+html.light .border-white\/10 {
+  border-color: rgba(15, 23, 42, 0.12) !important;
+}
+
+/* Override hardcoded dark backgrounds in pages */
+html.light .bg-slate-950,
+html.light .bg-slate-950\/50,
+html.light .bg-slate-950\/70,
+html.light .bg-slate-950\/75,
+html.light .bg-slate-950\/80,
+html.light .bg-slate-950\/85,
+html.light .bg-slate-950\/90,
+html.light .bg-slate-950\/95 {
+  background-color: var(--color-bg) !important;
+}
+
+html.light .bg-slate-900,
+html.light .bg-slate-900\/70,
+html.light .bg-slate-900\/80,
+html.light .bg-slate-900\/90 {
+  background-color: var(--color-surface) !important;
+}
+
+html.light .bg-slate-800\/80 {
+  background-color: var(--color-surface-elevated) !important;
+}
+
+/* Service card description panel in light mode */
+html.light .service-card-description-panel {
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--color-text);
+}
+
+html.light .service-card-description-panel p {
+  color: var(--color-text-muted);
+}
+
+
+/* Button outline in light mode — ensure border/text are visible */
+html.light .btn-outline {
+  border-color: rgba(15, 23, 42, 0.2);
+  color: var(--color-text);
+}
+
+html.light .btn-outline:hover {
+  color: white;
+}
+
+/* Invert images (like white tech logos) in light mode */
+html.light .light-mode-invert {
+  filter: invert(1);
+}
+
+/* ─── Orbit Mascot — WhyChooseUs Card ───────────────── */
+.orbit-why-card-wrapper {
+  animation: orbit-float 6s ease-in-out infinite;
+  width: 100%;
+}
+
+.orbit-why-card {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
+  cursor: pointer;
+}
+
+.orbit-why-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(39, 185, 144, 0.25), 0 0 25px rgba(0, 212, 255, 0.15);
+  border-color: rgba(39, 185, 144, 0.4);
+}
+
+@keyframes orbit-float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-12px); }
+}
+
+/* On mobile, the Orbit card goes below the perks grid */
+@media (max-width: 1023px) {
+  .orbit-why-card-wrapper {
+    max-width: 420px;
+    margin: 0 auto;
+  }
+}
+
+/* ─── Orbit Mascot — FAQ Speech Bubble ───────────────── */
+.orbit-faq-bubble {
+  animation: bubble-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes bubble-pop {
+  0%   { transform: scale(0.8) translateY(8px); opacity: 0; }
+  100% { transform: scale(1) translateY(0);     opacity: 1; }
+}
+
+/* .orbit-faq-avatar {
+  animation: orbit-pulse-glow 3s ease-in-out infinite;
+} */
+
+@keyframes orbit-pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(39,185,144,0.15); }
+  50%       { box-shadow: 0 0 40px rgba(39,185,144,0.40); }
+}
+
+/* ─── Orbit Mascot — Contact Card ───────────────────── */
+.orbit-contact-card-img {
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.orbit-contact-card-img:hover {
+  transform: scale(1.08) rotate(-2deg);
+}
+
+/* ─── Orbit Testimonials CTA Strip ──────────────────── */
+.orbit-testimonial-strip {
+  position: relative;
+  overflow: hidden;
+  border-radius: 3rem;
+  background: linear-gradient(135deg,
+    rgba(39, 185, 144, 0.06) 0%,
+    rgba(104, 75, 158, 0.06) 100%
+  );
+  border: 1px solid rgba(39, 185, 144, 0.15);
+}
+
+.orbit-testimonial-strip::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 20% 50%, rgba(39,185,144,0.12) 0%, transparent 60%),
+              radial-gradient(ellipse at 80% 50%, rgba(104,75,158,0.10) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+html.light .orbit-why-card,
+html.light .orbit-testimonial-strip {
+  background: rgba(255,255,255,0.75);
+}
+
+/* ─── Link-in-Bio Page ──────────────────────────────── */
+
+/* Theme toggle button */
+.link-page-theme-btn {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  background: rgba(15, 23, 42, 0.6);
+  color: #f1f5f9;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+  transition: all 0.3s ease;
+}
+
+.link-page-theme-btn:hover {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+  transform: scale(1.05);
+}
+
+html.light .link-page-theme-btn {
+  background: rgba(255, 255, 255, 0.85);
+  color: #0f172a;
+  border-color: rgba(15, 23, 42, 0.15);
+  box-shadow: 0 4px 16px rgba(15,23,42,0.10);
+}
+
+html.light .link-page-theme-btn:hover {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+
+/* Link page — page background */
+html.light .links-page-root {
+  background-color: #f0f4f8;
+}
+
+/* Link page hero text */
+html.light .links-page-root h1 {
+  color: #0f172a;
+}
+
+html.light .links-page-root p {
+  color: #475569;
+}
+
+/* Link cards — non-primary */
+html.light .link-card-default {
+  background: rgba(255,255,255,0.85) !important;
+  border-color: rgba(15,23,42,0.12) !important;
+  color: #0f172a;
+}
+
+html.light .link-card-default:hover {
+  border-color: var(--color-primary) !important;
+  background: rgba(255,255,255,0.98) !important;
+}
+
+html.light .link-card-icon {
+  background: #f1f5f9 !important;
+  color: var(--color-primary) !important;
+}
+
+html.light .link-card-title {
+  color: #0f172a !important;
+}
+
+html.light .link-card-desc {
+  color: #64748b !important;
+}
+
+html.light .link-card-arrow {
+  background: #f1f5f9 !important;
+  color: #94a3b8 !important;
+}
+
+/* Section headings */
+html.light .links-section-title {
+  color: #0f172a !important;
+}
+
+html.light .links-section-subtitle {
+  color: #64748b !important;
+}
+
+/* Service preview cards */
+html.light .service-preview-card {
+  background: rgba(255,255,255,0.8) !important;
+  border-color: rgba(15,23,42,0.10) !important;
+  color: #0f172a !important;
+}
+
+html.light .service-preview-card:hover {
+  background: rgba(255,255,255,0.98) !important;
+}
+
+html.light .service-preview-icon {
+  background: #f1f5f9 !important;
+  color: var(--color-primary) !important;
+}
+
+html.light .service-preview-title {
+  color: #0f172a !important;
+}
+
+html.light .service-preview-desc {
+  color: #64748b !important;
+}
+
+/* Trust section grid cards */
+html.light .trust-feature-card {
+  background: rgba(248,250,252,0.9) !important;
+  border-color: rgba(15,23,42,0.08) !important;
+}
+
+html.light .trust-feature-title {
+  color: #1e293b !important;
+}
+
+/* Social proof / testimonial cards */
+html.light .testimonial-card {
+  background: #ffffff !important;
+  border-color: rgba(15,23,42,0.08) !important;
+  box-shadow: 0 4px 24px rgba(15,23,42,0.08) !important;
+}
+
+html.light .testimonial-review {
+  color: #334155 !important;
+}
+
+html.light .testimonial-name {
+  color: #0f172a !important;
+}
+
+html.light .testimonial-role {
+  color: #64748b !important;
+}
+
+/* Footer */
+html.light .links-footer {
+  border-color: rgba(15,23,42,0.10) !important;
+}
+
+html.light .links-footer-text {
+  color: #64748b !important;
+}
+
+html.light .links-footer a {
+  color: #64748b;
+}
+
+html.light .links-footer a:hover {
+  color: var(--color-primary);
+}
+
+/* Back-to-top button in footer */
+html.light .links-back-top-icon {
+  background: #f1f5f9 !important;
+}
+
+/* CTA section */
+.links-cta-card {
+  background-color: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+}
+
+html.light .links-cta-card {
+  background-color: var(--color-surface-elevated);
+}
