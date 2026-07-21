@@ -1,7 +1,7 @@
-import ProjectsPage from "../../Pages/Projects";
+import Portfolio from "@/components/Portfolio";
 
 const ProjectsModule: React.FC = () => {
-  return <ProjectsPage />;
+  return <Portfolio />;
 };
 
 export default ProjectsModule;

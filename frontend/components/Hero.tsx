@@ -277,6 +277,7 @@ const Hero: React.FC = () => {
                   loop
                   muted
                   playsInline
+                  preload="metadata"
                 />
               </div>
             </div>

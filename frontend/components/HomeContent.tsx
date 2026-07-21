@@ -8,10 +8,35 @@ import About from "./About";
 import Portfolio from "./Portfolio";
 import Services from "./Services";
 import WhyChooseUs from "./WhyChooseUs";
-import Testimonials from "./Testimonials";
-import Pricing from "./Pricing";
-import FAQ from "./FAQ";
-import Contact from "./Contact";
+import dynamic from "next/dynamic";
+
+const Testimonials = dynamic(
+  () => import("@/components/Testimonials"),
+  {
+    loading: () => <div className="h-96" />,
+  }
+);
+
+const Pricing = dynamic(
+  () => import("@/components/Pricing"),
+  {
+    loading: () => <div className="h-96" />,
+  }
+);
+
+const FAQ = dynamic(
+  () => import("@/components/FAQ"),
+  {
+    loading: () => <div className="h-80" />,
+  }
+);
+
+const Contact = dynamic(
+  () => import("@/components/Contact"),
+  {
+    loading: () => <div className="h-96" />,
+  }
+);
 
 export default function HomeContent() {
   useReveal();

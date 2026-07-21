@@ -162,7 +162,7 @@ const Contact: React.FC = () => {
     setSubmitting(true);
 
     const data = new FormData();
-    data.append("access_key", import.meta.env.VITE_ACCESS_KEY);
+    data.append("access_key", process.env.NEXT_PUBLIC_ACCESS_KEY ?? "");
     data.append("from_name", "Aformix Contact Form");
     data.append("subject", `New Lead — ${formState.name}`);
     data.append("name", formState.name);
