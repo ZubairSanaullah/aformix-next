@@ -1,6 +1,4 @@
-"use client";
-
-import useReveal from "@/hooks/useReveal";
+import RevealInitializer from "./RevealInitializer";
 
 import Hero from "./Hero";
 import TechMarquee from "./TechMarquee";
@@ -43,6 +41,8 @@ export default function HomeContent() {
 
   return (
     <>
+      <RevealInitializer />
+      
       <Hero />
       <TechMarquee />
       <About />
