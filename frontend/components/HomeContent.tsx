@@ -1,3 +1,5 @@
+'use client';
+
 import RevealInitializer from "./RevealInitializer";
 
 import Hero from "./Hero";
@@ -7,6 +9,8 @@ import Portfolio from "./Portfolio";
 import Services from "./Services";
 import WhyChooseUs from "./WhyChooseUs";
 import dynamic from "next/dynamic";
+
+import useReveal from "@/hooks/useReveal";
 
 const Testimonials = dynamic(
   () => import("@/components/Testimonials"),
