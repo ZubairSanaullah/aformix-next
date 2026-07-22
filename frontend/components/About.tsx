@@ -88,12 +88,19 @@ const About: React.FC = () => {
   ];
 
   return (
-    <section id="about" ref={sectionRef} className="reveal section-padding relative overflow-hidden w-full">
-      <div className="absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-[var(--color-bg)] to-transparent pointer-events-none"></div>
+    <section id="about" ref={sectionRef} className="reveal section-padding relative overflow-hidden w-full" aria-labelledby="about-heading">
+      <div 
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-[var(--color-bg)] to-transparent pointer-events-none"
+      ></div>
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24 relative">
         <div className="mb-16 text-center about-animate">
           <span className="text-primary font-black tracking-[0.35em] uppercase">Why Aformix</span>
-          <h2 className="heading-2 mt-6">A smarter agency for ambitious digital teams.</h2>
+          <h2 
+            className="heading-2 mt-6"
+            id="about-heading"
+          >
+            A smarter agency for ambitious digital teams.</h2>
           <p className="mx-auto mt-6 max-w-3xl text-slate-400 text-xl leading-relaxed">
             We build premium web products that combine beautiful design, technical precision, and measurable business impact. Our process is collaborative, transparent, and engineered to accelerate your next major digital move.
           </p>
@@ -104,21 +111,30 @@ const About: React.FC = () => {
             <div className="relative rounded-[3rem] overflow-hidden shadow-2xl border border-[var(--color-glass-border)] glass-effect">
               <div className="relative overflow-hidden bg-gradient-to-br from-[#04040d] via-[#080c1a] to-[#04040d]">
                 {/* Glow orbs behind mascot */}
-                <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-primary/20 rounded-full blur-[80px] pointer-events-none" />
-                <div className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-secondary/15 rounded-full blur-[60px] pointer-events-none" />
+                <div 
+                  aria-hidden="true"
+                  className="absolute top-1/4 left-1/4 w-64 h-64 bg-primary/20 rounded-full blur-[80px] pointer-events-none"
+                />
+                <div 
+                  aria-hidden="true"
+                  className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-secondary/15 rounded-full blur-[60px] pointer-events-none" 
+                />
                 <Image
                   src="/img/banner.png"
-                  alt="Orbit — Aformix AI Mascot"
+                  alt="Orbit, the Aformix AI mascot representing our digital services"
                   width={800}
                   height={1000}
                   className="w-full aspect-[4/5] object-cover object-center scale-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-bg)]/95 via-[var(--color-bg)]/20 to-transparent"></div>
+                <div 
+                  aria-hidden="true"
+                  className="absolute inset-0 bg-gradient-to-t from-[var(--color-bg)]/95 via-[var(--color-bg)]/20 to-transparent"
+                ></div>
               </div>
 
               <div className="absolute left-4 right-4 bottom-4 sm:left-6 sm:right-6 sm:bottom-6 md:left-8 md:right-8 md:bottom-8 rounded-[2rem] md:rounded-[2.5rem] border border-[var(--color-glass-border)] glass-effect p-5 sm:p-6 md:p-8 shadow-2xl">
                 <div className="inline-flex items-center gap-2 md:gap-3 rounded-full bg-primary/10 border border-primary/20 px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm text-primary font-semibold mb-3 md:mb-4">
-                  <span className="w-2 md:w-3 h-2 md:h-3 rounded-full bg-primary animate-pulse" />
+                  <span className="w-2 md:w-3 h-2 md:h-3 rounded-full bg-primary animate-pulse" aria-hidden="true" />
                   Meet Orbit — Your AI Assistant
                 </div>
                 <h3 className="text-xl sm:text-2xl md:text-3xl font-black text-[var(--color-text)] mb-2 md:mb-4 leading-tight">Crafting distinctive digital products that scale.</h3>
@@ -126,11 +142,17 @@ const About: React.FC = () => {
                   Orbit is our AI mascot that represents our commitment to modern digital craftsmanship and exceptional user experiences.
                 </p>
                 <button
+                  type="button"
                   onClick={(e) => { e.preventDefault(); window.dispatchEvent(new Event('open-orbit-ai')); }}
                   className="inline-flex items-center gap-2 rounded-full bg-primary text-white px-5 md:px-6 py-2.5 md:py-3 text-sm md:text-base font-semibold transition hover:bg-primary/90 hover:scale-105 shadow-lg shadow-primary/20 cursor-pointer"
+                  aria-label="Open Orbit AI assistant"
                 >
-                  <BsRobot size={18} />
-                  Open Orbit AI
+                  <BsRobot 
+                    size={18} 
+                    aria-hidden="true"
+                    focusable={false}
+                  />
+                    Open Orbit AI
                 </button>
               </div>
             </div>
@@ -139,7 +161,11 @@ const About: React.FC = () => {
               {highlights.map((item, index) => (
                 <div key={index} className="glass-effect rounded-3xl border border-white/10 p-6 shadow-xl">
                   <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10 text-primary mb-4">
-                    <item.icon size={24} />
+                    <item.icon 
+                      size={24}
+                      aria-hidden="true"
+                      focusable={false}
+                    />
                   </div>
                   <h4 className="text-xl font-semibold text-[var(--color-text)] mb-2">{item.title}</h4>
                   <p className="text-[var(--color-text-muted)] leading-relaxed">{item.description}</p>
@@ -159,36 +185,36 @@ const About: React.FC = () => {
               </p>
             </div>
 
-            <div className="grid gap-6 rounded-[3rem] border border-white/10 bg-slate-900/80 p-8 shadow-2xl glass-effect">
-              <div className="flex items-start gap-4">
+            <ol className="grid gap-6 rounded-[3rem] border border-white/10 bg-slate-900/80 p-8 shadow-2xl glass-effect">
+              <li className="flex items-start gap-4">
                 <div className="min-w-[3rem] h-12 rounded-2xl bg-primary/10 text-primary grid place-items-center font-bold">1</div>
                 <div>
                   <h4 className="text-xl font-semibold text-[var(--color-text)]">Design with clarity</h4>
                   <p className="text-[var(--color-text-muted)] leading-relaxed">Research-led interfaces that make complex products feel intuitive.</p>
                 </div>
-              </div>
-              <div className="flex items-start gap-4">
+              </li>
+              <li className="flex items-start gap-4">
                 <div className="min-w-[3rem] h-12 rounded-2xl bg-primary/10 text-primary grid place-items-center font-bold">2</div>
                 <div>
                   <h4 className="text-xl font-semibold text-[var(--color-text)]">Develop with precision</h4>
                   <p className="text-[var(--color-text-muted)] leading-relaxed">Robust, scalable architecture built for performance and stability.</p>
                 </div>
-              </div>
-              <div className="flex items-start gap-4">
+              </li>
+              <li className="flex items-start gap-4">
                 <div className="min-w-[3rem] h-12 rounded-2xl bg-primary/10 text-primary grid place-items-center font-bold">3</div>
                 <div>
                   <h4 className="text-xl font-semibold text-[var(--color-text)]">Grow with confidence</h4>
                   <p className="text-[var(--color-text-muted)] leading-relaxed">Continuous improvement and strategic support beyond launch.</p>
                 </div>
-              </div>
-            </div>
+              </li>
+            </ol>
           </div>
         </div>
 
         <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4 about-animate">
           {stats.map((item, index) => (
             <div key={index} className="glass-effect rounded-[2rem] border border-white/10 p-8 text-center shadow-2xl">
-              <p className="stat-number text-4xl font-black text-primary mb-3">0</p>
+              <p className="stat-number text-4xl font-black text-primary mb-3" aria-live="polite" aria-atomic="true">0</p>
               <p className="text-[var(--color-text)] leading-relaxed">{item.label}</p>
             </div>
           ))}

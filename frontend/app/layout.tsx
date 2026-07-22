@@ -174,12 +174,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={outfit.variable}>
+      <body className={`${outfit.variable} antialiased`}>
+        <a href="#main-content" className="skip-link">
+          Skip to main content
+        </a>
+
         <Providers>
           <StructuredData />
           <Navbar />
 
-          <main>{children}</main>
+          <main id="main-content">{children}</main>
 
           <Footer />
 

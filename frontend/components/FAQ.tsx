@@ -36,11 +36,11 @@ const FAQ: React.FC = () => {
   }, []);
 
   return (
-    <section id="faq" className="reveal section-padding w-full">
+    <section id="faq" className="reveal section-padding w-full" aria-labelledby="faq-heading">
       <div className="relative max-w-4xl mx-auto px-6 md:px-12">
         <div className="flex flex-col items-center mb-20 text-center relative z-10">
           <span className="text-primary font-black tracking-[0.35em] uppercase mb-4 inline-block">FAQ</span>
-          <h2 className="heading-2 mb-6">Got Questions?</h2>
+          <h2 className="heading-2 mb-6" id="faq-heading">Got Questions?</h2>
           <p className="text-[var(--color-text-muted)] text-lg max-w-2xl leading-relaxed">
             Transparent answers to help you navigate our process, timelines, and post-launch capabilities.
           </p>
@@ -61,6 +61,9 @@ const FAQ: React.FC = () => {
               >
                 <div className="absolute inset-x-8 top-0 h-1 rounded-full" />
                 <button
+                  aria-expanded={isOpen}
+                  aria-controls={`faq-panel-${index}`}
+                  id={`faq-button-${index}`}
                   onClick={() => setOpenIndex(isOpen ? null : index)}
                   className="relative w-full px-5 md:px-10 py-6 md:py-8 flex items-center justify-between text-left gap-4"
                 >
@@ -70,11 +73,11 @@ const FAQ: React.FC = () => {
                   </span>
                   <div className={`w-10 h-10 md:w-11 md:h-11 min-w-[2.5rem] min-h-[2.5rem] md:min-w-[2.75rem] md:min-h-[2.75rem] rounded-full flex items-center justify-center transition-all duration-500 flex-shrink-0 ${isOpen ? "bg-primary text-white rotate-180 shadow-lg shadow-primary/30" : "glass-effect text-[var(--color-text-muted)]"
                     }`}>
-                    <ChevronDown size={18} className="md:w-5 md:h-5" />
+                    <ChevronDown size={18} className="md:w-5 md:h-5" aria-hidden="true" focusable={false}/>
                   </div>
                 </button>
-                <div className={`overflow-hidden transition-all duration-500 ${isOpen ? "max-h-[520px] opacity-100" : "max-h-0 opacity-0"
-                  }`}>
+                <div id={`faq-panel-${index}`} className={`overflow-hidden transition-all duration-500 ${isOpen ? "max-h-[520px] opacity-100" : "max-h-0 opacity-0"
+                  }`} role="region" aria-labelledby={`faq-button-${index}`}>
                   <div className="px-5 md:px-10 pb-8 md:pb-10 pt-4 md:pt-6 text-[var(--color-text-muted)] text-base md:text-lg leading-relaxed border-t border-[var(--color-glass-border)]">
                     {faq.answer}
                   </div>

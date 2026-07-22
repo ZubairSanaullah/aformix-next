@@ -22,7 +22,9 @@ const Services: React.FC = () => {
     setScrollLeft(sliderRef.current.scrollLeft);
     try {
       sliderRef.current.setPointerCapture(event.pointerId);
-    } catch (e) {}
+    } catch (e) {
+      // Pointer capture may not be supported.
+    }
   };
 
   const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
@@ -39,7 +41,9 @@ const Services: React.FC = () => {
     if (sliderRef.current) {
       try {
         sliderRef.current.releasePointerCapture(event.pointerId);
-      } catch (e) {}
+      } catch {
+        // Pointer capture may not be supported.
+      }
     }
   };
 
@@ -62,13 +66,21 @@ const Services: React.FC = () => {
   };
 
   return (
-    <section id="services" className="reveal section-padding relative overflow-hidden w-full">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-secondary/5 rounded-full blur-[120px] -z-10"></div>
+    <section id="services" className="reveal section-padding relative overflow-hidden w-full" aria-labelledby="services-heading">
+      <div 
+        aria-hidden="true"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-secondary/5 rounded-full blur-[120px] -z-10"
+      ></div>
 
       <div className="max-w-7xl mx-auto relative z-10 px-6 md:px-12 lg:px-24">
         <div className="flex flex-col items-center mb-20 text-center">
           <span className="text-primary font-black tracking-[0.35em] uppercase mb-4 inline-block">Our Services</span>
-          <h2 className="heading-2 mb-6">World-Class Solutions</h2>
+          <h2 
+            id="services-heading"
+            className="heading-2 mb-6"
+          >
+            World-Class Solutions
+          </h2>
           <p className="text-[var(--color-text-muted)] text-lg max-w-2xl leading-relaxed">
             From custom architectures to enterprise-scale systems, we deliver technology that empowers your business to scale effortlessly.
           </p>
@@ -77,24 +89,44 @@ const Services: React.FC = () => {
               type="button"
               onClick={() => scrollSlider("left")}
               className="slider-nav-btn"
-              aria-label="Scroll left"
+              aria-label="Scroll services left"
             >
-              <ArrowLeft size={18} />
+              <ArrowLeft 
+                aria-hidden="true"
+                size={18} 
+              />
             </button>
             <button
               type="button"
               onClick={() => scrollSlider("right")}
               className="slider-nav-btn"
-              aria-label="Scroll right"
+              aria-label="Scroll services right"
             >
-              <ArrowRight size={18} />
+              <ArrowRight 
+                size={18} 
+                aria-hidden="true"
+              />
             </button>
           </div>
         </div>
 
         <div className="services-slider-wrapper">
           <div
+            tabIndex={0}
             ref={sliderRef}
+            role="region"
+            aria-label="Aformix services carousel"
+            onKeyDown={(event) => {
+              if (event.key === "ArrowLeft") {
+                event.preventDefault();
+                scrollSlider("left");
+              }
+
+              if (event.key === "ArrowRight") {
+                event.preventDefault();
+                scrollSlider("right");
+              }
+            }}
             className={`services-slider-container ${isDragging ? "dragging" : ""}`}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
@@ -116,7 +148,7 @@ const Services: React.FC = () => {
                       width={800}
                       height={1000}
                       src={serviceImages[service.id]}
-                      alt={service.title}
+                      alt={`${service.title} service illustration`}
                       className="service-card-image"
                       draggable={false}
                       onDragStart={(event) => event.preventDefault()}

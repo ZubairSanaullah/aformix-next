@@ -8,11 +8,11 @@ import Image from "next/image";
 
 const Testimonials: React.FC = () => {
   return (
-    <section className="reveal section-padding relative w-full">
+    <section className="reveal section-padding relative w-full" aria-labelledby="testimonials-heading">
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24">
         <div className="flex flex-col items-center mb-20 text-center">
           <span className="text-primary font-black tracking-[0.35em] uppercase mb-4 inline-block">Testimonials</span>
-          <h2 className="heading-2 mb-6">Trusted by Global <br /> <span className="gradient-text">Innovators</span></h2>
+          <h2 className="heading-2 mb-6" id="testimonials-heading">Trusted by Global <br /> <span className="gradient-text">Innovators</span></h2>
           <p className="text-[var(--color-text-muted)] text-lg max-w-2xl leading-relaxed">
             Discover what our clients have to say about partnering with Aformix.
           </p>
@@ -20,14 +20,14 @@ const Testimonials: React.FC = () => {
 
         <div className="grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
           {testimonials.slice(0, 3).map((t) => (
-            <div key={t.id} className="card-premium border border-[var(--color-glass-border)] shadow-2xl p-8 rounded-[2rem] flex flex-col justify-between transition-transform duration-300 hover:-translate-y-1">
+            <article key={t.id} className="card-premium border border-[var(--color-glass-border)] shadow-2xl p-8 rounded-[2rem] flex flex-col justify-between transition-transform duration-300 hover:-translate-y-1">
               <div>
                 <div className="flex gap-1 text-secondary mb-6">
                   {[1,2,3,4,5].map((i) => (
-                    <Star key={i} size={18} fill="currentColor" />
+                    <Star key={i} size={18} fill="currentColor" aria-hidden="true" />
                   ))}
                 </div>
-                <Quote className="text-primary opacity-15 mb-6" size={52} />
+                <Quote className="text-primary opacity-15 mb-6" size={52} aria-hidden="true"/>
                 <p className="text-xl md:text-2xl font-semibold text-[var(--color-text)] leading-relaxed mb-10 italic">
                   "{t.content}"
                 </p>
@@ -36,7 +36,7 @@ const Testimonials: React.FC = () => {
                 <p className="text-base text-[var(--color-text)] mb-2">— {t.name}</p>
                 <p className="text-sm text-[var(--color-text-muted)]">{t.role}</p>
               </div>
-            </div>
+            </article>
           ))}
         </div>
 
@@ -51,7 +51,7 @@ const Testimonials: React.FC = () => {
                   width={56}
                   height={56}
                   src="/img/avatar.png"
-                  alt="Orbit AI Mascot"
+                  alt="Orbit, the Aformix AI mascot"
                   className="orbit-faq-avatar w-full h-full object-cover object-center"
                 />
               </div>
@@ -60,7 +60,7 @@ const Testimonials: React.FC = () => {
             {/* Text content */}
             <div className="flex-1 text-center md:text-left">
               <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 border border-primary/20 px-4 py-1.5 text-xs font-bold text-primary uppercase tracking-widest mb-4">
-                <Bot size={12} />
+                <Bot size={12} aria-hidden="true" />
                 Orbit AI — Ready to help
               </div>
               <h3 className="text-2xl md:text-4xl font-black text-[var(--color-text)] leading-tight mb-3">
@@ -79,7 +79,7 @@ const Testimonials: React.FC = () => {
                 style={{ background: "linear-gradient(135deg, #27b990, #684b9e)" }}
               >
                 <span>Start a Project</span>
-                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" aria-hidden="true"/>
               </a>
             </div>
           </div>

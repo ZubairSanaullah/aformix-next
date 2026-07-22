@@ -17,14 +17,14 @@ const Pricing: React.FC = () => {
   const activePackages = activeCategory ? activeCategory.packages.map((pkgId) => pricingData[pkgId]).filter(Boolean) : [];
 
   return (
-    <section id="pricing" className="reveal section-padding relative overflow-hidden w-full">
-      <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-primary/10 blur-3xl opacity-70 -z-10"></div>
-      <div className="absolute bottom-0 left-0 w-96 h-96 rounded-full bg-secondary/10 blur-3xl opacity-50 -z-10"></div>
+    <section id="pricing" className="reveal section-padding relative overflow-hidden w-full" aria-labelledby="pricing-heading">
+      <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-primary/10 blur-3xl opacity-70 -z-10" aria-hidden="true"></div>
+      <div className="absolute bottom-0 left-0 w-96 h-96 rounded-full bg-secondary/10 blur-3xl opacity-50 -z-10" aria-hidden="true"></div>
       
       <div className="max-w-7xl mx-auto relative z-10 px-4 sm:px-8 lg:px-24">
         <div className="flex flex-col items-center mb-16 text-center">
           <span className="text-primary font-black tracking-[0.35em] uppercase mb-4 inline-block">Pricing Plans</span>
-          <h2 className="heading-2 mb-6">Transparent packages for every service</h2>
+          <h2 className="heading-2 mb-6" id="pricing-heading">Transparent packages for every service</h2>
           <p className="text-[var(--color-text-muted)] text-lg max-w-2xl leading-relaxed">
             Choose the right plan for your business and get the exact support you need to build, launch, and scale with confidence.
           </p>
@@ -56,9 +56,14 @@ const Pricing: React.FC = () => {
 
         {/* Tab Navigation */}
         <div className="flex justify-center mb-10">
-          <div className="flex flex-wrap justify-center gap-2 border border-[var(--color-border)] p-2 rounded-2xl" style={{ backgroundColor: 'var(--color-bg)' }}>
+          <div className="flex flex-wrap justify-center gap-2 border border-[var(--color-border)] p-2 rounded-2xl" role="tablist" aria-label="Pricing categories" style={{ backgroundColor: 'var(--color-bg)' }}>
             {pricingCategories.map((category) => (
               <button
+                id={`tab-${category.id}`}
+                role="tab"
+                tabIndex={activeTab === category.id ? 0 : -1}
+                aria-selected={activeTab === category.id}
+                aria-controls={`tabpanel-${category.id}`}
                 key={category.id}
                 onClick={() => setActiveTab(category.id)}
                 className={`relative px-4 sm:px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-colors duration-300 ${
@@ -83,6 +88,9 @@ const Pricing: React.FC = () => {
         {/* Pricing Cards */}
         <AnimatePresence mode="wait">
           <motion.div
+            id={`tabpanel-${activeTab}`}
+            role="tabpanel"
+            aria-labelledby={`tab-${activeTab}`}
             key={activeTab}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -91,7 +99,7 @@ const Pricing: React.FC = () => {
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch"
           >
             {activePackages.map((plan) => (
-              <div
+              <article
                 key={plan.id}
                 className={`relative flex flex-col rounded-2xl border p-6 md:p-7 transition-shadow duration-300 ${
                   plan.popularBadge
@@ -131,7 +139,7 @@ const Pricing: React.FC = () => {
                 <ul className="flex-grow space-y-3 mb-7">
                   {plan.features.slice(0, 5).map((feature, idx) => (
                     <li key={idx} className="flex items-start gap-3">
-                      <Check className="mt-0.5 h-4 w-4 text-primary shrink-0" />
+                      <Check className="mt-0.5 h-4 w-4 text-primary shrink-0" aria-hidden="true"/>
                       <span className="text-sm text-[var(--color-text)] leading-snug">{feature.title}</span>
                     </li>
                   ))}
@@ -153,7 +161,7 @@ const Pricing: React.FC = () => {
                 >
                   View Details
                 </Link>
-              </div>
+              </article>
             ))}
           </motion.div>
         </AnimatePresence>

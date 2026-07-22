@@ -218,11 +218,12 @@ const Contact: React.FC = () => {
     <section
       id="contact"
       ref={sectionRef}
+      aria-labelledby="contact-heading"
       className="reveal section-padding relative overflow-hidden w-full"
     >
       {/* Background glows */}
-      <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-primary/8 rounded-full blur-[150px] -z-10 pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-secondary/6 rounded-full blur-[150px] -z-10 pointer-events-none" />
+      <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-primary/8 rounded-full blur-[150px] -z-10 pointer-events-none" aria-hidden="true" />
+      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-secondary/6 rounded-full blur-[150px] -z-10 pointer-events-none" aria-hidden="true" />
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24">
         {/* Header */}
@@ -230,7 +231,7 @@ const Contact: React.FC = () => {
           <span className="contact-badge text-primary font-black tracking-[0.35em] uppercase mb-4 inline-block">
             Get in Touch
           </span>
-          <h2 className="contact-heading heading-2 mb-6">
+          <h2 className="contact-heading heading-2 mb-6" id="contact-heading">
             Let's Build Something Great
           </h2>
           <p className="contact-sub text-[var(--color-text-muted)] text-lg max-w-2xl leading-relaxed">
@@ -243,33 +244,35 @@ const Contact: React.FC = () => {
         <div className="grid lg:grid-cols-5 gap-12 items-start">
           {/* ─── Left: Contact Info ─────────────────────────────────────── */}
           <div className="lg:col-span-2 space-y-5">
-            {CONTACT_INFO.map((item, i) => (
-              <div
-                key={i}
-                className="contact-info-card glass-effect rounded-3xl border border-[var(--color-glass-border)] p-6 flex items-center gap-5 group hover:-translate-y-1 transition-all duration-300 shadow-lg"
-              >
-                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shrink-0 group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-md">
-                  <item.icon size={22} />
-                </div>
-                <div>
-                  <p className="text-[var(--color-text-muted)] text-xs font-black uppercase tracking-widest mb-1">
-                    {item.label}
-                  </p>
-                  {item.href ? (
-                    <a
-                      href={item.href}
-                      className="text-[var(--color-text)] font-semibold text-base hover:text-primary transition-colors"
-                    >
-                      {item.value}
-                    </a>
-                  ) : (
-                    <p className="text-[var(--color-text)] font-semibold text-base">
-                      {item.value}
+            <address className="not-italic space-y-5">
+              {CONTACT_INFO.map((item, i) => (
+                <div
+                  key={i}
+                  className="contact-info-card glass-effect rounded-3xl border border-[var(--color-glass-border)] p-6 flex items-center gap-5 group hover:-translate-y-1 transition-all duration-300 shadow-lg"
+                >
+                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shrink-0 group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-md">
+                    <item.icon size={22} aria-hidden="true"/>
+                  </div>
+                  <div>
+                    <p className="text-[var(--color-text-muted)] text-xs font-black uppercase tracking-widest mb-1">
+                      {item.label}
                     </p>
-                  )}
+                    {item.href ? (
+                      <a
+                        href={item.href}
+                        className="text-[var(--color-text)] font-semibold text-base hover:text-primary transition-colors"
+                      >
+                        {item.value}
+                      </a>
+                    ) : (
+                      <p className="text-[var(--color-text)] font-semibold text-base">
+                        {item.value}
+                      </p>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </address>
 
             {/* Trust badge */}
             <div className="contact-info-card glass-effect rounded-3xl border border-[var(--color-glass-border)] p-6 mt-2">
@@ -278,6 +281,7 @@ const Contact: React.FC = () => {
                   {["#27b990", "#684b9e", "#f43f5e"].map((c, i) => (
                     <div
                       key={i}
+                      aria-hidden="true"
                       className="w-9 h-9 rounded-full border-2 border-[var(--color-surface)] flex items-center justify-center text-white text-xs font-bold"
                       style={{ backgroundColor: c }}
                     >
@@ -286,7 +290,7 @@ const Contact: React.FC = () => {
                   ))}
                 </div>
                 <div>
-                  <div className="flex text-yellow-400 text-sm">★★★★★</div>
+                  <div className="flex text-yellow-400 text-sm" aria-hidden="true">★★★★★</div>
                   <p className="text-[var(--color-text-muted)] text-xs">
                     Trusted by 45+ clients
                   </p>
@@ -303,7 +307,7 @@ const Contact: React.FC = () => {
           <div className="contact-form-panel lg:col-span-3">
             <div className="glass-effect rounded-[2.5rem] border border-[var(--color-glass-border)] p-8 md:p-12 shadow-2xl relative overflow-hidden">
               {/* Top accent line */}
-              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-70" />
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-70" aria-hidden="true"/>
 
               <h3 className="text-2xl font-black text-[var(--color-text)] mb-8">
                 Send us a message
@@ -328,13 +332,18 @@ const Contact: React.FC = () => {
                       id="contact-name"
                       type="text"
                       name="name"
+                      required
+                      aria-invalid={!!errors.name}
+                      aria-describedby={
+                          errors.name ? "contact-name-error" : undefined
+                      }
                       value={formState.name}
                       onChange={handleChange}
                       placeholder="John Doe"
                       className={`input-field w-full ${errors.name ? "!border-red-500 !shadow-[0_0_0_2px_rgba(239,68,68,0.15)]" : ""}`}
                     />
                     {errors.name && (
-                      <p className="text-red-500 text-xs mt-1.5 font-medium">
+                      <p className="text-red-500 text-xs mt-1.5 font-medium" role="alert" id="contact-name-error">
                         {errors.name}
                       </p>
                     )}
@@ -350,13 +359,18 @@ const Contact: React.FC = () => {
                       id="contact-email"
                       type="email"
                       name="email"
+                      required
+                      aria-invalid={!!errors.email}
+                      aria-describedby={
+                          errors.email ? "contact-email-error" : undefined
+                      }
                       value={formState.email}
                       onChange={handleChange}
                       placeholder="john@example.com"
                       className={`input-field w-full ${errors.email ? "!border-red-500 !shadow-[0_0_0_2px_rgba(239,68,68,0.15)]" : ""}`}
                     />
                     {errors.email && (
-                      <p className="text-red-500 text-xs mt-1.5 font-medium">
+                      <p className="text-red-500 text-xs mt-1.5 font-medium" role="alert" id="contact-email-error">
                         {errors.email}
                       </p>
                     )}
@@ -417,6 +431,11 @@ const Contact: React.FC = () => {
                   <textarea
                     id="contact-message"
                     name="message"
+                    required
+                    aria-invalid={!!errors.message}
+                        aria-describedby={
+                        errors.message ? "contact-message-error" : undefined
+                    }
                     value={formState.message}
                     onChange={handleChange}
                     placeholder="Tell us about your project, goals, and timeline…"
@@ -424,7 +443,7 @@ const Contact: React.FC = () => {
                     className={`input-field w-full resize-none ${errors.message ? "!border-red-500 !shadow-[0_0_0_2px_rgba(239,68,68,0.15)]" : ""}`}
                   />
                   {errors.message ? (
-                    <p className="text-red-500 text-xs mt-1.5 font-medium">
+                    <p className="text-red-500 text-xs mt-1.5 font-medium" role="alert" id="contact-message-error">
                       {errors.message}
                     </p>
                   ) : (
@@ -442,7 +461,7 @@ const Contact: React.FC = () => {
                 >
                   {submitting ? (
                     <>
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" aria-hidden="true"/>
                       <span>Sending…</span>
                     </>
                   ) : (
@@ -451,6 +470,7 @@ const Contact: React.FC = () => {
                       <Send
                         size={18}
                         className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"
+                        aria-hidden="true"
                       />
                     </>
                   )}

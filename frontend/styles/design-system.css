@@ -540,6 +540,12 @@ html.light .input-field option {
   scroll-snap-type: x proximity;
 }
 
+.services-slider-container:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 6px;
+  border-radius: 1rem;
+}
+
 @media (max-width: 768px) {
   .services-slider-container {
     gap: 1rem;
@@ -963,4 +969,25 @@ html.light .links-back-top-icon {
 
 html.light .links-cta-card {
   background-color: var(--color-surface-elevated);
+}
+
+/* Skip Link */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 1rem;
+  z-index: 9999;
+  background: #ffffff;
+  color: #000000;
+  padding: 12px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.skip-link:focus {
+  left: 1rem;
+  outline: 3px solid #31B98F;
+  outline-offset: 2px;
 }

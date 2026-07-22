@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { BiMobile } from "react-icons/bi";
 import { BsRobot } from "react-icons/bs";
+import Link from "next/link";
 
 // Register ScrollTrigger plugin
 if (typeof window !== "undefined") {
@@ -197,10 +198,10 @@ const Hero: React.FC = () => {
           {/* LEFT SIDE: Brand & Value Prop */}
           <div className="hero-left">
             {/* Premium Badge */}
-            <div className="hero-badge">
+            <p className="hero-badge">
               <span className="hero-badge-pulse" />
               <span className="hero-badge-text">OrbitAI - Intelligent Digital Solutions</span>
-            </div>
+            </p>
 
             {/* Headline */}
             <h1 className="hero-headline">
@@ -221,15 +222,16 @@ const Hero: React.FC = () => {
 
             {/* CTA Buttons */}
             <div className="hero-cta-group">
-              <a href="#contact" className="hero-cta-btn hero-cta-primary">
+              <Link href="/#contact" className="hero-cta-btn hero-cta-primary">
                 <span>Get Started</span>
                 <ArrowRight size={18} className="hero-cta-arrow" />
-              </a>
-              <a href="#works" className="hero-cta-btn hero-cta-secondary">
+              </Link>
+              <Link href="/#portfolio" className="hero-cta-btn hero-cta-secondary">
                 <span>View Portfolio</span>
                 <ExternalLink size={16} />
-              </a>
+              </Link>
               <button
+                aria-label="Open Orbit AI assistant"
                 onClick={(e) => { e.preventDefault(); window.dispatchEvent(new Event('open-orbit-ai')); }}
                 className="hero-cta-btn hero-cta-secondary"
               >
@@ -271,6 +273,8 @@ const Hero: React.FC = () => {
               <div className="mascot-wrapper">
                 <video
                   src="/vid/orbit.mp4"
+                  aria-hidden="true"
+                  tabIndex={-1}
                   className="mascot-video-element overflow-hidden object-cover"
                   style={{ borderRadius: "30px" }}
                   autoPlay
@@ -326,7 +330,7 @@ const Hero: React.FC = () => {
             {/* Floating UI Elements / Glassmorphism Cards */}
 
             {/* FLOATING CARD 1: Development Workflow */}
-            <div className="floating-card-ui floating-card-ui--1">
+            <div className="floating-card-ui floating-card-ui--1" aria-hidden="true">
               <div className="floating-card-hdr">
                 <Terminal size={14} className="text-primary" />
                 <span className="floating-card-title">Web App</span>
