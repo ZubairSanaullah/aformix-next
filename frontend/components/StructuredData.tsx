@@ -10,6 +10,23 @@ export default function StructuredData() {
         logo: "https://www.aformix.com/android-chrome-512.png",
         description:
           "Aformix is a modern software agency specializing in web development, mobile app development, UI/UX design, WordPress websites, landing pages, and SEO.",
+          contactPoint: {
+            "@type": "ContactPoint",
+            contactType: "customer support",
+            email: "hello@aformix.com",
+            areaServed: "Worldwide",
+            availableLanguage: ["English"],
+          },
+          knowsAbout: [
+            "Next.js",
+            "React",
+            "TypeScript",
+            "Web Development",
+            "Mobile App Development",
+            "UI/UX Design",
+            "WordPress Development",
+            "SEO",
+          ],
 
         sameAs: [
           "https://www.linkedin.com/company/aformix/",
@@ -40,7 +57,10 @@ export default function StructuredData() {
           "@id": "https://www.aformix.com/#organization"
         },
 
-        areaServed: "Worldwide",
+        areaServed: {
+          "@type": "Place",
+          name: "Worldwide",
+        },
 
         serviceType: [
           "Web Development",
