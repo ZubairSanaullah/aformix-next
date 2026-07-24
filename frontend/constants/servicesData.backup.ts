@@ -1,4 +1,4 @@
-﻿import type { ServiceData } from "../types/service";
+import type { ServiceData } from "../types/service";
 import {
   Zap,
   Code,
@@ -65,21 +65,21 @@ export const servicesData: Record<string, ServiceData> = {
         title: "Generic Software Doesn't Fit",
         description:
           "Off-the-shelf tools force you to adapt your processes to the software instead of the other way around.",
-        icon: "Settings",
+        icon: Settings,
       },
       {
         id: "p2",
         title: "Vendor Lock-In & Rising Costs",
         description:
           "Monthly SaaS fees compound, and you have zero control over features, data ownership, or platform changes.",
-        icon: "Lock",
+        icon: Lock,
       },
       {
         id: "p3",
         title: "Impossible to Scale",
         description:
           "Packaged solutions hit ceilings — they can't be extended to meet your unique scaling requirements.",
-        icon: "TrendingUp",
+        icon: TrendingUp,
       },
     ],
     solution: {
@@ -98,25 +98,25 @@ export const servicesData: Record<string, ServiceData> = {
         id: "f1",
         title: "Requirement Engineering",
         description: "Deep discovery sessions to translate your business needs into precise technical specifications.",
-        icon: "ClipboardList",
+        icon: ClipboardList,
       },
       {
         id: "f2",
         title: "Scalable Architecture",
         description: "Microservices and cloud-native designs built to handle millions of users without rework.",
-        icon: "Layers",
+        icon: Layers,
       },
       {
         id: "f3",
         title: "API-First Development",
         description: "Every system we build exposes clean APIs, making future integrations seamless.",
-        icon: "Globe",
+        icon: Globe,
       },
       {
         id: "f4",
         title: "Rigorous QA & Testing",
         description: "Automated test suites ensure every feature works flawlessly before it reaches your users.",
-        icon: "CheckSquare",
+        icon: CheckSquare,
       },
     ],
     benefits: [
@@ -143,27 +143,27 @@ export const servicesData: Record<string, ServiceData> = {
       },
     ],
     process: [
-      { id: "pr1", title: "Discovery", description: "Deep-dive into your business goals, pain points, and user journeys.", icon: "Search" },
-      { id: "pr2", title: "System Design", description: "Crafting technical architecture, database schemas, and UI wireframes.", icon: "Layers" },
-      { id: "pr3", title: "Agile Development", description: "Iterative sprints with regular demos and feedback loops.", icon: "Code" },
-      { id: "pr4", title: "Launch & Support", description: "Smooth production deployment with ongoing maintenance SLAs.", icon: "Rocket" },
+      { id: "pr1", title: "Discovery", description: "Deep-dive into your business goals, pain points, and user journeys.", icon: Search },
+      { id: "pr2", title: "System Design", description: "Crafting technical architecture, database schemas, and UI wireframes.", icon: Layers },
+      { id: "pr3", title: "Agile Development", description: "Iterative sprints with regular demos and feedback loops.", icon: Code },
+      { id: "pr4", title: "Launch & Support", description: "Smooth production deployment with ongoing maintenance SLAs.", icon: Rocket },
     ],
     techStack: [
       {
         category: "Frontend",
         technologies: [
-          { name: "React / Next.js", icon: "Code" },
-          { name: "TypeScript", icon: "Code" },
-          { name: "Tailwind CSS", icon: "Layout" },
+          { name: "React / Next.js", icon: Code },
+          { name: "TypeScript", icon: Code },
+          { name: "Tailwind CSS", icon: Layout },
         ],
       },
       {
         category: "Backend & Infrastructure",
         technologies: [
-          { name: "Node.js", icon: "Server" },
-          { name: "PostgreSQL", icon: "Database" },
-          { name: "AWS / GCP", icon: "Server" },
-          { name: "Docker", icon: "Package" },
+          { name: "Node.js", icon: Server },
+          { name: "PostgreSQL", icon: Database },
+          { name: "AWS / GCP", icon: Server },
+          { name: "Docker", icon: Package },
         ],
       },
     ],
@@ -215,9 +215,9 @@ export const servicesData: Record<string, ServiceData> = {
       keywords: "MERN Stack, React JS, Node JS, MongoDB, Express JS, Full Stack Development, JavaScript Developer",
     },
     problems: [
-      { id: "p1", title: "Slow Application Performance", description: "Your current app takes too long to load, resulting in high bounce rates and frustrated users.", icon: "Clock" },
-      { id: "p2", title: "Inability to Scale", description: "Your architecture crashes under traffic spikes and can't grow with your user base.", icon: "Server" },
-      { id: "p3", title: "Complex, Fragmented Codebase", description: "Mixing different languages for frontend and backend creates maintenance nightmares.", icon: "Settings" },
+      { id: "p1", title: "Slow Application Performance", description: "Your current app takes too long to load, resulting in high bounce rates and frustrated users.", icon: Clock },
+      { id: "p2", title: "Inability to Scale", description: "Your architecture crashes under traffic spikes and can't grow with your user base.", icon: Server },
+      { id: "p3", title: "Complex, Fragmented Codebase", description: "Mixing different languages for frontend and backend creates maintenance nightmares.", icon: Settings },
     ],
     solution: {
       title: "The Power of a Unified JavaScript Stack",
@@ -225,10 +225,10 @@ export const servicesData: Record<string, ServiceData> = {
       benefits: ["Single language across the entire stack", "Blazing-fast React frontend", "Flexible NoSQL data modeling", "Non-blocking Node.js backend"],
     },
     features: [
-      { id: "f1", title: "React SPA & SSR", description: "Dynamic single-page apps or server-side rendered pages for maximum SEO and performance.", icon: "Layout" },
-      { id: "f2", title: "RESTful & GraphQL APIs", description: "Scalable Express.js APIs delivering exactly the data your clients need.", icon: "Globe" },
-      { id: "f3", title: "MongoDB Data Modeling", description: "Flexible schemas designed for your data's natural structure, not forced into rigid tables.", icon: "Database" },
-      { id: "f4", title: "Real-Time with Socket.io", description: "Live updates, chat, notifications, and collaborative features built right in.", icon: "Zap" },
+      { id: "f1", title: "React SPA & SSR", description: "Dynamic single-page apps or server-side rendered pages for maximum SEO and performance.", icon: Layout },
+      { id: "f2", title: "RESTful & GraphQL APIs", description: "Scalable Express.js APIs delivering exactly the data your clients need.", icon: Globe },
+      { id: "f3", title: "MongoDB Data Modeling", description: "Flexible schemas designed for your data's natural structure, not forced into rigid tables.", icon: Database },
+      { id: "f4", title: "Real-Time with Socket.io", description: "Live updates, chat, notifications, and collaborative features built right in.", icon: Zap },
     ],
     benefits: [
       { id: "b1", title: "Faster Delivery", description: "One language across the stack means less context-switching and faster shipping.", metric: "30%", metricLabel: "Faster Delivery" },
@@ -236,28 +236,28 @@ export const servicesData: Record<string, ServiceData> = {
       { id: "b3", title: "Cost-Efficient Scaling", description: "Independently scale frontend, backend, and DB without costly rewrites.", metric: "100%", metricLabel: "Cloud Scalable" },
     ],
     process: [
-      { id: "pr1", title: "Architecture Planning", description: "Defining schema, API contracts, and component hierarchy.", icon: "Layers" },
-      { id: "pr2", title: "Backend Development", description: "Node/Express server, MongoDB setup, authentication & authorization.", icon: "Server" },
-      { id: "pr3", title: "Frontend Development", description: "React UI connected to the API with state management and animations.", icon: "Code" },
-      { id: "pr4", title: "Testing & CI/CD", description: "Jest tests, integration tests, and automated deployment pipelines.", icon: "Rocket" },
+      { id: "pr1", title: "Architecture Planning", description: "Defining schema, API contracts, and component hierarchy.", icon: Layers },
+      { id: "pr2", title: "Backend Development", description: "Node/Express server, MongoDB setup, authentication & authorization.", icon: Server },
+      { id: "pr3", title: "Frontend Development", description: "React UI connected to the API with state management and animations.", icon: Code },
+      { id: "pr4", title: "Testing & CI/CD", description: "Jest tests, integration tests, and automated deployment pipelines.", icon: Rocket },
     ],
     techStack: [
       {
         category: "Frontend",
         technologies: [
-          { name: "React.js", icon: "Code" },
-          { name: "Redux / Zustand", icon: "Layers" },
-          { name: "Tailwind CSS", icon: "Layout" },
-          { name: "Framer Motion", icon: "Zap" },
+          { name: "React.js", icon: Code },
+          { name: "Redux / Zustand", icon: Layers },
+          { name: "Tailwind CSS", icon: Layout },
+          { name: "Framer Motion", icon: Zap },
         ],
       },
       {
         category: "Backend & Database",
         technologies: [
-          { name: "Node.js", icon: "Server" },
-          { name: "Express.js", icon: "Code" },
-          { name: "MongoDB", icon: "Database" },
-          { name: "Mongoose ODM", icon: "Database" },
+          { name: "Node.js", icon: Server },
+          { name: "Express.js", icon: Code },
+          { name: "MongoDB", icon: Database },
+          { name: "Mongoose ODM", icon: Database },
         ],
       },
     ],
@@ -297,9 +297,9 @@ export const servicesData: Record<string, ServiceData> = {
       keywords: "Full Stack Development, End-to-End Development, Web App, React, Node.js, Full Stack Team",
     },
     problems: [
-      { id: "p1", title: "Coordination Overhead", description: "Managing separate frontend and backend teams creates communication bottlenecks and misaligned expectations.", icon: "Users" },
-      { id: "p2", title: "Integration Failures", description: "When frontend and backend are built in silos, critical integration issues surface late in development — costing time and money.", icon: "PlugZap" },
-      { id: "p3", title: "Inconsistent Code Quality", description: "Multiple teams with different standards produce an inconsistent codebase that's hard to maintain.", icon: "GitBranch" },
+      { id: "p1", title: "Coordination Overhead", description: "Managing separate frontend and backend teams creates communication bottlenecks and misaligned expectations.", icon: Users },
+      { id: "p2", title: "Integration Failures", description: "When frontend and backend are built in silos, critical integration issues surface late in development — costing time and money.", icon: PlugZap },
+      { id: "p3", title: "Inconsistent Code Quality", description: "Multiple teams with different standards produce an inconsistent codebase that's hard to maintain.", icon: GitBranch },
     ],
     solution: {
       title: "One Team. Total Ownership.",
@@ -307,10 +307,10 @@ export const servicesData: Record<string, ServiceData> = {
       benefits: ["Single point of accountability", "Seamless frontend-backend integration", "Consistent code standards throughout", "Faster iteration cycles"],
     },
     features: [
-      { id: "f1", title: "UI/UX Design", description: "Stunning, user-tested interfaces built before a single line of code is written.", icon: "PenTool" },
-      { id: "f2", title: "API Architecture", description: "RESTful and GraphQL APIs designed for performance, security, and extensibility.", icon: "Globe" },
-      { id: "f3", title: "Database Engineering", description: "Optimized SQL and NoSQL databases with proper indexing and query optimization.", icon: "Database" },
-      { id: "f4", title: "DevOps & Cloud", description: "Containerized deployments on AWS, GCP, or Azure with CI/CD pipelines.", icon: "Server" },
+      { id: "f1", title: "UI/UX Design", description: "Stunning, user-tested interfaces built before a single line of code is written.", icon: PenTool },
+      { id: "f2", title: "API Architecture", description: "RESTful and GraphQL APIs designed for performance, security, and extensibility.", icon: Globe },
+      { id: "f3", title: "Database Engineering", description: "Optimized SQL and NoSQL databases with proper indexing and query optimization.", icon: Database },
+      { id: "f4", title: "DevOps & Cloud", description: "Containerized deployments on AWS, GCP, or Azure with CI/CD pipelines.", icon: Server },
     ],
     benefits: [
       { id: "b1", title: "Faster Time-to-Market", description: "Integrated teams ship 40% faster than siloed frontend/backend structures.", metric: "40%", metricLabel: "Faster Delivery" },
@@ -318,23 +318,23 @@ export const servicesData: Record<string, ServiceData> = {
       { id: "b3", title: "Higher Quality", description: "A unified team produces more cohesive, maintainable software.", metric: "5★", metricLabel: "Code Quality" },
     ],
     process: [
-      { id: "pr1", title: "Discovery & Planning", description: "Full product mapping from user stories to technical architecture.", icon: "Search" },
-      { id: "pr2", title: "Design Sprint", description: "Wireframes, mockups, and design system before development begins.", icon: "PenTool" },
-      { id: "pr3", title: "Full-Stack Build", description: "Concurrent frontend and backend development in synchronized sprints.", icon: "Code" },
-      { id: "pr4", title: "Deploy & Scale", description: "Production launch with monitoring, alerting, and scale-ready infrastructure.", icon: "Rocket" },
+      { id: "pr1", title: "Discovery & Planning", description: "Full product mapping from user stories to technical architecture.", icon: Search },
+      { id: "pr2", title: "Design Sprint", description: "Wireframes, mockups, and design system before development begins.", icon: PenTool },
+      { id: "pr3", title: "Full-Stack Build", description: "Concurrent frontend and backend development in synchronized sprints.", icon: Code },
+      { id: "pr4", title: "Deploy & Scale", description: "Production launch with monitoring, alerting, and scale-ready infrastructure.", icon: Rocket },
     ],
     techStack: [
       {
         category: "Full Stack",
         technologies: [
-          { name: "Next.js", icon: "Code" }, { name: "React", icon: "Code" }, { name: "TypeScript", icon: "Code" },
-          { name: "Node.js", icon: "Server" }, { name: "PostgreSQL", icon: "Database" }, { name: "Redis", icon: "Database" },
+          { name: "Next.js", icon: Code }, { name: "React", icon: Code }, { name: "TypeScript", icon: Code },
+          { name: "Node.js", icon: Server }, { name: "PostgreSQL", icon: Database }, { name: "Redis", icon: Database },
         ],
       },
       {
         category: "Infrastructure",
         technologies: [
-          { name: "AWS / GCP", icon: "Server" }, { name: "Docker", icon: "Package" }, { name: "GitHub Actions", icon: "GitBranch" },
+          { name: "AWS / GCP", icon: Server }, { name: "Docker", icon: Package }, { name: "GitHub Actions", icon: GitBranch },
         ],
       },
     ],
@@ -373,9 +373,9 @@ export const servicesData: Record<string, ServiceData> = {
       keywords: "SaaS Development, SaaS Platform, Multi-Tenant App, Subscription Software, SaaS Builder",
     },
     problems: [
-      { id: "p1", title: "Complex Multi-Tenancy", description: "Building a secure, isolated environment for each customer is architecturally complex and easy to get wrong.", icon: "Building" },
-      { id: "p2", title: "Subscription Billing Headaches", description: "Integrating recurring billing, trials, upgrades, and invoicing is a rabbit hole that derails product teams.", icon: "DollarSign" },
-      { id: "p3", title: "Scaling Blind Spots", description: "Apps that work for 100 users often catastrophically fail at 10,000 — without the right architecture from the start.", icon: "TrendingUp" },
+      { id: "p1", title: "Complex Multi-Tenancy", description: "Building a secure, isolated environment for each customer is architecturally complex and easy to get wrong.", icon: Building },
+      { id: "p2", title: "Subscription Billing Headaches", description: "Integrating recurring billing, trials, upgrades, and invoicing is a rabbit hole that derails product teams.", icon: DollarSign },
+      { id: "p3", title: "Scaling Blind Spots", description: "Apps that work for 100 users often catastrophically fail at 10,000 — without the right architecture from the start.", icon: TrendingUp },
     ],
     solution: {
       title: "SaaS Architecture Done Right, From Day One",
@@ -383,10 +383,10 @@ export const servicesData: Record<string, ServiceData> = {
       benefits: ["Secure multi-tenant architecture", "Stripe / Paddle billing integration", "Role-based access control (RBAC)", "Usage analytics & feature flags"],
     },
     features: [
-      { id: "f1", title: "Multi-Tenant Architecture", description: "Secure data isolation for each customer, built at the database level.", icon: "ShieldCheck" },
-      { id: "f2", title: "Subscription Management", description: "Flexible billing with Stripe — trials, plans, upgrades, and invoices.", icon: "DollarSign" },
-      { id: "f3", title: "Admin Dashboard", description: "Real-time analytics, user management, and product metrics at a glance.", icon: "BarChart" },
-      { id: "f4", title: "Self-Serve Onboarding", description: "Frictionless signup flows that get customers to 'aha moment' in minutes.", icon: "Users" },
+      { id: "f1", title: "Multi-Tenant Architecture", description: "Secure data isolation for each customer, built at the database level.", icon: ShieldCheck },
+      { id: "f2", title: "Subscription Management", description: "Flexible billing with Stripe — trials, plans, upgrades, and invoices.", icon: DollarSign },
+      { id: "f3", title: "Admin Dashboard", description: "Real-time analytics, user management, and product metrics at a glance.", icon: BarChart },
+      { id: "f4", title: "Self-Serve Onboarding", description: "Frictionless signup flows that get customers to 'aha moment' in minutes.", icon: Users },
     ],
     benefits: [
       { id: "b1", title: "Recurring Revenue Model", description: "Build a predictable, compounding revenue stream from subscription customers.", metric: "MRR", metricLabel: "Recurring Revenue" },
@@ -394,22 +394,22 @@ export const servicesData: Record<string, ServiceData> = {
       { id: "b3", title: "Ready to Scale", description: "Cloud-native infrastructure designed to handle 10x traffic without code changes.", metric: "∞", metricLabel: "Scalable Users" },
     ],
     process: [
-      { id: "pr1", title: "Product Strategy", description: "Defining ICP, core features, pricing model, and go-to-market plan.", icon: "Target" },
-      { id: "pr2", title: "Architecture Design", description: "Multi-tenancy model, database design, API contracts, and auth strategy.", icon: "Layers" },
-      { id: "pr3", title: "MVP Build", description: "Core features shipped fast so you can get to market and gather real feedback.", icon: "Code" },
-      { id: "pr4", title: "Iterate & Scale", description: "Analytics-driven iteration and infrastructure scaling as users grow.", icon: "TrendingUp" },
+      { id: "pr1", title: "Product Strategy", description: "Defining ICP, core features, pricing model, and go-to-market plan.", icon: Target },
+      { id: "pr2", title: "Architecture Design", description: "Multi-tenancy model, database design, API contracts, and auth strategy.", icon: Layers },
+      { id: "pr3", title: "MVP Build", description: "Core features shipped fast so you can get to market and gather real feedback.", icon: Code },
+      { id: "pr4", title: "Iterate & Scale", description: "Analytics-driven iteration and infrastructure scaling as users grow.", icon: TrendingUp },
     ],
     techStack: [
       {
         category: "Application",
         technologies: [
-          { name: "Next.js", icon: "Code" }, { name: "React", icon: "Code" }, { name: "Node.js", icon: "Server" }, { name: "PostgreSQL", icon: "Database" },
+          { name: "Next.js", icon: Code }, { name: "React", icon: Code }, { name: "Node.js", icon: Server }, { name: "PostgreSQL", icon: Database },
         ],
       },
       {
         category: "SaaS Infrastructure",
         technologies: [
-          { name: "Stripe", icon: "DollarSign" }, { name: "Auth0 / Clerk", icon: "ShieldCheck" }, { name: "Vercel / AWS", icon: "Server" }, { name: "Posthog Analytics", icon: "BarChart" },
+          { name: "Stripe", icon: DollarSign }, { name: "Auth0 / Clerk", icon: ShieldCheck }, { name: "Vercel / AWS", icon: Server }, { name: "Posthog Analytics", icon: BarChart },
         ],
       },
     ],
@@ -448,9 +448,9 @@ export const servicesData: Record<string, ServiceData> = {
       keywords: "Mobile App Development, iOS App, Android App, React Native, Cross-Platform App, App Developer",
     },
     problems: [
-      { id: "p1", title: "Double Development Cost", description: "Building separate native apps for iOS and Android doubles your budget and timeline.", icon: "DollarSign" },
-      { id: "p2", title: "Poor App Store Ratings", description: "Buggy, slow, or confusing apps get 1-star reviews that kill your acquisition funnel.", icon: "Star" },
-      { id: "p3", title: "Slow Development Cycles", description: "Long app release cycles mean your users wait months for new features and bug fixes.", icon: "Clock" },
+      { id: "p1", title: "Double Development Cost", description: "Building separate native apps for iOS and Android doubles your budget and timeline.", icon: DollarSign },
+      { id: "p2", title: "Poor App Store Ratings", description: "Buggy, slow, or confusing apps get 1-star reviews that kill your acquisition funnel.", icon: Star },
+      { id: "p3", title: "Slow Development Cycles", description: "Long app release cycles mean your users wait months for new features and bug fixes.", icon: Clock },
     ],
     solution: {
       title: "One Codebase. Two World-Class Apps.",
@@ -458,10 +458,10 @@ export const servicesData: Record<string, ServiceData> = {
       benefits: ["iOS & Android from one codebase", "Native performance & feel", "Over-the-air updates without App Store approval", "Shared backend with web apps"],
     },
     features: [
-      { id: "f1", title: "Cross-Platform Development", description: "React Native apps running on both platforms from a single, maintainable codebase.", icon: "Smartphone" },
-      { id: "f2", title: "Native Device Features", description: "Camera, GPS, push notifications, biometrics — full access to device hardware.", icon: "Cpu" },
-      { id: "f3", title: "Offline Capability", description: "Apps that work without internet and sync seamlessly when reconnected.", icon: "RefreshCw" },
-      { id: "f4", title: "App Store Submission", description: "Full support for App Store and Google Play submission, guidelines, and approval.", icon: "CheckSquare" },
+      { id: "f1", title: "Cross-Platform Development", description: "React Native apps running on both platforms from a single, maintainable codebase.", icon: Smartphone },
+      { id: "f2", title: "Native Device Features", description: "Camera, GPS, push notifications, biometrics — full access to device hardware.", icon: Cpu },
+      { id: "f3", title: "Offline Capability", description: "Apps that work without internet and sync seamlessly when reconnected.", icon: RefreshCw },
+      { id: "f4", title: "App Store Submission", description: "Full support for App Store and Google Play submission, guidelines, and approval.", icon: CheckSquare },
     ],
     benefits: [
       { id: "b1", title: "Cost Savings", description: "Cross-platform development costs significantly less than building two separate native apps.", metric: "40%", metricLabel: "Cost Savings" },
@@ -469,22 +469,22 @@ export const servicesData: Record<string, ServiceData> = {
       { id: "b3", title: "User Retention", description: "Smooth, native-feel experiences drive higher user retention and App Store ratings.", metric: "4.8★", metricLabel: "Avg. Store Rating" },
     ],
     process: [
-      { id: "pr1", title: "Discovery & UX", description: "Understanding user journeys and creating wireframes and prototypes.", icon: "Search" },
-      { id: "pr2", title: "UI Design", description: "Platform-specific design language — following iOS HIG and Material Design.", icon: "PenTool" },
-      { id: "pr3", title: "Development", description: "Agile sprints building features with continuous testing on real devices.", icon: "Code" },
-      { id: "pr4", title: "Launch & ASO", description: "App Store submission, App Store Optimization, and post-launch monitoring.", icon: "Rocket" },
+      { id: "pr1", title: "Discovery & UX", description: "Understanding user journeys and creating wireframes and prototypes.", icon: Search },
+      { id: "pr2", title: "UI Design", description: "Platform-specific design language — following iOS HIG and Material Design.", icon: PenTool },
+      { id: "pr3", title: "Development", description: "Agile sprints building features with continuous testing on real devices.", icon: Code },
+      { id: "pr4", title: "Launch & ASO", description: "App Store submission, App Store Optimization, and post-launch monitoring.", icon: Rocket },
     ],
     techStack: [
       {
         category: "Mobile Framework",
         technologies: [
-          { name: "React Native", icon: "Smartphone" }, { name: "Expo", icon: "Smartphone" }, { name: "TypeScript", icon: "Code" }, { name: "Redux Toolkit", icon: "Layers" },
+          { name: "React Native", icon: Smartphone }, { name: "Expo", icon: Smartphone }, { name: "TypeScript", icon: Code }, { name: "Redux Toolkit", icon: Layers },
         ],
       },
       {
         category: "Backend & Services",
         technologies: [
-          { name: "Node.js API", icon: "Server" }, { name: "Firebase", icon: "Database" }, { name: "Push Notifications", icon: "MessageSquare" }, { name: "Stripe Payments", icon: "DollarSign" },
+          { name: "Node.js API", icon: Server }, { name: "Firebase", icon: Database }, { name: "Push Notifications", icon: MessageSquare }, { name: "Stripe Payments", icon: DollarSign },
         ],
       },
     ],
@@ -523,9 +523,9 @@ export const servicesData: Record<string, ServiceData> = {
       keywords: "Web Application Development, Web App, Custom Portal, Dashboard Development, SaaS Platform, PWA",
     },
     problems: [
-      { id: "p1", title: "Outdated Internal Tools", description: "Your team is using spreadsheets and manual processes where a web app could automate and centralize everything.", icon: "Monitor" },
-      { id: "p2", title: "Poor User Experience", description: "Clunky, slow web apps are killing productivity and frustrating your customers and employees alike.", icon: "ThumbsUp" },
-      { id: "p3", title: "Security Vulnerabilities", description: "Web apps are top targets for breaches. Poorly built applications expose your business to serious risk.", icon: "ShieldCheck" },
+      { id: "p1", title: "Outdated Internal Tools", description: "Your team is using spreadsheets and manual processes where a web app could automate and centralize everything.", icon: Monitor },
+      { id: "p2", title: "Poor User Experience", description: "Clunky, slow web apps are killing productivity and frustrating your customers and employees alike.", icon: ThumbsUp },
+      { id: "p3", title: "Security Vulnerabilities", description: "Web apps are top targets for breaches. Poorly built applications expose your business to serious risk.", icon: ShieldCheck },
     ],
     solution: {
       title: "Web Apps Built for the Real World",
@@ -533,10 +533,10 @@ export const servicesData: Record<string, ServiceData> = {
       benefits: ["Progressive Web App (PWA) capabilities", "Role-based access control", "Real-time data with WebSockets", "Enterprise-grade security"],
     },
     features: [
-      { id: "f1", title: "Dashboard & Analytics", description: "Real-time data visualization dashboards giving you immediate business intelligence.", icon: "BarChart" },
-      { id: "f2", title: "User Management", description: "Complete auth systems with SSO, MFA, and granular permission management.", icon: "Users" },
-      { id: "f3", title: "Third-Party Integrations", description: "Connect your web app to CRMs, payment gateways, ERPs, and more.", icon: "PlugZap" },
-      { id: "f4", title: "Progressive Web App", description: "Installable, offline-capable web apps that feel like native mobile applications.", icon: "Smartphone" },
+      { id: "f1", title: "Dashboard & Analytics", description: "Real-time data visualization dashboards giving you immediate business intelligence.", icon: BarChart },
+      { id: "f2", title: "User Management", description: "Complete auth systems with SSO, MFA, and granular permission management.", icon: Users },
+      { id: "f3", title: "Third-Party Integrations", description: "Connect your web app to CRMs, payment gateways, ERPs, and more.", icon: PlugZap },
+      { id: "f4", title: "Progressive Web App", description: "Installable, offline-capable web apps that feel like native mobile applications.", icon: Smartphone },
     ],
     benefits: [
       { id: "b1", title: "Productivity Boost", description: "Internal tools that save each employee hours per week compound massively.", metric: "30%", metricLabel: "Productivity Gain" },
@@ -544,22 +544,22 @@ export const servicesData: Record<string, ServiceData> = {
       { id: "b3", title: "Always Accessible", description: "Browser-based means no installation, no updates — just log in from anywhere.", metric: "100%", metricLabel: "Cross-Platform" },
     ],
     process: [
-      { id: "pr1", title: "Requirements Mapping", description: "Translating business requirements into detailed technical user stories.", icon: "FileText" },
-      { id: "pr2", title: "UI/UX Prototyping", description: "Interactive prototypes reviewed and approved before development.", icon: "PenTool" },
-      { id: "pr3", title: "Agile Development", description: "Bi-weekly sprints with continuous demos, feedback, and iteration.", icon: "Code" },
-      { id: "pr4", title: "Deployment & Training", description: "Production release, staff training, and handover documentation.", icon: "Rocket" },
+      { id: "pr1", title: "Requirements Mapping", description: "Translating business requirements into detailed technical user stories.", icon: FileText },
+      { id: "pr2", title: "UI/UX Prototyping", description: "Interactive prototypes reviewed and approved before development.", icon: PenTool },
+      { id: "pr3", title: "Agile Development", description: "Bi-weekly sprints with continuous demos, feedback, and iteration.", icon: Code },
+      { id: "pr4", title: "Deployment & Training", description: "Production release, staff training, and handover documentation.", icon: Rocket },
     ],
     techStack: [
       {
         category: "Frontend",
         technologies: [
-          { name: "React / Next.js", icon: "Code" }, { name: "TypeScript", icon: "Code" }, { name: "Tailwind CSS", icon: "Layout" },
+          { name: "React / Next.js", icon: Code }, { name: "TypeScript", icon: Code }, { name: "Tailwind CSS", icon: Layout },
         ],
       },
       {
         category: "Backend & Database",
         technologies: [
-          { name: "Node.js", icon: "Server" }, { name: "PostgreSQL / MySQL", icon: "Database" }, { name: "Redis Cache", icon: "Database" }, { name: "AWS", icon: "Server" },
+          { name: "Node.js", icon: Server }, { name: "PostgreSQL / MySQL", icon: Database }, { name: "Redis Cache", icon: Database }, { name: "AWS", icon: Server },
         ],
       },
     ],
@@ -598,9 +598,9 @@ export const servicesData: Record<string, ServiceData> = {
       keywords: "SEO Services, Search Engine Optimization, Technical SEO, Local SEO, SEO Agency, Organic Traffic",
     },
     problems: [
-      { id: "p1", title: "Invisible on Google", description: "Competitors are ranking for your most valuable keywords while your website sits on page 3 collecting dust.", icon: "Search" },
-      { id: "p2", title: "Wasted Ad Spend", description: "You're paying for every single click while competitors get the same traffic for free via organic search.", icon: "DollarSign" },
-      { id: "p3", title: "Technical Site Issues", description: "Slow load times, crawl errors, and indexing problems are silently preventing Google from ranking your content.", icon: "Settings" },
+      { id: "p1", title: "Invisible on Google", description: "Competitors are ranking for your most valuable keywords while your website sits on page 3 collecting dust.", icon: Search },
+      { id: "p2", title: "Wasted Ad Spend", description: "You're paying for every single click while competitors get the same traffic for free via organic search.", icon: DollarSign },
+      { id: "p3", title: "Technical Site Issues", description: "Slow load times, crawl errors, and indexing problems are silently preventing Google from ranking your content.", icon: Settings },
     ],
     solution: {
       title: "A Full-Funnel SEO Strategy",
@@ -608,10 +608,10 @@ export const servicesData: Record<string, ServiceData> = {
       benefits: ["Full technical SEO audit & remediation", "Keyword research & content strategy", "On-page optimization", "Authority link building"],
     },
     features: [
-      { id: "f1", title: "Technical SEO", description: "Core Web Vitals, crawlability, schema markup, site speed, and indexation fixes.", icon: "Settings" },
-      { id: "f2", title: "On-Page Optimization", description: "Title tags, meta descriptions, headers, content, and internal linking optimized for target keywords.", icon: "FileText" },
-      { id: "f3", title: "Local SEO", description: "Google Business Profile optimization, local citations, and geo-targeted content.", icon: "Target" },
-      { id: "f4", title: "Link Building", description: "Strategic acquisition of high-authority backlinks that boost your domain rating.", icon: "Globe" },
+      { id: "f1", title: "Technical SEO", description: "Core Web Vitals, crawlability, schema markup, site speed, and indexation fixes.", icon: Settings },
+      { id: "f2", title: "On-Page Optimization", description: "Title tags, meta descriptions, headers, content, and internal linking optimized for target keywords.", icon: FileText },
+      { id: "f3", title: "Local SEO", description: "Google Business Profile optimization, local citations, and geo-targeted content.", icon: Target },
+      { id: "f4", title: "Link Building", description: "Strategic acquisition of high-authority backlinks that boost your domain rating.", icon: Globe },
     ],
     benefits: [
       { id: "b1", title: "Free, Compounding Traffic", description: "Unlike PPC, organic traffic doesn't stop when you stop paying. It compounds over time.", metric: "0", metricLabel: "Cost Per Click" },
@@ -619,22 +619,22 @@ export const servicesData: Record<string, ServiceData> = {
       { id: "b3", title: "Sustainable Growth", description: "SEO builds a long-term asset — your visibility — that appreciates in value.", metric: "Long", metricLabel: "Term Asset" },
     ],
     process: [
-      { id: "pr1", title: "SEO Audit", description: "Full technical, on-page, and off-page audit to identify critical gaps.", icon: "Search" },
-      { id: "pr2", title: "Strategy", description: "Keyword targeting, content calendar, and link acquisition plan.", icon: "Target" },
-      { id: "pr3", title: "Implementation", description: "Technical fixes, content optimization, and link outreach campaigns.", icon: "Code" },
-      { id: "pr4", title: "Track & Iterate", description: "Monthly reporting and continuous strategy refinement based on ranking data.", icon: "BarChart" },
+      { id: "pr1", title: "SEO Audit", description: "Full technical, on-page, and off-page audit to identify critical gaps.", icon: Search },
+      { id: "pr2", title: "Strategy", description: "Keyword targeting, content calendar, and link acquisition plan.", icon: Target },
+      { id: "pr3", title: "Implementation", description: "Technical fixes, content optimization, and link outreach campaigns.", icon: Code },
+      { id: "pr4", title: "Track & Iterate", description: "Monthly reporting and continuous strategy refinement based on ranking data.", icon: BarChart },
     ],
     techStack: [
       {
         category: "SEO Strategy",
         technologies: [
-          { name: "Technical SEO", icon: "Settings" }, { name: "Local SEO", icon: "Target" }, { name: "On-Page SEO", icon: "FileText" }, { name: "Content Strategy", icon: "PenTool" },
+          { name: "Technical SEO", icon: Settings }, { name: "Local SEO", icon: Target }, { name: "On-Page SEO", icon: FileText }, { name: "Content Strategy", icon: PenTool },
         ],
       },
       {
         category: "Tools",
         technologies: [
-          { name: "Google Search Console", icon: "Search" }, { name: "Ahrefs", icon: "Globe" }, { name: "SEMrush", icon: "BarChart" }, { name: "Screaming Frog", icon: "Settings" },
+          { name: "Google Search Console", icon: Search }, { name: "Ahrefs", icon: Globe }, { name: "SEMrush", icon: BarChart }, { name: "Screaming Frog", icon: Settings },
         ],
       },
     ],
@@ -674,9 +674,9 @@ export const servicesData: Record<string, ServiceData> = {
       keywords: "UI UX Design, User Interface Design, User Experience, Product Design, Figma Design, Design System",
     },
     problems: [
-      { id: "p1", title: "High Drop-Off Rates", description: "Users are leaving your app or website at critical points because the experience is confusing or frustrating.", icon: "TrendingUp" },
-      { id: "p2", title: "Low Conversion Rates", description: "Your traffic doesn't convert. Poor UX is the #1 reason users don't take the actions you need them to take.", icon: "Target" },
-      { id: "p3", title: "No Design Consistency", description: "Inconsistent UI patterns across your product create cognitive load and undermine user trust.", icon: "Sliders" },
+      { id: "p1", title: "High Drop-Off Rates", description: "Users are leaving your app or website at critical points because the experience is confusing or frustrating.", icon: TrendingUp },
+      { id: "p2", title: "Low Conversion Rates", description: "Your traffic doesn't convert. Poor UX is the #1 reason users don't take the actions you need them to take.", icon: Target },
+      { id: "p3", title: "No Design Consistency", description: "Inconsistent UI patterns across your product create cognitive load and undermine user trust.", icon: Sliders },
     ],
     solution: {
       title: "Research-Driven Design That Performs",
@@ -684,10 +684,10 @@ export const servicesData: Record<string, ServiceData> = {
       benefits: ["User research & usability testing", "Information architecture", "High-fidelity Figma prototypes", "Scalable design system"],
     },
     features: [
-      { id: "f1", title: "User Research", description: "Interviews, surveys, and usability tests to deeply understand your users' mental models.", icon: "Users" },
-      { id: "f2", title: "Wireframing", description: "Low-fidelity wireframes that rapidly validate information architecture and user flows.", icon: "Layout" },
-      { id: "f3", title: "High-Fidelity Prototypes", description: "Pixel-perfect, interactive Figma prototypes ready for development handoff.", icon: "PenTool" },
-      { id: "f4", title: "Design System", description: "A comprehensive component library ensuring perfect consistency at scale.", icon: "Layers" },
+      { id: "f1", title: "User Research", description: "Interviews, surveys, and usability tests to deeply understand your users' mental models.", icon: Users },
+      { id: "f2", title: "Wireframing", description: "Low-fidelity wireframes that rapidly validate information architecture and user flows.", icon: Layout },
+      { id: "f3", title: "High-Fidelity Prototypes", description: "Pixel-perfect, interactive Figma prototypes ready for development handoff.", icon: PenTool },
+      { id: "f4", title: "Design System", description: "A comprehensive component library ensuring perfect consistency at scale.", icon: Layers },
     ],
     benefits: [
       { id: "b1", title: "Conversion Improvement", description: "Good UX directly increases the percentage of visitors who become customers.", metric: "+32%", metricLabel: "Avg. Conversion Lift" },
@@ -695,22 +695,22 @@ export const servicesData: Record<string, ServiceData> = {
       { id: "b3", title: "User Retention", description: "Delightful experiences build habits — users keep coming back.", metric: "2.5x", metricLabel: "Better Retention" },
     ],
     process: [
-      { id: "pr1", title: "Research & Discovery", description: "User interviews, competitor analysis, and heuristic evaluation.", icon: "Search" },
-      { id: "pr2", title: "Information Architecture", description: "User flows, sitemaps, and content hierarchy that make sense.", icon: "Layers" },
-      { id: "pr3", title: "Visual Design", description: "Brand-aligned UI crafted with typography, color, and motion in mind.", icon: "PenTool" },
-      { id: "pr4", title: "Prototype & Test", description: "Interactive prototypes user-tested before any code is written.", icon: "Eye" },
+      { id: "pr1", title: "Research & Discovery", description: "User interviews, competitor analysis, and heuristic evaluation.", icon: Search },
+      { id: "pr2", title: "Information Architecture", description: "User flows, sitemaps, and content hierarchy that make sense.", icon: Layers },
+      { id: "pr3", title: "Visual Design", description: "Brand-aligned UI crafted with typography, color, and motion in mind.", icon: PenTool },
+      { id: "pr4", title: "Prototype & Test", description: "Interactive prototypes user-tested before any code is written.", icon: Eye },
     ],
     techStack: [
       {
         category: "Design Tools",
         technologies: [
-          { name: "Figma", icon: "PenTool" }, { name: "Adobe XD", icon: "PenTool" }, { name: "FigJam", icon: "Layout" }, { name: "Framer", icon: "Code" },
+          { name: "Figma", icon: PenTool }, { name: "Adobe XD", icon: PenTool }, { name: "FigJam", icon: Layout }, { name: "Framer", icon: Code },
         ],
       },
       {
         category: "Research & Testing",
         technologies: [
-          { name: "Maze", icon: "Target" }, { name: "Hotjar", icon: "Eye" }, { name: "Lyssna", icon: "Users" }, { name: "Optimal Workshop", icon: "Settings" },
+          { name: "Maze", icon: Target }, { name: "Hotjar", icon: Eye }, { name: "Lyssna", icon: Users }, { name: "Optimal Workshop", icon: Settings },
         ],
       },
     ],
@@ -749,9 +749,9 @@ export const servicesData: Record<string, ServiceData> = {
       keywords: "Portfolio Website, Personal Website, Professional Portfolio, Portfolio Design, Creative Portfolio",
     },
     problems: [
-      { id: "p1", title: "First Impressions Failing", description: "A poorly designed or generic portfolio immediately signals to clients and employers that you're not the premium option.", icon: "Eye" },
-      { id: "p2", title: "Templates Look Generic", description: "Wix and Squarespace templates make your work blend in. Clients can't distinguish you from thousands of competitors.", icon: "Layout" },
-      { id: "p3", title: "Not Ranking on Google", description: "Without proper SEO, your portfolio is invisible to potential clients searching for your services.", icon: "Search" },
+      { id: "p1", title: "First Impressions Failing", description: "A poorly designed or generic portfolio immediately signals to clients and employers that you're not the premium option.", icon: Eye },
+      { id: "p2", title: "Templates Look Generic", description: "Wix and Squarespace templates make your work blend in. Clients can't distinguish you from thousands of competitors.", icon: Layout },
+      { id: "p3", title: "Not Ranking on Google", description: "Without proper SEO, your portfolio is invisible to potential clients searching for your services.", icon: Search },
     ],
     solution: {
       title: "Custom Portfolios Built to Impress",
@@ -759,10 +759,10 @@ export const servicesData: Record<string, ServiceData> = {
       benefits: ["100% custom — no templates", "Optimized for Core Web Vitals", "SEO-optimized from day one", "CMS for easy self-updating"],
     },
     features: [
-      { id: "f1", title: "Custom Design", description: "A unique design that reflects your personal brand — not a recycled template.", icon: "PenTool" },
-      { id: "f2", title: "Project Showcases", description: "Beautiful case study pages that tell the story behind your best work.", icon: "Award" },
-      { id: "f3", title: "Animated Interactions", description: "Subtle, premium animations that make your portfolio feel modern and premium.", icon: "Zap" },
-      { id: "f4", title: "CMS Integration", description: "Add or update projects yourself without touching code, via a simple CMS.", icon: "Settings" },
+      { id: "f1", title: "Custom Design", description: "A unique design that reflects your personal brand — not a recycled template.", icon: PenTool },
+      { id: "f2", title: "Project Showcases", description: "Beautiful case study pages that tell the story behind your best work.", icon: Award },
+      { id: "f3", title: "Animated Interactions", description: "Subtle, premium animations that make your portfolio feel modern and premium.", icon: Zap },
+      { id: "f4", title: "CMS Integration", description: "Add or update projects yourself without touching code, via a simple CMS.", icon: Settings },
     ],
     benefits: [
       { id: "b1", title: "More Client Inquiries", description: "A premium portfolio directly translates to a higher quantity and quality of inbound leads.", metric: "3x", metricLabel: "More Inquiries" },
@@ -770,16 +770,16 @@ export const servicesData: Record<string, ServiceData> = {
       { id: "b3", title: "24/7 Sales Tool", description: "Your portfolio works for you around the clock — showcasing your work while you sleep.", metric: "24/7", metricLabel: "Working For You" },
     ],
     process: [
-      { id: "pr1", title: "Brand Discovery", description: "Understanding your story, target audience, and the impression you want to make.", icon: "Search" },
-      { id: "pr2", title: "Design Concept", description: "Unique visual concept aligned with your personal brand identity.", icon: "PenTool" },
-      { id: "pr3", title: "Build & Animate", description: "Development with custom animations, CMS integration, and responsive design.", icon: "Code" },
-      { id: "pr4", title: "Launch & Optimize", description: "SEO setup, analytics tracking, and performance optimization.", icon: "Rocket" },
+      { id: "pr1", title: "Brand Discovery", description: "Understanding your story, target audience, and the impression you want to make.", icon: Search },
+      { id: "pr2", title: "Design Concept", description: "Unique visual concept aligned with your personal brand identity.", icon: PenTool },
+      { id: "pr3", title: "Build & Animate", description: "Development with custom animations, CMS integration, and responsive design.", icon: Code },
+      { id: "pr4", title: "Launch & Optimize", description: "SEO setup, analytics tracking, and performance optimization.", icon: Rocket },
     ],
     techStack: [
       {
         category: "Technologies",
         technologies: [
-          { name: "Next.js", icon: "Code" }, { name: "Framer Motion", icon: "Zap" }, { name: "Tailwind CSS", icon: "Layout" }, { name: "Sanity CMS", icon: "Database" },
+          { name: "Next.js", icon: Code }, { name: "Framer Motion", icon: Zap }, { name: "Tailwind CSS", icon: Layout }, { name: "Sanity CMS", icon: Database },
         ],
       },
     ],
@@ -818,9 +818,9 @@ export const servicesData: Record<string, ServiceData> = {
       keywords: "Hospital Management System, HMS Software, Healthcare Software, Patient Management, EMR System, HIPAA Compliant",
     },
     problems: [
-      { id: "p1", title: "Fragmented Patient Records", description: "Patient data scattered across paper files, spreadsheets, and disconnected systems leads to errors and delays.", icon: "ClipboardList" },
-      { id: "p2", title: "Inefficient Appointment Scheduling", description: "Manual scheduling causes overbooking, no-shows, and wasted clinical capacity worth thousands daily.", icon: "Clock" },
-      { id: "p3", title: "Billing & Compliance Errors", description: "Manual billing processes lead to claim denials, revenue leakage, and regulatory compliance risks.", icon: "DollarSign" },
+      { id: "p1", title: "Fragmented Patient Records", description: "Patient data scattered across paper files, spreadsheets, and disconnected systems leads to errors and delays.", icon: ClipboardList },
+      { id: "p2", title: "Inefficient Appointment Scheduling", description: "Manual scheduling causes overbooking, no-shows, and wasted clinical capacity worth thousands daily.", icon: Clock },
+      { id: "p3", title: "Billing & Compliance Errors", description: "Manual billing processes lead to claim denials, revenue leakage, and regulatory compliance risks.", icon: DollarSign },
     ],
     solution: {
       title: "An Integrated Digital Backbone for Your Hospital",
@@ -828,10 +828,10 @@ export const servicesData: Record<string, ServiceData> = {
       benefits: ["Centralized Electronic Medical Records (EMR)", "Automated appointment & resource scheduling", "HIPAA-compliant data security", "Automated insurance billing & claims"],
     },
     features: [
-      { id: "f1", title: "Patient Registration & EMR", description: "Digital patient records, medical history, prescriptions, and lab results in one unified profile.", icon: "HeartPulse" },
-      { id: "f2", title: "Appointment Management", description: "Smart scheduling with automated reminders, waitlists, and multi-doctor coordination.", icon: "Clock" },
-      { id: "f3", title: "Lab & Pharmacy Module", description: "Digital lab orders, results delivery, and integrated pharmacy dispensing.", icon: "Stethoscope" },
-      { id: "f4", title: "Revenue Cycle Management", description: "Automated insurance verification, claims submission, and payment tracking.", icon: "DollarSign" },
+      { id: "f1", title: "Patient Registration & EMR", description: "Digital patient records, medical history, prescriptions, and lab results in one unified profile.", icon: HeartPulse },
+      { id: "f2", title: "Appointment Management", description: "Smart scheduling with automated reminders, waitlists, and multi-doctor coordination.", icon: Clock },
+      { id: "f3", title: "Lab & Pharmacy Module", description: "Digital lab orders, results delivery, and integrated pharmacy dispensing.", icon: Stethoscope },
+      { id: "f4", title: "Revenue Cycle Management", description: "Automated insurance verification, claims submission, and payment tracking.", icon: DollarSign },
     ],
     benefits: [
       { id: "b1", title: "Reduced Admin Time", description: "Automate repetitive administrative tasks, freeing staff for patient-facing work.", metric: "60%", metricLabel: "Less Admin Work" },
@@ -839,22 +839,22 @@ export const servicesData: Record<string, ServiceData> = {
       { id: "b3", title: "Full Compliance", description: "Built with HIPAA security requirements embedded from the architecture level.", metric: "100%", metricLabel: "HIPAA Compliant" },
     ],
     process: [
-      { id: "pr1", title: "Workflow Analysis", description: "Mapping existing clinical and administrative workflows to understand needs.", icon: "Search" },
-      { id: "pr2", title: "HIPAA Architecture", description: "Designing a secure, encrypted data architecture compliant with healthcare regulations.", icon: "ShieldCheck" },
-      { id: "pr3", title: "Module Development", description: "Building each HMS module (OPD, IPD, pharmacy, lab, billing) in sprints.", icon: "Code" },
-      { id: "pr4", title: "Staff Training & Go-Live", description: "On-site staff training, data migration from legacy systems, and live support.", icon: "Rocket" },
+      { id: "pr1", title: "Workflow Analysis", description: "Mapping existing clinical and administrative workflows to understand needs.", icon: Search },
+      { id: "pr2", title: "HIPAA Architecture", description: "Designing a secure, encrypted data architecture compliant with healthcare regulations.", icon: ShieldCheck },
+      { id: "pr3", title: "Module Development", description: "Building each HMS module (OPD, IPD, pharmacy, lab, billing) in sprints.", icon: Code },
+      { id: "pr4", title: "Staff Training & Go-Live", description: "On-site staff training, data migration from legacy systems, and live support.", icon: Rocket },
     ],
     techStack: [
       {
         category: "Application",
         technologies: [
-          { name: "React / Next.js", icon: "Code" }, { name: "Node.js", icon: "Server" }, { name: "PostgreSQL", icon: "Database" }, { name: "HL7/FHIR APIs", icon: "Activity" },
+          { name: "React / Next.js", icon: Code }, { name: "Node.js", icon: Server }, { name: "PostgreSQL", icon: Database }, { name: "HL7/FHIR APIs", icon: Activity },
         ],
       },
       {
         category: "Security & Compliance",
         technologies: [
-          { name: "AES-256 Encryption", icon: "ShieldCheck" }, { name: "HIPAA Controls", icon: "Lock" }, { name: "AWS HIPAA-Eligible", icon: "Server" },
+          { name: "AES-256 Encryption", icon: ShieldCheck }, { name: "HIPAA Controls", icon: Lock }, { name: "AWS HIPAA-Eligible", icon: Server },
         ],
       },
     ],
@@ -893,9 +893,9 @@ export const servicesData: Record<string, ServiceData> = {
       keywords: "CRM Development, Custom CRM, Customer Relationship Management, Sales CRM, CRM Software",
     },
     problems: [
-      { id: "p1", title: "Off-Shelf CRM Doesn't Fit", description: "Salesforce and HubSpot are built for the average business — not yours. Workarounds accumulate and slow your team down.", icon: "Briefcase" },
-      { id: "p2", title: "Expensive Per-Seat Pricing", description: "CRM costs scale aggressively with your headcount. At 50+ users, annual fees become a significant burden.", icon: "DollarSign" },
-      { id: "p3", title: "Poor Data Quality", description: "Without a CRM built for your process, sales data is incomplete, inaccurate, and useless for forecasting.", icon: "Database" },
+      { id: "p1", title: "Off-Shelf CRM Doesn't Fit", description: "Salesforce and HubSpot are built for the average business — not yours. Workarounds accumulate and slow your team down.", icon: Briefcase },
+      { id: "p2", title: "Expensive Per-Seat Pricing", description: "CRM costs scale aggressively with your headcount. At 50+ users, annual fees become a significant burden.", icon: DollarSign },
+      { id: "p3", title: "Poor Data Quality", description: "Without a CRM built for your process, sales data is incomplete, inaccurate, and useless for forecasting.", icon: Database },
     ],
     solution: {
       title: "A CRM That Mirrors Your Sales Reality",
@@ -903,10 +903,10 @@ export const servicesData: Record<string, ServiceData> = {
       benefits: ["Custom pipeline stages & deal flows", "Automated follow-up sequences", "Deep reporting & forecasting", "No per-seat licensing fees"],
     },
     features: [
-      { id: "f1", title: "Visual Pipeline Management", description: "Kanban and list views with drag-and-drop deal management across custom stages.", icon: "Sliders" },
-      { id: "f2", title: "Contact & Company Profiles", description: "Rich contact profiles with full interaction history, notes, and file attachments.", icon: "Users" },
-      { id: "f3", title: "Follow-ups & Sequences", description: "Scheduled email follow-ups, task creation, and stage transitions based on deal triggers.", icon: "Zap" },
-      { id: "f4", title: "Sales Analytics", description: "Real-time dashboards for pipeline velocity, win rate, rep performance, and revenue forecasting.", icon: "BarChart" },
+      { id: "f1", title: "Visual Pipeline Management", description: "Kanban and list views with drag-and-drop deal management across custom stages.", icon: Sliders },
+      { id: "f2", title: "Contact & Company Profiles", description: "Rich contact profiles with full interaction history, notes, and file attachments.", icon: Users },
+      { id: "f3", title: "Follow-ups & Sequences", description: "Scheduled email follow-ups, task creation, and stage transitions based on deal triggers.", icon: Zap },
+      { id: "f4", title: "Sales Analytics", description: "Real-time dashboards for pipeline velocity, win rate, rep performance, and revenue forecasting.", icon: BarChart },
     ],
     benefits: [
       { id: "b1", title: "Adoption Rate", description: "Sales teams love CRMs built for how they actually work — adoption skyrockets.", metric: "95%", metricLabel: "User Adoption" },
@@ -914,22 +914,22 @@ export const servicesData: Record<string, ServiceData> = {
       { id: "b3", title: "No SaaS Fees", description: "Own your CRM outright and pay zero per-seat monthly fees, ever.", metric: "$0", metricLabel: "Per Seat / Month" },
     ],
     process: [
-      { id: "pr1", title: "Sales Process Audit", description: "Mapping your current sales pipeline, stages, and common deal scenarios.", icon: "Search" },
-      { id: "pr2", title: "CRM Architecture", description: "Designing entity relationships, custom fields, trigger rules, and reporting structure.", icon: "Layers" },
-      { id: "pr3", title: "Build & Test", description: "Development with sales team involvement to validate each feature before release.", icon: "Code" },
-      { id: "pr4", title: "Migration & Training", description: "Data migration from your existing CRM and hands-on training for every sales rep.", icon: "Rocket" },
+      { id: "pr1", title: "Sales Process Audit", description: "Mapping your current sales pipeline, stages, and common deal scenarios.", icon: Search },
+      { id: "pr2", title: "CRM Architecture", description: "Designing entity relationships, custom fields, trigger rules, and reporting structure.", icon: Layers },
+      { id: "pr3", title: "Build & Test", description: "Development with sales team involvement to validate each feature before release.", icon: Code },
+      { id: "pr4", title: "Migration & Training", description: "Data migration from your existing CRM and hands-on training for every sales rep.", icon: Rocket },
     ],
     techStack: [
       {
         category: "Application Stack",
         technologies: [
-          { name: "React", icon: "Code" }, { name: "Node.js", icon: "Server" }, { name: "PostgreSQL", icon: "Database" }, { name: "Redis", icon: "Database" },
+          { name: "React", icon: Code }, { name: "Node.js", icon: Server }, { name: "PostgreSQL", icon: Database }, { name: "Redis", icon: Database },
         ],
       },
       {
         category: "Integrations",
         technologies: [
-          { name: "Email APIs (SendGrid)", icon: "MessageSquare" }, { name: "Calendar Sync", icon: "Clock" }, { name: "LinkedIn API", icon: "Share2" }, { name: "Stripe", icon: "DollarSign" },
+          { name: "Email APIs (SendGrid)", icon: MessageSquare }, { name: "Calendar Sync", icon: Clock }, { name: "LinkedIn API", icon: Share2 }, { name: "Stripe", icon: DollarSign },
         ],
       },
     ],
@@ -968,9 +968,9 @@ export const servicesData: Record<string, ServiceData> = {
       keywords: "ERP Development, Custom ERP, Enterprise Resource Planning, ERP Software, Business Management System",
     },
     problems: [
-      { id: "p1", title: "Data Scattered Everywhere", description: "Finance uses QuickBooks, ops uses spreadsheets, and sales uses a CRM — none of them talk to each other.", icon: "Database" },
-      { id: "p2", title: "No Real-Time Visibility", description: "Leadership can't see accurate inventory, cash flow, or project status without manually assembling reports.", icon: "Eye" },
-      { id: "p3", title: "Process Inconsistency", description: "Different departments following different processes creates errors, delays, and unhappy customers.", icon: "RefreshCw" },
+      { id: "p1", title: "Data Scattered Everywhere", description: "Finance uses QuickBooks, ops uses spreadsheets, and sales uses a CRM — none of them talk to each other.", icon: Database },
+      { id: "p2", title: "No Real-Time Visibility", description: "Leadership can't see accurate inventory, cash flow, or project status without manually assembling reports.", icon: Eye },
+      { id: "p3", title: "Process Inconsistency", description: "Different departments following different processes creates errors, delays, and unhappy customers.", icon: RefreshCw },
     ],
     solution: {
       title: "One System. Every Department. Real-Time.",
@@ -978,10 +978,10 @@ export const servicesData: Record<string, ServiceData> = {
       benefits: ["Unified data across all departments", "Real-time KPI dashboards", "Automated inter-department workflows", "Role-based access by department"],
     },
     features: [
-      { id: "f1", title: "Financial Management", description: "General ledger, accounts payable/receivable, budgeting, and financial reporting.", icon: "DollarSign" },
-      { id: "f2", title: "Inventory & Supply Chain", description: "Real-time inventory tracking, purchase orders, supplier management, and warehouse operations.", icon: "Package" },
-      { id: "f3", title: "HR & Payroll", description: "Employee management, payroll processing, leave management, and performance tracking.", icon: "Users" },
-      { id: "f4", title: "Executive Dashboard", description: "C-level dashboard with real-time KPIs across all business functions.", icon: "BarChart" },
+      { id: "f1", title: "Financial Management", description: "General ledger, accounts payable/receivable, budgeting, and financial reporting.", icon: DollarSign },
+      { id: "f2", title: "Inventory & Supply Chain", description: "Real-time inventory tracking, purchase orders, supplier management, and warehouse operations.", icon: Package },
+      { id: "f3", title: "HR & Payroll", description: "Employee management, payroll processing, leave management, and performance tracking.", icon: Users },
+      { id: "f4", title: "Executive Dashboard", description: "C-level dashboard with real-time KPIs across all business functions.", icon: BarChart },
     ],
     benefits: [
       { id: "b1", title: "Operational Efficiency", description: "Eliminate inter-department manual handoffs and streamline core business processes.", metric: "35%", metricLabel: "Efficiency Gain" },
@@ -989,22 +989,22 @@ export const servicesData: Record<string, ServiceData> = {
       { id: "b3", title: "Cost Consolidation", description: "Replace multiple SaaS subscriptions with a single owned system.", metric: "Significant", metricLabel: "Cost Savings" },
     ],
     process: [
-      { id: "pr1", title: "Business Process Analysis", description: "Deep analysis of all departments to map data flows and integration points.", icon: "Search" },
-      { id: "pr2", title: "ERP Architecture", description: "Designing the unified data model, module structure, and integration architecture.", icon: "Layers" },
-      { id: "pr3", title: "Phased Development", description: "Building modules in priority order with each phase delivering immediate value.", icon: "Code" },
-      { id: "pr4", title: "Migration & Go-Live", description: "Full data migration, user training, and phased go-live to minimize disruption.", icon: "Rocket" },
+      { id: "pr1", title: "Business Process Analysis", description: "Deep analysis of all departments to map data flows and integration points.", icon: Search },
+      { id: "pr2", title: "ERP Architecture", description: "Designing the unified data model, module structure, and integration architecture.", icon: Layers },
+      { id: "pr3", title: "Phased Development", description: "Building modules in priority order with each phase delivering immediate value.", icon: Code },
+      { id: "pr4", title: "Migration & Go-Live", description: "Full data migration, user training, and phased go-live to minimize disruption.", icon: Rocket },
     ],
     techStack: [
       {
         category: "ERP Platform",
         technologies: [
-          { name: "React / Next.js", icon: "Code" }, { name: "Node.js", icon: "Server" }, { name: "PostgreSQL", icon: "Database" }, { name: "Redis", icon: "Database" },
+          { name: "React / Next.js", icon: Code }, { name: "Node.js", icon: Server }, { name: "PostgreSQL", icon: Database }, { name: "Redis", icon: Database },
         ],
       },
       {
         category: "Key Integrations",
         technologies: [
-          { name: "Payment Gateways", icon: "DollarSign" }, { name: "Banking APIs", icon: "BarChart" }, { name: "Shipping APIs", icon: "Package" }, { name: "DocuSign", icon: "FileText" },
+          { name: "Payment Gateways", icon: DollarSign }, { name: "Banking APIs", icon: BarChart }, { name: "Shipping APIs", icon: Package }, { name: "DocuSign", icon: FileText },
         ],
       },
     ],
@@ -1043,9 +1043,9 @@ export const servicesData: Record<string, ServiceData> = {
       keywords: "E-Commerce Development, Shopify Development, Custom E-Commerce, Online Store, E-Commerce Website",
     },
     problems: [
-      { id: "p1", title: "High Cart Abandonment", description: "70%+ of shoppers abandon carts — usually due to slow sites, friction in checkout, or lack of trust signals.", icon: "ShoppingCart" },
-      { id: "p2", title: "Poor Mobile Experience", description: "Over 60% of e-commerce traffic is mobile, but most stores perform terribly on phones.", icon: "Smartphone" },
-      { id: "p3", title: "Platform Limitations", description: "Your current platform can't handle your product catalog size, customization needs, or traffic volumes.", icon: "Settings" },
+      { id: "p1", title: "High Cart Abandonment", description: "70%+ of shoppers abandon carts — usually due to slow sites, friction in checkout, or lack of trust signals.", icon: ShoppingCart },
+      { id: "p2", title: "Poor Mobile Experience", description: "Over 60% of e-commerce traffic is mobile, but most stores perform terribly on phones.", icon: Smartphone },
+      { id: "p3", title: "Platform Limitations", description: "Your current platform can't handle your product catalog size, customization needs, or traffic volumes.", icon: Settings },
     ],
     solution: {
       title: "Conversion-Engineered E-Commerce Experiences",
@@ -1053,10 +1053,10 @@ export const servicesData: Record<string, ServiceData> = {
       benefits: ["Conversion-optimized checkout flow", "Mobile-first design", "Sub-2-second page loads", "Advanced product filtering & search"],
     },
     features: [
-      { id: "f1", title: "Custom Product Pages", description: "Rich, conversion-optimized product pages with zoom, 360-views, and social proof.", icon: "ShoppingCart" },
-      { id: "f2", title: "Smart Search & Filters", description: "Instant search with typo tolerance and faceted filtering to help users find products fast.", icon: "Search" },
-      { id: "f3", title: "Abandoned Cart Recovery", description: "Automated email sequences recovering 15–25% of abandoned carts.", icon: "MessageSquare" },
-      { id: "f4", title: "Analytics Dashboard", description: "Revenue, conversion rate, AOV, and customer LTV tracking in one dashboard.", icon: "BarChart" },
+      { id: "f1", title: "Custom Product Pages", description: "Rich, conversion-optimized product pages with zoom, 360-views, and social proof.", icon: ShoppingCart },
+      { id: "f2", title: "Smart Search & Filters", description: "Instant search with typo tolerance and faceted filtering to help users find products fast.", icon: Search },
+      { id: "f3", title: "Abandoned Cart Recovery", description: "Automated email sequences recovering 15–25% of abandoned carts.", icon: MessageSquare },
+      { id: "f4", title: "Analytics Dashboard", description: "Revenue, conversion rate, AOV, and customer LTV tracking in one dashboard.", icon: BarChart },
     ],
     benefits: [
       { id: "b1", title: "Conversion Rate", description: "Optimized checkout flows and page performance significantly increase purchase rates.", metric: "+25%", metricLabel: "Conversion Rate" },
@@ -1064,22 +1064,22 @@ export const servicesData: Record<string, ServiceData> = {
       { id: "b3", title: "Cart Recovery", description: "Automated abandoned cart recovery brings back lost revenue 24/7.", metric: "20%", metricLabel: "Cart Recovery" },
     ],
     process: [
-      { id: "pr1", title: "Conversion Audit", description: "Analyzing your current funnel to identify the biggest conversion bottlenecks.", icon: "Search" },
-      { id: "pr2", title: "UX & Design", description: "Customer journey mapping and UI design optimized for purchase decisions.", icon: "PenTool" },
-      { id: "pr3", title: "Development", description: "Building the store with performance as a primary KPI alongside functionality.", icon: "Code" },
-      { id: "pr4", title: "Launch & Optimize", description: "A/B testing, analytics setup, and ongoing CRO after launch.", icon: "Target" },
+      { id: "pr1", title: "Conversion Audit", description: "Analyzing your current funnel to identify the biggest conversion bottlenecks.", icon: Search },
+      { id: "pr2", title: "UX & Design", description: "Customer journey mapping and UI design optimized for purchase decisions.", icon: PenTool },
+      { id: "pr3", title: "Development", description: "Building the store with performance as a primary KPI alongside functionality.", icon: Code },
+      { id: "pr4", title: "Launch & Optimize", description: "A/B testing, analytics setup, and ongoing CRO after launch.", icon: Target },
     ],
     techStack: [
       {
         category: "Platforms",
         technologies: [
-          { name: "Shopify / Shopify Plus", icon: "ShoppingCart" }, { name: "Next.js Custom", icon: "Code" }, { name: "WooCommerce", icon: "ShoppingCart" },
+          { name: "Shopify / Shopify Plus", icon: ShoppingCart }, { name: "Next.js Custom", icon: Code }, { name: "WooCommerce", icon: ShoppingCart },
         ],
       },
       {
         category: "Commerce Stack",
         technologies: [
-          { name: "Stripe Payments", icon: "DollarSign" }, { name: "Algolia Search", icon: "Search" }, { name: "Klaviyo Email", icon: "MessageSquare" }, { name: "Sanity CMS", icon: "Database" },
+          { name: "Stripe Payments", icon: DollarSign }, { name: "Algolia Search", icon: Search }, { name: "Klaviyo Email", icon: MessageSquare }, { name: "Sanity CMS", icon: Database },
         ],
       },
     ],
@@ -1118,9 +1118,9 @@ export const servicesData: Record<string, ServiceData> = {
       keywords: "WordPress Development, Custom WordPress, WordPress Theme, WordPress Plugin, WooCommerce, WordPress Agency",
     },
     problems: [
-      { id: "p1", title: "Slow WordPress Site", description: "Bloated themes, unoptimized plugins, and no caching make your WordPress site embarrassingly slow.", icon: "Clock" },
-      { id: "p2", title: "Security Vulnerabilities", description: "Outdated plugins and weak configurations make WordPress sites prime targets for hackers and malware.", icon: "ShieldCheck" },
-      { id: "p3", title: "Can't Customize Enough", description: "Your current theme limits what you can build. Customizations require developer intervention for every small change.", icon: "Settings" },
+      { id: "p1", title: "Slow WordPress Site", description: "Bloated themes, unoptimized plugins, and no caching make your WordPress site embarrassingly slow.", icon: Clock },
+      { id: "p2", title: "Security Vulnerabilities", description: "Outdated plugins and weak configurations make WordPress sites prime targets for hackers and malware.", icon: ShieldCheck },
+      { id: "p3", title: "Can't Customize Enough", description: "Your current theme limits what you can build. Customizations require developer intervention for every small change.", icon: Settings },
     ],
     solution: {
       title: "WordPress Done the Right Way",
@@ -1128,10 +1128,10 @@ export const servicesData: Record<string, ServiceData> = {
       benefits: ["Custom block themes — no page builder bloat", "90+ Lighthouse performance score", "Hardened security configuration", "Intuitive content management for your team"],
     },
     features: [
-      { id: "f1", title: "Custom Theme Development", description: "Pixel-perfect custom themes built from scratch — no bloated page builders.", icon: "PenTool" },
-      { id: "f2", title: "Custom Plugin Development", description: "Bespoke plugins for functionality that doesn't exist in the plugin ecosystem.", icon: "Code" },
-      { id: "f3", title: "WooCommerce Development", description: "Custom WooCommerce storefronts with unique checkout flows and product pages.", icon: "ShoppingCart" },
-      { id: "f4", title: "Performance Optimization", description: "Server-level caching, image optimization, CDN, and Core Web Vitals tuning.", icon: "Zap" },
+      { id: "f1", title: "Custom Theme Development", description: "Pixel-perfect custom themes built from scratch — no bloated page builders.", icon: PenTool },
+      { id: "f2", title: "Custom Plugin Development", description: "Bespoke plugins for functionality that doesn't exist in the plugin ecosystem.", icon: Code },
+      { id: "f3", title: "WooCommerce Development", description: "Custom WooCommerce storefronts with unique checkout flows and product pages.", icon: ShoppingCart },
+      { id: "f4", title: "Performance Optimization", description: "Server-level caching, image optimization, CDN, and Core Web Vitals tuning.", icon: Zap },
     ],
     benefits: [
       { id: "b1", title: "Performance Score", description: "Our WordPress builds score 90+ on Google Lighthouse for Core Web Vitals.", metric: "90+", metricLabel: "Lighthouse Score" },
@@ -1139,22 +1139,22 @@ export const servicesData: Record<string, ServiceData> = {
       { id: "b3", title: "Security Hardened", description: "We implement 20+ security measures to protect your WordPress installation.", metric: "99%", metricLabel: "Uptime SLA" },
     ],
     process: [
-      { id: "pr1", title: "Discovery & Design", description: "Content strategy, sitemap, and UI design before any development begins.", icon: "PenTool" },
-      { id: "pr2", title: "Custom Development", description: "Building a lightweight custom theme using modern WordPress block editor APIs.", icon: "Code" },
-      { id: "pr3", title: "Security & Performance", description: "Security hardening, caching setup, CDN configuration, and Core Web Vitals optimization.", icon: "ShieldCheck" },
-      { id: "pr4", title: "Training & Handover", description: "Screen-recorded training so your team can manage the site confidently.", icon: "Rocket" },
+      { id: "pr1", title: "Discovery & Design", description: "Content strategy, sitemap, and UI design before any development begins.", icon: PenTool },
+      { id: "pr2", title: "Custom Development", description: "Building a lightweight custom theme using modern WordPress block editor APIs.", icon: Code },
+      { id: "pr3", title: "Security & Performance", description: "Security hardening, caching setup, CDN configuration, and Core Web Vitals optimization.", icon: ShieldCheck },
+      { id: "pr4", title: "Training & Handover", description: "Screen-recorded training so your team can manage the site confidently.", icon: Rocket },
     ],
     techStack: [
       {
         category: "WordPress Stack",
         technologies: [
-          { name: "WordPress (Latest)", icon: "Globe" }, { name: "PHP 8.x", icon: "Code" }, { name: "Custom Block Editor", icon: "Layout" }, { name: "WooCommerce", icon: "ShoppingCart" },
+          { name: "WordPress (Latest)", icon: Globe }, { name: "PHP 8.x", icon: Code }, { name: "Custom Block Editor", icon: Layout }, { name: "WooCommerce", icon: ShoppingCart },
         ],
       },
       {
         category: "Performance & Security",
         technologies: [
-          { name: "Cloudflare CDN", icon: "Globe" }, { name: "Redis Object Cache", icon: "Database" }, { name: "Wordfence Security", icon: "ShieldCheck" }, { name: "Kinsta / WP Engine", icon: "Server" },
+          { name: "Cloudflare CDN", icon: Globe }, { name: "Redis Object Cache", icon: Database }, { name: "Wordfence Security", icon: ShieldCheck }, { name: "Kinsta / WP Engine", icon: Server },
         ],
       },
     ],

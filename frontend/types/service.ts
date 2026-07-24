@@ -1,7 +1,4 @@
-import type { IconType } from "react-icons";
-import type { LucideIcon } from "lucide-react";
-
-export type AnyIcon = IconType | LucideIcon;
+export type AnyIcon = string;
 
 export interface ServiceProblem {
   id: string;

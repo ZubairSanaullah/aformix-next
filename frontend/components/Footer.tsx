@@ -19,7 +19,7 @@ const socialLinks = [
 
 const Footer: React.FC = () => {
   return (
-    <footer className="reveal pt-20 sm:pt-24 lg:pt-32 pb-12 sm:pb-16 border-t border-[var(--color-border)] relative overflow-hidden w-full flex justify-center" style={{ backgroundColor: "var(--color-surface)" }} aria-labelledby="footer-heading">
+    <footer className="reveal pt-20 sm:pt-24 lg:pt-32 pb-12 sm:pb-16 border-t border-[var(--color-border)] relative overflow-hidden w-full flex justify-center" style={{ backgroundColor: "var(--color-surface)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 lg:px-24 w-full">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] gap-10 lg:gap-8 mb-16 sm:mb-24">
           {/* Column 1: Logo, Company Info & Newsletter */}
