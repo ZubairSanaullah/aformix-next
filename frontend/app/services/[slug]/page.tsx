@@ -28,7 +28,6 @@ export async function generateMetadata({
   const { slug } = await params;
 
   const service = servicesData[slug];
-  console.log("SERVICE FEATURES:", service.features);
 
   if (!service) {
     return {};

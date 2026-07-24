@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import type { ServiceProcessStep } from "@/types/service";
 import { iconMap } from "@/lib/iconMap";
 import { Zap } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 interface ProcessTimelineProps {
   process: ServiceProcessStep[];
@@ -52,7 +53,7 @@ const ProcessTimeline: React.FC<ProcessTimelineProps> = ({ process }) => {
         {/* Desktop grid + Mobile vertical */}
         <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {process.map((step, index) => {
-            const Icon = iconMap[step.icon] || Zap;
+            const Icon: LucideIcon = iconMap[step.icon as keyof typeof iconMap] ?? Zap;
             return (
               <motion.div
                 key={step.id}
@@ -103,7 +104,7 @@ const ProcessTimeline: React.FC<ProcessTimelineProps> = ({ process }) => {
         {/* Mobile vertical timeline */}
         <div className="md:hidden max-w-lg mx-auto space-y-6">
           {process.map((step, index) => {
-            const Icon = step.icon;
+            const Icon: LucideIcon = iconMap[step.icon as keyof typeof iconMap] ?? Zap;
             return (
               <motion.div
                 key={step.id}

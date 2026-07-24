@@ -41,6 +41,7 @@ import {
   Users,
   Zap,
   Share2,
+  type LucideIcon,
 } from "lucide-react";
 
 export const iconMap = {
@@ -86,4 +87,4 @@ export const iconMap = {
   Users,
   Zap,
   Share2,
-};
+} satisfies Record<string, LucideIcon>;

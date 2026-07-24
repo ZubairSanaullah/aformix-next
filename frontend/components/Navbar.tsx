@@ -224,7 +224,7 @@ const Navbar: React.FC = () => {
                           )}
                           {link.name === 'Company' && (
                             <>
-                              <Link href="/about-us" className="p-3 hover:bg-[var(--color-glass)] rounded-xl transition-all duration-300 group/item flex gap-4 items-start">
+                              <Link href="/about" className="p-3 hover:bg-[var(--color-glass)] rounded-xl transition-all duration-300 group/item flex gap-4 items-start">
                                 <div className="w-10 h-10 rounded-lg bg-[var(--color-primary)]/10 text-[var(--color-primary)] flex items-center justify-center shrink-0 group-hover/item:scale-110 transition-transform">
                                   <Users size={20} />
                                 </div>
@@ -319,11 +319,11 @@ const Navbar: React.FC = () => {
                 </div>
               ) : (
                 <>
-                  <Link href="/login">
+                  {/* <Link href="/login">
                     <button className="btn-outline hidden lg:flex items-center gap-2 !py-2.5 !px-4 lg:!px-6 text-xs lg:text-sm cursor-pointer flex-shrink-0">
                       Login
                     </button>
-                  </Link>
+                  </Link> */}
                   <a href="#contact">
                     <button className="btn-primary hidden lg:flex items-center gap-2 !py-2.5 !px-4 lg:!px-6 text-xs lg:text-sm cursor-pointer flex-shrink-0">
                       Get Started <ArrowRight size={14} className="lg:w-4 lg:h-4" />
@@ -398,14 +398,14 @@ const Navbar: React.FC = () => {
             ))}
 
             <div className="h-px bg-[var(--color-border)] w-full my-2"></div>
-
+{/* 
             {!user && (
               <Link href="/login" onClick={() => setIsMobileMenuOpen(false)} className="block mb-2">
                 <button className="btn-outline w-full cursor-pointer text-sm py-2.5 flex items-center justify-center gap-2">
                   Login
                 </button>
               </Link>
-            )}
+            )} */}
 
             <Link href="#contact" onClick={() => setIsMobileMenuOpen(false)} className="block">
               <button className="btn-primary w-full cursor-pointer text-sm py-2.5 flex items-center justify-center gap-2">

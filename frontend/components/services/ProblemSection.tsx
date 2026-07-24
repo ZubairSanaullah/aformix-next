@@ -6,6 +6,7 @@ import type { ServiceProblem } from "@/types/service";
 import SectionBadge from "@/components/services/SectionBadge";
 import { fadeUp, scrollViewport } from "@/utils/animations";
 import { iconMap } from "@/lib/iconMap";
+import { AlertTriangle } from "lucide-react";
 
 interface ProblemSectionProps {
   problems: ServiceProblem[];
@@ -72,7 +73,7 @@ const ProblemSection: React.FC<ProblemSectionProps> = ({ problems }) => {
           }`}
         >
           {problems.map((problem, index) => {
-            const Icon = iconMap[problem.icon];
+            const Icon = iconMap[problem.icon as keyof typeof iconMap] ?? AlertTriangle;
 
             return (
               <motion.div

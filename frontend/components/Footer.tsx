@@ -67,7 +67,7 @@ const Footer: React.FC = () => {
             <h4 className="text-[var(--color-text)] font-black uppercase tracking-widest text-xs mb-6 sm:mb-10">Company</h4>
             <ul className="space-y-3 sm:space-y-5">
               {[
-                { label: "About Us", href: "/about-us" },
+                { label: "About Us", href: "/about" },
                 { label: "Blog", href: "/blog" },
                 { label: "Contact", href: "/#contact" },
                 { label: "Book a Meeting", href: "https://calendly.com/aformixtech/30min", target: "_blank", rel: "noopener noreferrer" },

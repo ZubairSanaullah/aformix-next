@@ -4,7 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import type { ServiceTechStack } from "@/types/service";
 import { iconMap } from "@/lib/iconMap";
-import { Zap } from "lucide-react";
+import { LucideIcon, Zap } from "lucide-react";
 
 interface TechnologyStackProps {
   techStack: ServiceTechStack[];
@@ -63,7 +63,7 @@ const TechnologyStack: React.FC<TechnologyStackProps> = ({ techStack }) => {
 
               <div className="flex flex-wrap justify-center gap-3">
                 {category.technologies.map((tech, tIdx) => {
-                  const Icon = iconMap[tech.icon] || Zap;
+                  const Icon: LucideIcon = iconMap[(tech.icon ?? "Zap") as keyof typeof iconMap] ?? Zap;
                   return (
                     <motion.div
                       key={tIdx}

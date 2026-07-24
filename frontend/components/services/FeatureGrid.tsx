@@ -56,7 +56,7 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({ features }) => {
           {features.map((feature) => {
             console.log("FEATURE DATA:", feature);
 
-            const Icon = iconMap[feature.icon] || Zap;
+            const Icon = iconMap[feature.icon as keyof typeof iconMap] ?? Zap;
 
             const isHovered = hoveredId === feature.id;
             return (
