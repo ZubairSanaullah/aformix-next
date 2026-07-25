@@ -1,40 +1,25 @@
 'use client';
 
-import type { Metadata } from "next";
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
-import HeroSection from '../components/Blog/HeroSection';
-import FeaturedArticles from '../components/Blog/FeaturedArticles';
-import SearchFiltering from '../components/Blog/SearchFiltering';
-import LatestArticles from '../components/Blog/LatestArticles';
-import TrendingTopics from '../components/Blog/TrendingTopics';
-import NewsletterSection from '../components/Blog/NewsletterSection';
-import useReveal from '../hooks/useReveal';
-import type { BlogArticle } from '../constants/blogData';
+import HeroSection from "./HeroSection";
+import FeaturedArticles from "./FeaturedArticles";
+import SearchFiltering from "./SearchFiltering";
+import LatestArticles from "./LatestArticles";
+import TrendingTopics from "./TrendingTopics";
+import NewsletterSection from "./NewsletterSection";
+import useReveal from "@/hooks/useReveal";
+import type { BlogArticle } from "@/constants/blogData";
 import Image from 'next/image';
 
-export const metadata: Metadata = {
-  title: "Blog | Aformix",
-  description:
-    "Explore web development, UI/UX, SEO, AI, and digital product insights from Aformix.",
-};
-
-export default function BlogPage() {
+export default function BlogClient() {
   const [selectedArticle, setSelectedArticle] = useState<BlogArticle | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
 
   useReveal();
-
-  // Scroll to top on mount
-  useEffect(() => {
-    export const metadata = {
-        title: "Blog - Aformix",
-        description: "Stay updated with the latest insights, trends, and news in technology, software development, and digital innovation. Explore our blog for expert articles, tutorials, and industry updates.",
-    };
-  }, []);
 
   // Handle article modal
   useEffect(() => {
@@ -184,8 +169,8 @@ export default function BlogPage() {
                     <Image
                       src={selectedArticle.author.avatar}
                       alt={selectedArticle.author.name}
-                      width={1200}
-                      height={600} 
+                      width={48}
+                      height={48}
                       className="w-12 h-12 rounded-full object-cover border-2 border-emerald-500"
                     />
                     <div>
@@ -277,5 +262,3 @@ export default function BlogPage() {
     </>
   );
 };
-
-export default BlogPage;

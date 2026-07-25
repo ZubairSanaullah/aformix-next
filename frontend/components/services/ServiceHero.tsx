@@ -6,7 +6,14 @@ import { ArrowRight, ChevronDown, Zap, CheckCircle2, Cpu } from "lucide-react";
 import Link from "next/link";
 import type { HeroVariant } from "@/constants/serviceNav";
 import { heroStagger, heroItem } from "@/utils/animations";
-import ServiceHeroIllustration from "@/components/services/ServiceHeroIllustration";
+import dynamic from "next/dynamic";
+
+const ServiceHeroIllustration = dynamic(
+  () => import("@/components/services/ServiceHeroIllustration"),
+  {
+    ssr: false,
+  }
+);
 import gsap from "gsap";
 
 interface ServiceHeroProps {
@@ -25,11 +32,6 @@ const ParticleField: React.FC = () => {
     { id: 3, x: 40, y: 35, size: 1.5, duration: 18, delay: 2, opacity: 0.25 },
     { id: 4, x: 60, y: 80, size: 2.5, duration: 22, delay: 5, opacity: 0.18 },
     { id: 5, x: 75, y: 25, size: 2, duration: 26, delay: 4, opacity: 0.22 },
-    { id: 6, x: 90, y: 60, size: 3, duration: 19, delay: 6, opacity: 0.12 },
-    { id: 7, x: 15, y: 85, size: 1.8, duration: 23, delay: 2, opacity: 0.2 },
-    { id: 8, x: 50, y: 15, size: 2.2, duration: 21, delay: 7, opacity: 0.16 },
-    { id: 9, x: 80, y: 75, size: 1.5, duration: 25, delay: 1, opacity: 0.24 },
-    { id: 10, x: 35, y: 55, size: 2.5, duration: 20, delay: 4, opacity: 0.18 },
   ];
   
   return (

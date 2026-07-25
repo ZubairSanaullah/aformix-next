@@ -14,8 +14,6 @@ const ServiceHeroIllustration: React.FC<ServiceHeroIllustrationProps> = ({ varia
       <div className="glowing-rings-container" aria-hidden="true">
         <div className="glowing-rings-inner">
           <div className="glowing-ring glowing-ring--1" />
-          <div className="glowing-ring glowing-ring--2" />
-          <div className="glowing-ring glowing-ring--3" />
         </div>
       </div>
 
@@ -30,12 +28,17 @@ const ServiceHeroIllustration: React.FC<ServiceHeroIllustrationProps> = ({ varia
             loop
             muted
             playsInline
+            preload="metadata"
+            aria-hidden="true"
+            tabIndex={-1}
+            poster="/images/orbit-poster.webp"
           />
         </div>
       </div>
 
       {/* SVG Connection Nodes & Data Streams */}
-      <svg className="workflow-connections-svg" viewBox="0 0 500 500" aria-hidden="true">
+      
+      {/* <svg className="workflow-connections-svg" viewBox="0 0 500 500" aria-hidden="true">
         <defs>
           <linearGradient id="lineGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#27b990" stopOpacity="0.8" />
@@ -46,7 +49,7 @@ const ServiceHeroIllustration: React.FC<ServiceHeroIllustrationProps> = ({ varia
             <stop offset="100%" stopColor="#27b990" stopOpacity="0.2" />
           </linearGradient>
         </defs>
-        {/* Path 1: From Workflow Card to Orbit */}
+        
         <path
           className="workflow-connector-line"
           d="M 90 310 C 120 280, 160 250, 210 240"
@@ -55,7 +58,7 @@ const ServiceHeroIllustration: React.FC<ServiceHeroIllustrationProps> = ({ varia
           strokeWidth="1.5"
           strokeDasharray="8 6"
         />
-        {/* Path 2: From Network Status to Orbit */}
+        
         <path
           className="workflow-connector-line"
           d="M 400 130 C 370 170, 340 200, 290 220"
@@ -64,7 +67,7 @@ const ServiceHeroIllustration: React.FC<ServiceHeroIllustrationProps> = ({ varia
           strokeWidth="1.5"
           strokeDasharray="8 6"
         />
-        {/* Path 3: From Stats Card to Orbit */}
+        
         <path
           className="workflow-connector-line"
           d="M 390 380 C 340 370, 300 340, 260 280"
@@ -73,7 +76,7 @@ const ServiceHeroIllustration: React.FC<ServiceHeroIllustrationProps> = ({ varia
           strokeWidth="1.5"
           strokeDasharray="8 6"
         />
-      </svg>
+      </svg> */}
 
       {/* Floating UI Elements / Glassmorphism Cards */}
 

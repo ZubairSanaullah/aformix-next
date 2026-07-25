@@ -54,7 +54,6 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({ features }) => {
           className={`grid gap-6 ${gridCols}`}
         >
           {features.map((feature) => {
-            console.log("FEATURE DATA:", feature);
 
             const Icon = iconMap[feature.icon as keyof typeof iconMap] ?? Zap;
 

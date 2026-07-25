@@ -37,7 +37,7 @@
 .hero-bg-glow {
   position: absolute;
   border-radius: 50%;
-  filter: blur(140px);
+  filter: blur(70px);
   opacity: 0.15;
   z-index: 1;
   pointer-events: none;
@@ -275,7 +275,7 @@ html.light .hero-headline-gradient {
   font-family: var(--font-outfit), sans-serif;
   font-size: 1.1rem;
   line-height: 1.75;
-  color: #94a3b8;
+  color: #cbd5e1;
   max-width: 580px;
 }
 
@@ -512,7 +512,7 @@ html.light .hero-headline-gradient {
   animation: ring-spin-cw 40s linear infinite;
 }
 
-.glowing-ring--2 {
+/* .glowing-ring--2 {
   width: 80%;
   height: 80%;
   border-color: rgba(104, 75, 158, 0.1);
@@ -525,7 +525,7 @@ html.light .hero-headline-gradient {
   height: 60%;
   border-color: rgba(0, 212, 255, 0.12);
   animation: ring-spin-cw 20s linear infinite;
-}
+} */
 
 @keyframes ring-spin-cw {
   0% {
@@ -537,7 +537,7 @@ html.light .hero-headline-gradient {
   }
 }
 
-@keyframes ring-spin-ccw {
+/* @keyframes ring-spin-ccw {
   0% {
     transform: rotate(0deg);
   }
@@ -545,7 +545,7 @@ html.light .hero-headline-gradient {
   100% {
     transform: rotate(-360deg);
   }
-}
+} */
 
 /* Floating UI Cards setup with mouse parallax binding */
 .floating-card-ui {
@@ -558,7 +558,7 @@ html.light .hero-headline-gradient {
   background: rgba(15, 23, 42, 0.65);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow:
-    0 20px 40px rgba(0, 0, 0, 0.35),
+    0 10px 25px rgba(0, 0, 0, 0.35),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
   user-select: none;
@@ -567,7 +567,7 @@ html.light .hero-headline-gradient {
 .floating-card-ui:hover {
   border-color: rgba(39, 185, 144, 0.4);
   box-shadow:
-    0 30px 60px rgba(0, 0, 0, 0.6),
+    0 10px 25px rgba(0, 0, 0, 0.6),
     0 0 25px rgba(39, 185, 144, 0.25);
   z-index: 20;
 }
@@ -577,48 +577,21 @@ html.light .hero-headline-gradient {
   top: 48%;
   left: -20px;
   width: 215px;
-  transform: translate3d(calc(var(--mouse-x, 0) * -45px),
-      calc(var(--mouse-y, 0) * -45px),
-      30px) rotateX(calc(var(--mouse-y, 0) * -15deg)) rotateY(calc(var(--mouse-x, 0) * 15deg));
-  transition: transform 0.15s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.floating-card-ui--1:hover {
-  transform: translate3d(calc(var(--mouse-x, 0) * -45px),
-      calc((var(--mouse-y, 0) * -45px) - 8px),
-      30px) rotateX(calc(var(--mouse-y, 0) * -15deg)) rotateY(calc(var(--mouse-x, 0) * 15deg)) scale(1.02);
+  transform: translate3d(0, 0, 30px);
 }
 
 .floating-card-ui--2 {
   top: 10%;
   right: -10px;
   width: 230px;
-  transform: translate3d(calc(var(--mouse-x, 0) * 40px),
-      calc(var(--mouse-y, 0) * 40px),
-      50px) rotateX(calc(var(--mouse-y, 0) * -18deg)) rotateY(calc(var(--mouse-x, 0) * 18deg));
-  transition: transform 0.15s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.floating-card-ui--2:hover {
-  transform: translate3d(calc(var(--mouse-x, 0) * 40px),
-      calc((var(--mouse-y, 0) * 40px) - 8px),
-      50px) rotateX(calc(var(--mouse-y, 0) * -18deg)) rotateY(calc(var(--mouse-x, 0) * 18deg)) scale(1.02);
+  transform: translate3d(0, 0, 50px);
 }
 
 .floating-card-ui--3 {
   bottom: 8%;
   right: 15px;
   width: 190px;
-  transform: translate3d(calc(var(--mouse-x, 0) * -30px),
-      calc(var(--mouse-y, 0) * -30px),
-      15px) rotateX(calc(var(--mouse-y, 0) * -10deg)) rotateY(calc(var(--mouse-x, 0) * 10deg));
-  transition: transform 0.15s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.floating-card-ui--3:hover {
-  transform: translate3d(calc(var(--mouse-x, 0) * -30px),
-      calc((var(--mouse-y, 0) * -30px) - 8px),
-      15px) rotateX(calc(var(--mouse-y, 0) * -10deg)) rotateY(calc(var(--mouse-x, 0) * 10deg)) scale(1.02);
+  transform: translate3d(0, 0, 15px);
 }
 
 /* ── Floating Card Elements Style ── */
@@ -637,7 +610,7 @@ html.light .hero-headline-gradient {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #94a3b8;
+  color: #cbd5e1;
   flex: 1;
 }
 
@@ -754,7 +727,7 @@ html.light .hero-headline-gradient {
 .agent-status-message {
   font-family: var(--font-outfit), sans-serif;
   font-size: 0.7rem;
-  color: #94a3b8;
+  color: #cbd5e1;
 }
 
 /* Card 3: Metrics layout */
@@ -767,7 +740,7 @@ html.light .hero-headline-gradient {
 .metric-label {
   font-family: var(--font-outfit), sans-serif;
   font-size: 0.7rem;
-  color: #94a3b8;
+  color: #cbd5e1;
   font-weight: 500;
 }
 
@@ -885,7 +858,7 @@ html.light .floating-card-ui:hover {
 }
 
 html.light .workflow-step {
-  color: #94a3b8;
+  color: #cbd5e1;
 }
 
 html.light .workflow-step.active {
