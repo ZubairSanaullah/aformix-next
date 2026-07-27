@@ -129,8 +129,8 @@ export const metadata: Metadata = {
   },
 
   verification: {
-    // google: "1SX6bgCrjyuuivpNvgSWGp13TM8anJh8V1PLt4AZ338",
-    google: "NOT_ADDED",
+    google: "1SX6bgCrjyuuivpNvgSWGp13TM8anJh8V1PLt4AZ338",
+    // google: "NOT_ADDED",
     // bing: "1SX6bgCrjyuuivpNvgSWGp13TM8anJh8V1PLt4AZ338",
     // yandex: "YANDEX_VERIFICATION_CODE",
   },
