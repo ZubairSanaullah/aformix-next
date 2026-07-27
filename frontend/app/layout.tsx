@@ -1,5 +1,6 @@
 import "./globals.css";
 import { Outfit } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 import type { Metadata, Viewport } from "next";
 
@@ -192,6 +193,10 @@ export default function RootLayout({
           <WhatsAppBtn />
           <OrbitAI />
         </Providers>
+        
+        <GoogleAnalytics
+          gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID!}
+        />
       </body>
     </html>
   );
