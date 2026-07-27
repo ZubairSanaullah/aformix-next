@@ -8,6 +8,7 @@ export default function StructuredData() {
         name: "Aformix",
         url: "https://www.aformix.com",
         logo: "https://www.aformix.com/android-chrome-512.png",
+        image: "https://www.aformix.com/android-chrome-512.png",
         description:
           "Aformix is a modern software agency specializing in web development, mobile app development, UI/UX design, WordPress websites, landing pages, and SEO.",
           contactPoint: {
