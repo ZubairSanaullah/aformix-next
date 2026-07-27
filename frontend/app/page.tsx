@@ -4,7 +4,7 @@ import HomeContent from "@/components/HomeContent";
 export const metadata = generateSEO({
   title: "Modern Web & App Development Agency",
   description:
-    "Aformix helps startups and businesses build high-performance websites, web applications, mobile apps, UI/UX designs, landing pages, WordPress websites, and SEO solutions.",
+    "Aformix builds high-performance websites, mobile apps, UI/UX designs, WordPress websites, landing pages, and SEO solutions for modern businesses.",
   path: "/",
 });
 
