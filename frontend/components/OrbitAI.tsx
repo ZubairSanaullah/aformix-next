@@ -201,7 +201,7 @@ const OrbitAI: React.FC = () => {
       : "bg-white/10 text-white",
     tabInactive: isLight
       ? "bg-slate-100 text-slate-700"
-      : "bg-white/5 text-slate-300",
+      : "bg-white/5 text-slate-400",
     panelHeading: isLight
       ? "border-slate-200/30 bg-white/90 text-slate-900"
       : "border-white/10 text-white",
@@ -428,7 +428,7 @@ const OrbitAI: React.FC = () => {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: 10 }}
                             onClick={scrollToBottom}
-                            className={`absolute bottom-4 left-1/2 -translate-x-1/2 p-2 rounded-full shadow-lg z-10 cursor-pointer ${isLight ? "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50" : "bg-slate-800 text-slate-300 border border-slate-600 hover:bg-slate-700"}`}
+                            className={`absolute bottom-4 left-1/2 -translate-x-1/2 p-2 rounded-full shadow-lg z-10 cursor-pointer ${isLight ? "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50" : "bg-slate-800 text-slate-400 border border-slate-600 hover:bg-slate-700"}`}
                             aria-label="Scroll to bottom"
                           >
                             <ChevronDown size={20} />
@@ -547,13 +547,13 @@ const OrbitAI: React.FC = () => {
               <h3 className={`text-lg font-semibold mb-2 ${isLight ? "text-slate-900" : "text-white"}`}>
                 Close Orbit AI?
               </h3>
-              <p className={`text-sm mb-6 ${isLight ? "text-slate-600" : "text-slate-300"}`}>
+              <p className={`text-sm mb-6 ${isLight ? "text-slate-600" : "text-slate-400"}`}>
                 Are you sure you want to close the Orbit AI widget?
               </p>
               <div className="flex justify-end gap-3">
                 <button
                   onClick={cancelClose}
-                  className={`px-4 py-2 text-sm font-medium rounded-full transition cursor-pointer ${isLight ? "text-slate-600 hover:bg-slate-100" : "text-slate-300 hover:bg-white/10"}`}
+                  className={`px-4 py-2 text-sm font-medium rounded-full transition cursor-pointer ${isLight ? "text-slate-600 hover:bg-slate-100" : "text-slate-400 hover:bg-white/10"}`}
                 >
                   Cancel
                 </button>

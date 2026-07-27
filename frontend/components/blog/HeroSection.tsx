@@ -245,7 +245,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onExplore, onSubscribe }) => 
                   </h3>
                   
                   {/* Meta Info */}
-                  <div className="flex items-center justify-between text-[10px] text-slate-300">
+                  <div className="flex items-center justify-between text-[10px] text-slate-400">
                     <span>{article.author.name}</span>
                     <span>{article.readingTime}</span>
                   </div>
