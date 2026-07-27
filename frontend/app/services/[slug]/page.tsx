@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 
 import { servicesData } from "@/constants/servicesData";
 
+import { generateSEO } from "@/lib/seo";
+
 import ServiceHero from "@/components/services/ServiceHero";
 import ProblemSection from "@/components/services/ProblemSection";
 import SolutionSection from "@/components/services/SolutionSection";
@@ -30,14 +32,17 @@ export async function generateMetadata({
   const service = servicesData[slug];
 
   if (!service) {
-    return {};
+    notFound();
   }
 
-  return {
+  return generateSEO({
     title: service.seo.title,
     description: service.seo.description,
-    keywords: service.seo.keywords,
-  };
+    path: `/services/${slug}`,
+    keywords: service.seo.keywords
+      ? service.seo.keywords.split(",").map((keyword) => keyword.trim()).filter(Boolean)
+      : [],
+  });
 }
 
 export default async function ServicePage({

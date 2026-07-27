@@ -44,7 +44,25 @@ const useReveal = (selector = ".reveal", rootMargin = "0px 0px -8% 0px", trigger
       });
     });
 
-    return () => observer.disconnect();
+    // Fallback: if for any reason IntersectionObserver didn't run (hydration edge-cases),
+    // ensure reveal elements are visible after a short delay to avoid blank pages.
+    const fallbackTimer = window.setTimeout(() => {
+      elements.forEach((el) => {
+        if (!el.classList.contains("reveal-visible")) {
+          el.classList.add("reveal-visible");
+          try {
+            observer.unobserve(el);
+          } catch (e) {
+            // ignore
+          }
+        }
+      });
+    }, 700);
+
+    return () => {
+      observer.disconnect();
+      clearTimeout(fallbackTimer);
+    };
   }, [selector, rootMargin, pathname, trigger]);
 };
 

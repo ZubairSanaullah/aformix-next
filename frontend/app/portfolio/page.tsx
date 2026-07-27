@@ -2,7 +2,7 @@ import { generateSEO } from "@/lib/seo";
 import Portfolio from "@/components/Portfolio";
 
 export const metadata = generateSEO({
-  title: "Portfolio",
+  title: "Our Portfolio | Aformix",
   description:
     "Browse our portfolio of modern websites, applications, and UI/UX projects.",
   path: "/portfolio",

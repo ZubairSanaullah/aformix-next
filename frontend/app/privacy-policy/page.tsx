@@ -1,12 +1,13 @@
-import type { Metadata } from "next";
-import PrivacyPolicy from "./PrivacyPolicy";
+import { generateSEO } from "@/lib/seo";
+import PrivacyPolicyPage from "./PrivacyPolicy";
 
-export const metadata: Metadata = {
+export const metadata = generateSEO({
   title: "Privacy Policy | Aformix",
   description:
-    "Learn how Aformix collects, uses and protects your personal information.",
-};
+    "Learn how Aformix collects, uses, and protects your personal information.",
+  path: "/privacy-policy",
+});
 
-export default function Page() {
-  return <PrivacyPolicy />;
+export default function PrivacyPolicyRoutePage() {
+  return <PrivacyPolicyPage />;
 }

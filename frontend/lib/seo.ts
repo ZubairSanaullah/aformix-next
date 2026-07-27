@@ -22,10 +22,20 @@ export function generateSEO({
   const url = `${SITE_URL}${path}`;
 
   return {
+    metadataBase: new URL(SITE_URL),
+
     title,
     description,
 
-    keywords: [...DEFAULT_KEYWORDS, ...keywords],
+    robots: {
+      index: true,
+      follow: true,
+    },
+
+    keywords: [...new Set([
+        ...DEFAULT_KEYWORDS,
+        ...keywords
+    ])],
 
     alternates: {
       canonical: url,
@@ -53,6 +63,9 @@ export function generateSEO({
       title,
       description,
       images: [DEFAULT_OG_IMAGE],
-    },
+
+      creator: "@aformix",
+      site: "@aformix",
+    }
   };
 }

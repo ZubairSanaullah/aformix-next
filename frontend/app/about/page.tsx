@@ -2,15 +2,14 @@ import About from "@/components/About";
 import { generateSEO } from "@/lib/seo";
 
 export const metadata = generateSEO({
-  title: "About Us",
+  title: "About Aformix | Our Story & Mission",
   description:
     "Learn about Aformix, our mission, expertise, and commitment to building modern websites and digital experiences.",
   path: "/about",
   keywords: [
-    "Aformix",
-    "About",
-    "Web Development",
-    "Agency",
+    "About Aformix",
+    "Web Development Company",
+    "Digital Agency",
   ],
 });
 

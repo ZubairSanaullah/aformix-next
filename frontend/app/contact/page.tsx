@@ -2,9 +2,9 @@ import { generateSEO } from "@/lib/seo";
 import Contact from "@/components/Contact";
 
 export const metadata = generateSEO({
-  title: "Contact",
+  title: "Contact Aformix | Start Your Project Today",
   description:
-    "Get in touch with Aformix to discuss your next project.",
+    "Contact Aformix to discuss web development, mobile apps, UI/UX design, SEO, and WordPress solutions for your business.",
   path: "/contact",
 });
 

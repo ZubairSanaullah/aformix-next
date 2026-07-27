@@ -1,12 +1,13 @@
-import type { Metadata } from "next";
-import TermsOfService from "./TermsOfService";
+import { generateSEO } from "@/lib/seo";
+import TermsOfServicePage from "./TermsOfService";
 
-export const metadata: Metadata = {
+export const metadata = generateSEO({
   title: "Terms of Service | Aformix",
   description:
-    "Read the terms governing Aformix web development, UI/UX, SEO and digital services.",
-};
+    "Read the terms governing Aformix web development, UI/UX, SEO, and digital services.",
+  path: "/terms-of-service",
+});
 
-export default function Page() {
-  return <TermsOfService />;
+export default function TermsOfServiceRoutePage() {
+  return <TermsOfServicePage />;
 }

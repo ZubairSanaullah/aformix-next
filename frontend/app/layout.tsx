@@ -13,6 +13,7 @@ import Footer from "@/components/Footer";
 import CookieConsent from "@/components/CookieConsent";
 import WhatsAppBtn from "@/components/WhatsAppBtn";
 import OrbitAI from "@/components/OrbitAI";
+import RevealInitializer from "@/components/RevealInitializer";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -129,10 +130,11 @@ export const metadata: Metadata = {
   },
 
   verification: {
-    google: "1SX6bgCrjyuuivpNvgSWGp13TM8anJh8V1PLt4AZ338",
-    // google: "NOT_ADDED",
-    // bing: "1SX6bgCrjyuuivpNvgSWGp13TM8anJh8V1PLt4AZ338",
-    // yandex: "YANDEX_VERIFICATION_CODE",
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+    other: {
+      "msvalidate.01":
+        process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION ?? "",
+    },
   },
 
   openGraph: {
@@ -183,6 +185,7 @@ export default function RootLayout({
 
         <Providers>
           <StructuredData />
+          <RevealInitializer />
           <Navbar />
 
           <main id="main-content">{children}</main>
