@@ -4,16 +4,7 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 
 import type { Metadata, Viewport } from "next";
 
-import StructuredData from "@/components/StructuredData";
-
 import Providers from "./providers";
-
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import CookieConsent from "@/components/CookieConsent";
-import WhatsAppBtn from "@/components/WhatsAppBtn";
-import OrbitAI from "@/components/OrbitAI";
-import RevealInitializer from "@/components/RevealInitializer";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -177,24 +168,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" data-scroll-behavior="smooth">
       <body className={`${outfit.variable} antialiased`}>
         <a href="#main-content" className="skip-link">
           Skip to main content
         </a>
 
         <Providers>
-          <StructuredData />
-          <RevealInitializer />
-          <Navbar />
-
-          <main id="main-content">{children}</main>
-
-          <Footer />
-
-          <CookieConsent />
-          <WhatsAppBtn />
-          <OrbitAI />
+          {children}
         </Providers>
         
         <GoogleAnalytics
