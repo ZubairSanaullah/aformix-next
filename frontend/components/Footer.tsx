@@ -68,6 +68,7 @@ const Footer: React.FC = () => {
             <ul className="space-y-3 sm:space-y-5">
               {[
                 { label: "About Us", href: "/about" },
+                { label: "Resources", href: "/resources" },
                 { label: "Blog", href: "/blog" },
                 { label: "Contact", href: "/#contact" },
                 { label: "Book a Meeting", href: "https://calendly.com/aformixtech/30min", target: "_blank", rel: "noopener noreferrer" },

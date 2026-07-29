@@ -1,23 +1,16 @@
 import type { MetadataRoute } from "next";
+import { getAllResources } from "@/lib/resources";
 
 const baseUrl = "https://www.aformix.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const routes = [
-    "",
-    // Future pages
-    // "/about-us",
-    // "/services",
-    // "/blog",
-    // "/privacy-policy",
-    // "/terms-of-service",
-    // "/contact",
-  ];
+  const resources = getAllResources();
+  const routes = ["", "/resources", ...resources.map((resource) => `/resources/${resource.slug}`)];
 
   return routes.map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
-    changeFrequency: route === "" ? "weekly" : "monthly",
-    priority: route === "" ? 1 : 0.8,
+    changeFrequency: route === "" ? "weekly" : route === "/resources" ? "monthly" : "monthly",
+    priority: route === "" ? 1 : route === "/resources" ? 0.9 : 0.8,
   }));
 }

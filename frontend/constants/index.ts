@@ -3,6 +3,7 @@ export const navLinks = [
   { name: "Products", href: "#products" },
   { name: "Services", href: "#services" },
   { name: "Company", href: "#company" },
+  { name: "Resources", href: "/resources" },
   { name: "Pricing", href: "#pricing" },
   { name: "Contact", href: "#contact" },
   { name: "Privacy", href: "/privacy-policy" },
