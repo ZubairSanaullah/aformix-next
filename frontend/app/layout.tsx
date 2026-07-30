@@ -1,10 +1,13 @@
 import "./globals.css";
-import { Outfit } from "next/font/google";
+import { Outfit, Geist } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
 
 import type { Metadata, Viewport } from "next";
 
 import Providers from "./providers";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -168,7 +171,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" data-scroll-behavior="smooth">
+    <html lang="en" data-scroll-behavior="smooth" className={cn("font-sans", geist.variable)}>
       <body className={`${outfit.variable} antialiased`}>
         <a href="#main-content" className="skip-link">
           Skip to main content

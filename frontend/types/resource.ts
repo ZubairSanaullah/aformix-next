@@ -1,32 +1,57 @@
-export type ResourceCategory =
-  | "SEO"
-  | "Web Design"
-  | "Development"
-  | "UI/UX"
-  | "WordPress"
-  | "AI"
-  | "Marketing"
-  | "Performance"
-  | "Accessibility"
-  | "Business Growth";
+export interface ResourceFAQ {
+  question: string;
+  answer: string;
+}
+
+export type ResourceType =
+  | "Guide"
+  | "Checklist"
+  | "Template"
+  | "Case Study"
+  | "Toolkit"
+  | "Prompt Pack";
+
+export type ResourceLevel =
+  | "Beginner"
+  | "Intermediate"
+  | "Advanced";
 
 export interface Resource {
   title: string;
   slug: string;
-  category: ResourceCategory;
+
+  category: string;
+  type: ResourceType;
+  level: ResourceLevel;
+
   description: string;
-  image: string;
-  pdf: string;
-  pages: number;
-  readingTime: string;
-  updatedAt: string;
-  publishedAt: string;
-  keywords: string[];
-  featured?: boolean;
-  relatedResources?: string[];
   overview: string;
-  learnings: string[];
-  audience: string[];
   whyItExists: string;
-  faqs?: Array<{ question: string; answer: string }>;
+
+  coverImage: string;
+  socialImage?: string;
+
+  previewImage: string;
+
+  pdf: string;
+
+  pages: number;
+  fileSize: string;
+  readingTime: number;
+
+  publishedAt: string;
+  updatedAt: string;
+  version: string;
+
+  featured: boolean;
+
+  keywords: string[];
+
+  audience: string[];
+
+  learnings: string[];
+
+  relatedResources: string[];
+
+  faqs?: ResourceFAQ[];
 }

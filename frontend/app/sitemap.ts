@@ -9,7 +9,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return routes.map((route) => ({
     url: `${baseUrl}${route}`,
-    lastModified: new Date(),
+    lastModified:
+      route.startsWith("/resources/")
+        ? resources.find(
+          (resource) => `/resources/${resource.slug}` === route
+        )?.updatedAt
+        : new Date(),
     changeFrequency: route === "" ? "weekly" : route === "/resources" ? "monthly" : "monthly",
     priority: route === "" ? 1 : route === "/resources" ? 0.9 : 0.8,
   }));
