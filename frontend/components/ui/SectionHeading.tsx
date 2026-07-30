@@ -1,42 +1,39 @@
 import type { ReactNode } from "react";
 
 interface SectionHeadingProps {
-  title: ReactNode;
-  description?: ReactNode;
-  badge?: ReactNode;
-  className?: string;
-  align?: "left" | "center" | "right";
+    title: string;
+    description?: string;
+    icon?: ReactNode;
+    className?: string;
 }
 
 export default function SectionHeading({
-  title,
-  description,
-  badge,
-  className = "",
-  align = "left",
+    title,
+    description,
+    icon,
+    className = "",
 }: SectionHeadingProps) {
-  const alignmentClass =
-    align === "center"
-      ? "text-center mx-auto"
-      : align === "right"
-      ? "text-right ml-auto"
-      : "text-left";
+    return (
+        <div className={className}>
+            <div className="flex items-center gap-4">
+                {icon && (
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--color-primary)]/10 text-[var(--color-primary)]">
+                        {icon}
+                    </div>
+                )}
 
-  return (
-    <div className={`space-y-2 ${alignmentClass} ${className}`}>
-      {badge && (
-        <div className="inline-flex items-center rounded-full border border-[var(--color-primary)]/20 bg-[var(--color-primary)]/10 px-3 py-1 text-xs font-medium text-[var(--color-primary)]">
-          {badge}
+                <div>
+                    <h2 className="text-2xl font-semibold text-[var(--color-text)]">
+                        {title}
+                    </h2>
+
+                    {description && (
+                        <p className="mt-2 text-[var(--color-text-muted)] leading-7">
+                            {description}
+                        </p>
+                    )}
+                </div>
+            </div>
         </div>
-      )}
-      <h2 className="text-2xl font-bold tracking-tight text-[var(--color-text)] sm:text-3xl">
-        {title}
-      </h2>
-      {description && (
-        <p className="text-base text-[var(--color-text-muted)] leading-relaxed">
-          {description}
-        </p>
-      )}
-    </div>
-  );
+    );
 }
