@@ -283,6 +283,36 @@ html.light .glass-effect {
   background-clip: padding-box;
 }
 
+<<<<<<< HEAD
+=======
+html.light .text-white {
+  color: var(--color-text) !important;
+}
+
+html.light .text-slate-400,
+html.light .text-slate-300 {
+  color: var(--color-text-muted) !important;
+}
+
+html.light .bg-slate-950,
+html.light .bg-slate-950\/50,
+html.light .bg-slate-950\/70,
+html.light .bg-slate-950\/75,
+html.light .bg-slate-950\/80,
+html.light .bg-slate-950\/85,
+html.light .bg-slate-950\/90,
+html.light .bg-slate-950\/95 {
+  background-color: var(--color-bg) !important;
+}
+
+html.light .bg-slate-900,
+html.light .bg-slate-900\/70,
+html.light .bg-slate-900\/80,
+html.light .bg-slate-900\/90 {
+  background-color: var(--color-surface) !important;
+}
+
+>>>>>>> da515907fea760fe2ecf7855489aaded52e1be30
 html.light .service-card-description-panel {
   background: rgba(255, 255, 255, 0.96);
   color: var(--color-text);
