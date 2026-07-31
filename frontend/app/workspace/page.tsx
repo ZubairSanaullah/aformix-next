@@ -1,13 +1,35 @@
-export default function WorkspaceHomePage() {
-  return (
-    <main className="p-8">
-      <h1 className="text-3xl font-bold">
-        Workspace Dashboard
-      </h1>
+import DashboardHero from "@/components/dashboard/DashboardHero";
+import StatsSection from "@/components/dashboard/StatsSection";
+import AnalyticsSection from "@/components/dashboard/AnalyticsSection";
+import QuickActionsSection from "@/components/dashboard/QuickActionsSection";
+import ActivitySection from "@/components/dashboard/ActivitySection";
+import AIInsightsSection from "@/components/dashboard/AIInsightsSection";
 
-      <p className="mt-2 text-gray-500">
-        Authentication setup is in progress...
-      </p>
-    </main>
+export default function WorkspacePage() {
+  return (
+    <div className="space-y-10 py-8">
+
+      {/* Hero */}
+      <DashboardHero />
+
+
+      {/* Stats */}
+      <StatsSection />
+
+
+      {/* Analytics */}
+      <AnalyticsSection />
+
+
+      {/* Quick Actions */}
+      <QuickActionsSection />
+
+      {/* Recent Activity */}
+      <ActivitySection />
+
+      {/* AI Insights */}
+      <AIInsightsSection />
+
+    </div>
   );
 }

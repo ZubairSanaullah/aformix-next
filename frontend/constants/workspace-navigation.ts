@@ -16,68 +16,93 @@ import {
 
 export const workspaceNavigation = [
   {
-    title: "Dashboard",
-    href: "/workspace",
-    icon: LayoutDashboard,
+    title: "Main",
+    items: [
+      {
+        title: "Dashboard",
+        href: "/workspace",
+        icon: LayoutDashboard,
+      },
+    ],
   },
   {
-    title: "Projects",
-    href: "/workspace/projects",
-    icon: FolderKanban,
+    title: "Workspace",
+    items: [
+      {
+        title: "Projects",
+        href: "/workspace/projects",
+        icon: FolderKanban,
+      },
+      {
+        title: "Tasks",
+        href: "/workspace/tasks",
+        icon: CheckSquare,
+      },
+      {
+        title: "CRM",
+        href: "/workspace/crm",
+        icon: Users,
+      },
+      {
+        title: "Scheduler",
+        href: "/workspace/scheduler",
+        icon: CalendarDays,
+      },
+    ],
   },
   {
-    title: "Blog CMS",
-    href: "/workspace/blog",
-    icon: FileText,
+    title: "Content",
+    items: [
+      {
+        title: "Blog CMS",
+        href: "/workspace/blog",
+        icon: FileText,
+      },
+      {
+        title: "Portfolio",
+        href: "/workspace/portfolio",
+        icon: Briefcase,
+      },
+      {
+        title: "Assets",
+        href: "/workspace/assets",
+        icon: FolderOpen,
+      },
+      {
+        title: "Knowledge Base",
+        href: "/workspace/knowledge",
+        icon: BookOpen,
+      },
+      {
+        title: "SEO",
+        href: "/workspace/seo",
+        icon: Search,
+      },
+    ],
   },
   {
-    title: "Portfolio",
-    href: "/workspace/portfolio",
-    icon: Briefcase,
+    title: "Business",
+    items: [
+      {
+        title: "Analytics",
+        href: "/workspace/analytics",
+        icon: BarChart3,
+      },
+      {
+        title: "Finance",
+        href: "/workspace/finance",
+        icon: Wallet,
+      },
+    ],
   },
   {
-    title: "CRM",
-    href: "/workspace/crm",
-    icon: Users,
-  },
-  {
-    title: "Tasks",
-    href: "/workspace/tasks",
-    icon: CheckSquare,
-  },
-  {
-    title: "Scheduler",
-    href: "/workspace/scheduler",
-    icon: CalendarDays,
-  },
-  {
-    title: "SEO",
-    href: "/workspace/seo",
-    icon: Search,
-  },
-  {
-    title: "Finance",
-    href: "/workspace/finance",
-    icon: Wallet,
-  },
-  {
-    title: "Assets",
-    href: "/workspace/assets",
-    icon: FolderOpen,
-  },
-  {
-    title: "Knowledge Base",
-    href: "/workspace/knowledge",
-    icon: BookOpen,
-  },
-  {
-    title: "Analytics",
-    href: "/workspace/analytics",
-    icon: BarChart3,
-  },
-  {
-    title: "Settings",
-    href: "/workspace/settings",
-    icon: Settings,
+    title: "System",
+    items: [
+      {
+        title: "Settings",
+        href: "/workspace/settings",
+        icon: Settings,
+      },
+    ],
   },
 ];
