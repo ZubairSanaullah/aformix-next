@@ -1,0 +1,6 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "../styles/design-system.css";
+@import "../styles/hero.css";
+@import "../styles/loading.css";
+@import "../styles/error.css";
