@@ -23,13 +23,13 @@ export default function ResourcesClient() {
   const [sortBy, setSortBy] = useState("newest");
 
   const resources = useMemo(() => {
-  const filtered = getFilteredResources(activeCategory);
+    const filtered = getFilteredResources(activeCategory);
 
-  const normalizedQuery = query.trim().toLowerCase();
+    const normalizedQuery = query.trim().toLowerCase();
 
-  const searched = !normalizedQuery
-    ? filtered
-    : filtered.filter((resource) => {
+    const searched = !normalizedQuery
+      ? filtered
+      : filtered.filter((resource) => {
         const searchable = [
           resource.title,
           resource.category,
@@ -46,40 +46,48 @@ export default function ResourcesClient() {
         return searchable.includes(normalizedQuery);
       });
 
-  return [...searched].sort((a, b) => {
-    switch (sortBy) {
-      case "title":
-        return a.title.localeCompare(b.title);
+    return [...searched].sort((a, b) => {
+      switch (sortBy) {
+        case "title":
+          return a.title.localeCompare(b.title);
 
-      case "oldest":
-        return (
-          new Date(a.publishedAt).getTime() -
-          new Date(b.publishedAt).getTime()
-        );
+        case "oldest":
+          return (
+            new Date(a.publishedAt).getTime() -
+            new Date(b.publishedAt).getTime()
+          );
 
-      case "pages":
-        return b.pages - a.pages;
+        case "pages":
+          return b.pages - a.pages;
 
-      case "readingTime":
-        return b.readingTime - a.readingTime;
+        case "readingTime":
+          return b.readingTime - a.readingTime;
 
-      case "newest":
-      default:
-        return (
-          new Date(b.publishedAt).getTime() -
-          new Date(a.publishedAt).getTime()
-        );
-    }
-  });
-}, [query, activeCategory, sortBy]);
+        case "newest":
+        default:
+          return (
+            new Date(b.publishedAt).getTime() -
+            new Date(a.publishedAt).getTime()
+          );
+      }
+    });
+  }, [query, activeCategory, sortBy]);
 
-  const totalResources = getFilteredResources("All").length;
+  const allResources = useMemo(
+    () => getFilteredResources("All"),
+    []
+  );
+
+  const totalResources = allResources.length;
 
   const totalCategories = new Set(
-    getFilteredResources("All").map((resource) => resource.category)
+    allResources.map((resource) => resource.category)
   ).size;
 
-  const featuredResources = getFeaturedResources();
+  const featuredResources = useMemo(
+    () => getFeaturedResources(),
+    []
+  );
 
   const resetFilters = () => {
     setQuery("");
@@ -90,7 +98,7 @@ export default function ResourcesClient() {
   return (
     <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
       <div className="mx-auto flex max-w-7xl flex-col gap-10 px-4 pb-24 pt-36 sm:px-6 lg:px-8">
-        
+
         <Hero
           eyebrow="Free resources"
           title="Free Resources"
@@ -100,7 +108,7 @@ export default function ResourcesClient() {
         />
 
         <ResourceStats totalResources={totalResources} totalCategories={totalCategories} />
-        
+
         <FeaturedResources resources={featuredResources} />
 
         <section className="rounded-[2rem] border border-[var(--color-glass-border)] bg-[var(--color-surface)]/70 p-6 shadow-[0_20px_70px_rgba(0,0,0,0.16)] sm:p-8">
@@ -126,28 +134,40 @@ export default function ResourcesClient() {
               />
             </div>
           </div>
-            <ActiveFilters
-              query={query}
-              category={activeCategory}
-              sort={sortBy}
-              onClearQuery={() => setQuery("")}
-              onClearCategory={() => setActiveCategory("All")}
-              onReset={resetFilters}
-            />
+          <ActiveFilters
+            query={query}
+            category={activeCategory}
+            sort={sortBy}
+            onClearQuery={() => setQuery("")}
+            onClearCategory={() => setActiveCategory("All")}
+            onReset={resetFilters}
+          />
 
           <div className="mt-8">
             <CategoryFilter categories={getResourceCategories()} activeCategory={activeCategory} onChange={setActiveCategory} />
           </div>
         </section>
-        
+
         {resources.length ? (
           <section
             id="all-resources"
-            className="grid gap-6 md:grid-cols-2 xl:grid-cols-3"
+            aria-labelledby="all-resources-heading"
           >
-            {resources.map((resource) => (
-              <ResourceCard key={resource.slug} resource={resource} />
-            ))}
+            <h2
+              id="all-resources-heading"
+              className="sr-only"
+            >
+              All Resources
+            </h2>
+
+            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+              {resources.map((resource) => (
+                <ResourceCard
+                  key={resource.slug}
+                  resource={resource}
+                />
+              ))}
+            </div>
           </section>
         ) : (
           <EmptyState title="No resources matched your search" description="Try another keyword or filter to discover more useful guides." />

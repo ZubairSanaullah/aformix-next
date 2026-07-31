@@ -206,11 +206,11 @@ const OrbitAI: React.FC = () => {
       ? "border-slate-200/30 bg-white/90 text-slate-900"
       : "border-white/10 text-white",
     bubbleButton: isLight
-      ? "border-white/50 bg-linear-to-br from-primary to-emerald-400 text-white shadow-[0_20px_50px_rgba(49,185,143,0.35)]"
-      : "border-white/15 bg-linear-to-br from-primary to-secondary text-white shadow-[0_30px_60px_rgba(0,0,0,0.45)]",
+      ? "border-white/50 bg-gradient-to-br from-[#31b98f] to-[#10b981] text-white shadow-[0_12px_35px_rgba(49,185,143,0.4)] hover:shadow-[0_16px_40px_rgba(49,185,143,0.5)]"
+      : "border-white/20 bg-gradient-to-br from-[#31b98f] to-[#684b9e] text-white shadow-[0_16px_45px_rgba(0,0,0,0.5)]",
     fullScreenButton: isLight
-      ? "border-white/60 bg-white/95 text-slate-800 shadow-[0_10px_30px_rgba(15,23,42,0.15)] hover:bg-white hover:scale-105"
-      : "border-white/10 bg-slate-900/80 text-white shadow-[0_10px_30px_rgba(0,0,0,0.4)] hover:bg-slate-800/90 hover:scale-105 hover:border-white/20",
+      ? "border-slate-300/90 bg-white text-slate-900 shadow-[0_8px_24px_rgba(15,23,42,0.12)] hover:bg-slate-50 hover:scale-105 text-xs font-semibold"
+      : "border-white/15 bg-slate-900/90 text-white shadow-[0_10px_30px_rgba(0,0,0,0.4)] hover:bg-slate-800/90 hover:scale-105 hover:border-white/25 text-xs font-semibold",
   };
 
   const orbitTransition = { type: "spring" as const, stiffness: 280, damping: 24, mass: 0.8 };
@@ -246,10 +246,6 @@ const OrbitAI: React.FC = () => {
   }, []);
 
   const latestMessage = messages[messages.length - 1];
-
-  // Force fixed offsets for the floating Orbit controls on all screens
-  const FIXED_RIGHT = "120px";
-  const FIXED_BOTTOM = "24px";
 
   const handleOpen = (mobileView = false) => {
     setShowWidget(true);
@@ -354,8 +350,7 @@ const OrbitAI: React.FC = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 40, scale: 0.96 }}
             transition={orbitTransition}
-            style={isMobileView ? undefined : { right: FIXED_RIGHT }}
-            className={`fixed ${isMobileView ? "inset-0" : "top-[140px] md:bottom-24 md:top-auto right-4 md:right-[20%]"} z-[1000] ${isMobileView ? "w-screen h-screen max-h-none rounded-none overflow-hidden" : "w-[calc(100vw-2rem)] md:w-[min(420px,calc(100vw-2rem))] max-h-[calc(100vh-200px)] md:max-h-none rounded-3xl md:rounded-4xl border"} backdrop-blur-2xl overflow-hidden ${orbitTheme.panel}`}
+            className={`fixed ${isMobileView ? "inset-0" : "top-[140px] md:bottom-24 md:top-auto right-4 md:right-8 lg:right-28"} z-[1000] ${isMobileView ? "w-screen h-screen max-h-none rounded-none overflow-hidden" : "w-[calc(100vw-2rem)] md:w-[min(420px,calc(100vw-2rem))] max-h-[calc(100vh-200px)] md:max-h-none rounded-3xl md:rounded-4xl border"} backdrop-blur-2xl overflow-hidden ${orbitTheme.panel}`}
           >
             <div className={`flex items-center justify-between gap-3 md:gap-4 border-b px-3 md:px-5 py-3 md:py-4 ${isLight ? "border-slate-200/40" : "border-white/10"}`}>
               <div className="flex items-center gap-2 md:gap-3 min-w-0">
@@ -490,40 +485,39 @@ const OrbitAI: React.FC = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.92 }}
             transition={orbitTransition}
-            style={{ right: FIXED_RIGHT, bottom: FIXED_BOTTOM }}
-            className="fixed bottom-24 md:bottom-8 right-4 md:right-[20%] z-[99] flex flex-col items-center gap-3"
+            className="fixed bottom-8 right-24 md:right-28 z-[99] flex flex-col items-center gap-2.5"
           >
             <motion.div
-              className="relative flex flex-col items-center"
-              whileHover={{ y: -4, scale: 1.05 }}
-              whileTap={{ scale: 0.94 }}
+              className="relative inline-flex items-center justify-center"
+              whileHover={{ y: -3, scale: 1.04 }}
+              whileTap={{ scale: 0.95 }}
             >
               <button
                 type="button"
                 onClick={handleClose}
-                className="absolute -top-1 -right-1 z-10 inline-flex h-7 w-7 items-center justify-center rounded-full bg-rose-500 text-white shadow-lg shadow-rose-500/20 transition hover:bg-rose-600 focus:outline-none cursor-pointer"
+                className="absolute top-0 right-0 z-10 translate-x-1 -translate-y-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-rose-500 text-white shadow-md shadow-rose-500/30 transition hover:bg-rose-600 focus:outline-none cursor-pointer"
                 aria-label="Close Orbit AI widget"
               >
-                <X size={14} />
+                <X size={13} className="text-white shrink-0" />
               </button>
 
               <button
                 type="button"
                 onClick={openPanel}
-                className={`flex h-16 md:h-20 w-16 md:w-20 items-center justify-center rounded-full border transition focus:outline-none overflow-hidden ${orbitTheme.bubbleButton}`}
+                className={`flex h-14 md:h-16 w-14 md:w-16 items-center justify-center rounded-full border transition focus:outline-none overflow-hidden cursor-pointer ${orbitTheme.bubbleButton}`}
                 aria-label="Open Orbit AI assistant"
               >
-                <FaRobot size={40} />
+                <FaRobot size={32} className="text-white shrink-0" />
               </button>
             </motion.div>
 
             <motion.button
               layout
               onClick={openMobilePanel}
-              className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-xs font-semibold transition backdrop-blur-md ${orbitTheme.fullScreenButton}`}
+              className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 backdrop-blur-md cursor-pointer transition ${orbitTheme.fullScreenButton}`}
               aria-label="Open Orbit AI in smaller screen mode"
             >
-              <BsRobot size={14} />
+              <BsRobot size={14} className={isLight ? "text-slate-800" : "text-white"} />
               Enter Full Screen
             </motion.button>
           </motion.div>

@@ -4,6 +4,7 @@ interface BreadcrumbsProps {
     items: Array<{
         label: string;
         href?: string;
+        url?: string;
     }>;
 }
 

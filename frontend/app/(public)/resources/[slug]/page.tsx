@@ -118,11 +118,12 @@ export default async function ResourcePage({ params }: Params) {
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "BreadcrumbList",
-              itemListElement: [
-                { "@type": "ListItem", position: 1, name: "Home", item: "https://www.aformix.com" },
-                { "@type": "ListItem", position: 2, name: "Resources", item: "https://www.aformix.com/resources" },
-                { "@type": "ListItem", position: 3, name: resource.title, item: canonicalUrl },
-              ],
+              itemListElement: breadcrumbItems.map((item, index) => ({
+                "@type": "ListItem",
+                position: index + 1,
+                name: item.label,
+                item: item.url,
+              })),
             }),
           }}
         />
