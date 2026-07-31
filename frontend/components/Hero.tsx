@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { BiMobile } from "react-icons/bi";
 import { BsRobot } from "react-icons/bs";
-import Link from "next/link";
+import AnalyticsLink from "@/components/analytics/AnalyticsLink";
 
 // Register ScrollTrigger plugin
 if (typeof window !== "undefined") {
@@ -222,14 +222,30 @@ const Hero: React.FC = () => {
 
             {/* CTA Buttons */}
             <div className="hero-cta-group">
-              <Link href="/#contact" className="hero-cta-btn hero-cta-primary">
+              <AnalyticsLink
+                href="/#contact"
+                className="hero-cta-btn hero-cta-primary"
+                eventName="cta_click"
+                eventParams={{
+                  button: "hero_get_started",
+                  location: "homepage",
+                }}
+              >
                 <span>Get Started</span>
                 <ArrowRight size={18} className="hero-cta-arrow" />
-              </Link>
-              <Link href="/#portfolio" className="hero-cta-btn hero-cta-secondary">
+              </AnalyticsLink>
+              <AnalyticsLink
+                href="/#portfolio"
+                className="hero-cta-btn hero-cta-secondary"
+                eventName="cta_click"
+                eventParams={{
+                  button: "hero_view_portfolio",
+                  location: "homepage",
+                }}
+              >
                 <span>View Portfolio</span>
                 <ExternalLink size={16} />
-              </Link>
+              </AnalyticsLink>
               <button
                 aria-label="Open Orbit AI assistant"
                 onClick={(e) => { e.preventDefault(); window.dispatchEvent(new Event('open-orbit-ai')); }}

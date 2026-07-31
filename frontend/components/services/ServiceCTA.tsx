@@ -80,7 +80,7 @@ const ServiceCTA: React.FC<ServiceCTAProps> = ({
             </p>
 
             <div className="flex flex-col sm:flex-row gap-5 justify-center w-full sm:w-auto">
-              <Link href="https://calendly.com/aformixtech/30min" target="_blank" className="w-full sm:w-auto">
+              <Link href="https://calendly.com/aformixtech/30min" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
                 <button
                   className="group relative flex items-center justify-center gap-3 px-8 py-4 w-full rounded-2xl font-bold text-base transition-all duration-300 overflow-hidden hover:scale-105 shadow-xl"
                   style={{

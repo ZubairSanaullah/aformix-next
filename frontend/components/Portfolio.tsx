@@ -5,6 +5,7 @@ import { projects } from "../constants";
 import { ArrowUpRight } from "lucide-react";
 import Divider from "./Divider";
 import Image from "next/image";
+import { trackEvent } from "@/lib/analytics";
 
 const Portfolio: React.FC = () => {
   const [showAllProjects, setShowAllProjects] = useState(false);
@@ -12,7 +13,7 @@ const Portfolio: React.FC = () => {
 
   return (
     <section id="portfolio" className="reveal section-padding relative w-full overflow-hidden" aria-labelledby="portfolio-heading">
-      <div className="absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-[var(--color-bg)]/80 to-transparent pointer-events-none" aria-hidden="true"/>
+      <div className="absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-[var(--color-bg)]/80 to-transparent pointer-events-none" aria-hidden="true" />
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24 relative">
         <div className="flex flex-col items-center mb-20 text-center">
           <span className="text-primary font-black tracking-[0.35em] uppercase mb-4 inline-block">Our Portfolio</span>
@@ -29,9 +30,8 @@ const Portfolio: React.FC = () => {
             return (
               <article
                 key={project.id}
-                className={`portfolio-card group ${
-                  isFeatured ? "md:col-span-2 md:row-span-2 min-h-[560px]" : "min-h-[420px]"
-                }`}
+                className={`portfolio-card group ${isFeatured ? "md:col-span-2 md:row-span-2 min-h-[560px]" : "min-h-[420px]"
+                  }`}
                 onMouseEnter={(e) => {
                   const video = e.currentTarget.querySelector('video');
                   if (video) {
@@ -89,11 +89,19 @@ const Portfolio: React.FC = () => {
                       href={project.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="portfolio-view-link inline-flex items-center gap-3 rounded-full border border-[var(--color-border)] glass-effect px-5 py-3 text-sm font-semibold text-[var(--color-text)] transition hover:bg-primary hover:text-white hover:border-primary"
+                      onClick={() =>
+                        trackEvent("portfolio_click", {
+                          project: project.title,
+                          category: project.category,
+                          location: "homepage",
+                          outbound: true,
+                        })
+                      }
+                      className="portfolio-view-link inline-flex items-center gap-3 rounded-full border border-[var(--color-border)] glass-effect px-5 py-3 text-sm font-semibold text-[var(--color-text)] transition-all duration-300 hover:bg-[var(--color-primary)] hover:text-white hover:border-[var(--color-primary)]"
                       aria-label={`View ${project.title} project`}
                     >
                       View project
-                      <ArrowUpRight size={18} aria-hidden="true"/>
+                      <ArrowUpRight size={18} aria-hidden="true" />
                     </a>
                     <span className="text-[var(--color-text-muted)] text-sm">
                       {isFeatured ? "Top case study" : "Project preview"}
@@ -110,7 +118,13 @@ const Portfolio: React.FC = () => {
           <button
             type="button"
             className="btn-primary"
-            onClick={() => setShowAllProjects((prev) => !prev)}
+            onClick={() => {
+              trackEvent(showAllProjects ? "portfolio_show_less" : "portfolio_show_all", {
+                location: "homepage",
+              });
+
+              setShowAllProjects((prev) => !prev);
+            }}
             aria-expanded={showAllProjects}
             aria-controls="portfolio-grid"
           >

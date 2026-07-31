@@ -1,6 +1,8 @@
 "use client";
 
 import { Download, FileText, Clock, HardDrive, BadgeInfo } from "lucide-react";
+
+import { trackEvent } from "@/lib/analytics";
 import DownloadButton from "./DownloadButton";
 import type { Resource } from "@/types/resource";
 import InfoItem from "@/components/ui/InfoItem";
@@ -14,6 +16,17 @@ interface DownloadCardProps {
 export default function DownloadCard({
   resource,
 }: DownloadCardProps) {
+
+  const handleDownload = () => {
+    trackEvent("resource_download", {
+      resource_title: resource.title,
+      resource_slug: resource.slug,
+      category: resource.category,
+      file_size: resource.fileSize,
+      file_type: "pdf",
+    });
+  };
+
   return (
     <GlassCard className="p-8">
       <CardHeader
@@ -54,6 +67,7 @@ export default function DownloadCard({
         <DownloadButton
           href={resource.pdf}
           className="w-full justify-center"
+          onClick={handleDownload}
         >
           <Download className="h-5 w-5" />
           Download PDF

@@ -2,14 +2,21 @@
 
 import React from "react";
 import { MessageCircle } from "lucide-react";
+import { trackEvent } from "@/lib/analytics";
 
 const WhatsAppBtn: React.FC = () => {
   return (
     <>
       <a
-        href="https://wa.me/+923019170936" 
+        href="https://wa.me/+923019170936"
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() =>
+          trackEvent("whatsapp_click", {
+            location: "floating_button",
+            destination: "whatsapp",
+          })
+        }
         className="fixed bottom-8 right-8 z-[100] w-14 h-14 bg-green-500 text-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-all duration-300 group"
       >
         <MessageCircle size={32} />

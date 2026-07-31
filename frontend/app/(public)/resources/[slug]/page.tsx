@@ -2,6 +2,8 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+
+import ResourceAnalytics from "@/components/resources/ResourceAnalytics";
 import { getResourceBySlug, getRelatedResources } from "@/lib/resources";
 import { generateSEO } from "@/lib/seo";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
@@ -15,6 +17,7 @@ import DownloadCard from "@/components/resources/DownloadCard";
 import ReadingProgress from "@/components/resources/ReadingProgress";
 import SectionReveal from "@/components/resources/SectionReveal";
 import GlassCard from "@/components/ui/GlassCard";
+import AnalyticsLink from "@/components/analytics/AnalyticsLink";
 
 interface Params {
   params: Promise<{ slug: string }>;
@@ -84,6 +87,12 @@ export default async function ResourcePage({ params }: Params) {
 
   return (
     <>
+      <ResourceAnalytics
+        title={resource.title}
+        slug={resource.slug}
+        category={resource.category}
+      />
+
       <ReadingProgress />
       <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
         <script
@@ -272,9 +281,20 @@ export default async function ResourcePage({ params }: Params) {
                     <p className="text-sm font-semibold uppercase tracking-[0.36em] text-[var(--color-primary)]">Need help implementing this?</p>
                     <h2 className="mt-4 text-3xl font-semibold text-[var(--color-text)]">Let’s turn this resource into a real growth plan.</h2>
                     <div className="mt-8 flex flex-wrap justify-center gap-4">
-                      <Link href="https://calendly.com/aformixtech/30min" target="_blank" rel="noreferrer" className="rounded-full bg-[var(--color-primary)] px-6 py-3 font-semibold text-white transition-all duration-300 hover:scale-[1.02]">
+                      <AnalyticsLink
+                        href="https://calendly.com/aformixtech/30min"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="rounded-full bg-[var(--color-primary)] px-6 py-3 font-semibold text-white transition-all duration-300 hover:scale-[1.02]"
+                        eventName="consultation_click"
+                        eventParams={{
+                          location: "resource_page",
+                          resource_title: resource.title,
+                          resource_slug: resource.slug,
+                        }}
+                      >
                         Book Consultation
-                      </Link>
+                      </AnalyticsLink>
                       <Link href="/services" className="rounded-full border border-[var(--color-glass-border)] px-6 py-3 font-semibold text-[var(--color-text)] transition-all duration-300 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]">
                         Explore Services
                       </Link>

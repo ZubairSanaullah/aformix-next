@@ -2,23 +2,35 @@
 
 import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
+import { trackEvent } from "@/lib/analytics";
+import Link from "next/link";
 
 const CookieConsent: React.FC = () => {
   const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
     const cookieConsent = localStorage.getItem("cookieConsent");
+
     if (!cookieConsent) {
+      trackEvent("cookie_banner_shown");
       setShowBanner(true);
     }
   }, []);
 
   const handleAccept = () => {
+    trackEvent("cookie_consent", {
+      action: "accepted",
+    });
+
     localStorage.setItem("cookieConsent", "accepted");
     setShowBanner(false);
   };
 
   const handleDecline = () => {
+    trackEvent("cookie_consent", {
+      action: "declined",
+    });
+
     localStorage.setItem("cookieConsent", "declined");
     setShowBanner(false);
   };
@@ -44,9 +56,9 @@ const CookieConsent: React.FC = () => {
               🍪 We Value Your Privacy
             </h3>
             <p className="text-[var(--color-text-muted)] text-sm md:text-base leading-relaxed mb-6">
-              We use cookies to enhance your browsing experience, analyze site traffic, and personalize content. 
+              We use cookies to enhance your browsing experience, analyze site traffic, and personalize content.
               By clicking "Accept", you consent to our use of cookies. You can learn more about our cookie usage in our
-              <a href="/privacy-policy" className="text-[var(--color-primary)] hover:underline ml-1">Privacy Policy</a>.
+              <Link href="/privacy-policy" className="text-[var(--color-primary)] hover:underline ml-1">Privacy Policy</Link>.
             </p>
 
             {/* Buttons */}

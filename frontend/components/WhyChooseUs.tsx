@@ -91,7 +91,7 @@ const WhyChooseUs: React.FC = () => {
 
               <button
                 onClick={(e) => { e.preventDefault(); window.dispatchEvent(new Event('open-orbit-ai')); }}
-                className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary/10 border border-primary/20 text-primary px-4 py-3 font-semibold transition hover:bg-primary hover:text-white cursor-pointer"
+                className="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--color-border)] bg-transparent text-[var(--color-text)] px-4 py-3 font-semibold transition-all duration-300 hover:bg-[var(--color-primary)] hover:text-white hover:border-[var(--color-primary)] shadow-sm hover:shadow-[0_16px_40px_rgba(49,185,143,0.4)] transform hover:-translate-y-1 cursor-pointer"
               >
                 <Bot size={18} />
                 Open Orbit AI

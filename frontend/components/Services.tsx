@@ -7,10 +7,12 @@ import { homepageServiceSlugs, getServicePath } from "../constants/serviceNav";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Divider from "./Divider";
 import Image from "next/image";
+import { trackEvent } from "@/lib/analytics";
 
 const Services: React.FC = () => {
   const sliderRef = useRef<HTMLDivElement | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isDragged, setIsDragged] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
 
@@ -18,13 +20,9 @@ const Services: React.FC = () => {
     // Only apply JS drag for mouse; let touch devices use native scrolling
     if (event.pointerType !== "mouse" || !sliderRef.current) return;
     setIsDragging(true);
+    setIsDragged(false);
     setStartX(event.pageX - sliderRef.current.offsetLeft);
     setScrollLeft(sliderRef.current.scrollLeft);
-    try {
-      sliderRef.current.setPointerCapture(event.pointerId);
-    } catch (e) {
-      // Pointer capture may not be supported.
-    }
   };
 
   const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
@@ -32,19 +30,15 @@ const Services: React.FC = () => {
     event.preventDefault();
     const x = event.pageX - sliderRef.current.offsetLeft;
     const walk = (x - startX) * 1.5;
+    if (Math.abs(walk) > 5) {
+      setIsDragged(true);
+    }
     sliderRef.current.scrollLeft = scrollLeft - walk;
   };
 
   const handlePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
     if (event.pointerType !== "mouse") return;
     setIsDragging(false);
-    if (sliderRef.current) {
-      try {
-        sliderRef.current.releasePointerCapture(event.pointerId);
-      } catch {
-        // Pointer capture may not be supported.
-      }
-    }
   };
 
   const serviceImages: Record<number, string> = {
@@ -67,7 +61,7 @@ const Services: React.FC = () => {
 
   return (
     <section id="services" className="reveal section-padding relative overflow-hidden w-full" aria-labelledby="services-heading">
-      <div 
+      <div
         aria-hidden="true"
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-secondary/5 rounded-full blur-[120px] -z-10"
       ></div>
@@ -75,7 +69,7 @@ const Services: React.FC = () => {
       <div className="max-w-7xl mx-auto relative z-10 px-6 md:px-12 lg:px-24">
         <div className="flex flex-col items-center mb-20 text-center">
           <span className="text-primary font-black tracking-[0.35em] uppercase mb-4 inline-block">Our Services</span>
-          <h2 
+          <h2
             id="services-heading"
             className="heading-2 mb-6"
           >
@@ -91,9 +85,9 @@ const Services: React.FC = () => {
               className="slider-nav-btn"
               aria-label="Scroll services left"
             >
-              <ArrowLeft 
+              <ArrowLeft
                 aria-hidden="true"
-                size={18} 
+                size={18}
               />
             </button>
             <button
@@ -102,8 +96,8 @@ const Services: React.FC = () => {
               className="slider-nav-btn"
               aria-label="Scroll services right"
             >
-              <ArrowRight 
-                size={18} 
+              <ArrowRight
+                size={18}
                 aria-hidden="true"
               />
             </button>
@@ -139,7 +133,18 @@ const Services: React.FC = () => {
                 <Link
                   key={service.id}
                   href={slug ? getServicePath(slug) : "/#services"}
-                  className="service-card card-premium min-w-[260px] w-[85vw] sm:min-w-[380px] max-w-[380px] h-[440px] sm:h-[520px] flex-shrink-0 group block"
+                  onClick={(e) => {
+                    if (isDragged) {
+                      e.preventDefault();
+                      return;
+                    }
+                    trackEvent("service_cta_click", {
+                      service: service.title,
+                      service_slug: slug,
+                      location: "homepage",
+                    });
+                  }}
+                  className="service-card min-w-[260px] w-[85vw] sm:min-w-[380px] max-w-[380px] h-[440px] sm:h-[520px] flex-shrink-0 group block"
                   draggable={false}
                   onDragStart={(event) => event.preventDefault()}
                 >

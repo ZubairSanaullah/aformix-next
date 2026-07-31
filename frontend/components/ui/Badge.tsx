@@ -14,7 +14,6 @@ interface BadgeProps {
 
 const variantClasses = {
     default:
-<<<<<<< HEAD
         "border border-[var(--color-glass-border)] bg-[var(--color-surface-elevated)] text-[var(--color-text-muted)] font-medium",
 
     primary:
@@ -31,24 +30,6 @@ const variantClasses = {
 
     danger:
         "border border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400 font-semibold",
-=======
-        "border border-white/10 bg-white/5 text-[var(--muted-foreground)]",
-
-    primary:
-        "border border-[var(--primary)]/20 bg-[var(--primary)]/10 text-[var(--primary)]",
-
-    success:
-        "border border-green-500/20 bg-green-500/10 text-green-600 dark:text-green-400",
-
-    warning:
-        "border border-yellow-500/20 bg-yellow-500/10 text-yellow-600 dark:text-yellow-400",
-
-    info:
-        "border border-sky-500/20 bg-sky-500/10 text-sky-600 dark:text-sky-400",
-
-    danger:
-        "border border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400",
->>>>>>> da515907fea760fe2ecf7855489aaded52e1be30
 };
 
 export default function Badge({

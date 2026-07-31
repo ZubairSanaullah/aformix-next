@@ -111,14 +111,14 @@ const Pricing: React.FC = () => {
                 {/* Most Popular Badge */}
                 {plan.popularBadge && (
                   <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10">
-                    <span className="bg-primary text-white text-xs font-bold uppercase tracking-wider py-1 px-4 rounded-full shadow-md whitespace-nowrap">
+                    <span className="bg-[var(--color-primary)] text-white text-xs font-bold uppercase tracking-wider py-1 px-4 rounded-full shadow-md whitespace-nowrap">
                       Most Popular
                     </span>
                   </div>
                 )}
                 
                 {/* Title Tag */}
-                <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-primary text-xs font-bold uppercase tracking-widest self-start mb-5 mt-2">
+                <span className="inline-flex items-center rounded-full px-3 py-1 text-[var(--color-primary)] text-xs font-bold uppercase tracking-widest self-start mb-5 mt-2" style={{ backgroundColor: 'rgba(49, 185, 143, 0.1)' }}>
                   {plan.title}
                 </span>
                 
@@ -139,7 +139,7 @@ const Pricing: React.FC = () => {
                 <ul className="flex-grow space-y-3 mb-7">
                   {plan.features.slice(0, 5).map((feature, idx) => (
                     <li key={idx} className="flex items-start gap-3">
-                      <Check className="mt-0.5 h-4 w-4 text-primary shrink-0" aria-hidden="true"/>
+                      <Check className="mt-0.5 h-4 w-4 text-[var(--color-primary)] shrink-0" aria-hidden="true"/>
                       <span className="text-sm text-[var(--color-text)] leading-snug">{feature.title}</span>
                     </li>
                   ))}
@@ -153,10 +153,10 @@ const Pricing: React.FC = () => {
                 {/* CTA Button */}
                 <Link
                   href={`/pricing/${plan.id}`}
-                  className={`w-full text-center block py-3 px-6 rounded-xl font-semibold text-sm transition-all duration-200 ${
+                  className={`w-full text-center block py-3 px-6 rounded-xl font-semibold text-sm transition-all duration-300 ${
                     plan.popularBadge
-                      ? "bg-primary text-white hover:bg-primary/90 shadow-md shadow-primary/30"
-                      : "border border-[var(--color-border)] text-[var(--color-text)] hover:border-primary hover:text-primary"
+                      ? "bg-gradient-to-br from-[var(--color-primary)] to-[#10b981] text-white shadow-[0_12px_35px_rgba(49,185,143,0.4)] hover:shadow-[0_16px_40px_rgba(49,185,143,0.6)] transform hover:-translate-y-1"
+                      : "border border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-primary)] hover:text-white hover:border-transparent shadow-sm hover:shadow-[0_16px_40px_rgba(49,185,143,0.4)] transform hover:-translate-y-1"
                   }`}
                 >
                   View Details

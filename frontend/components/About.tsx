@@ -144,7 +144,7 @@ const About: React.FC = () => {
                 <button
                   type="button"
                   onClick={(e) => { e.preventDefault(); window.dispatchEvent(new Event('open-orbit-ai')); }}
-                  className="inline-flex items-center gap-2 rounded-full bg-primary text-white px-5 md:px-6 py-2.5 md:py-3 text-sm md:text-base font-semibold transition hover:bg-primary/90 hover:scale-105 shadow-lg shadow-primary/20 cursor-pointer"
+                  className="inline-flex items-center gap-2 rounded-full border border-[var(--color-border)] bg-transparent text-[var(--color-text)] px-5 md:px-6 py-2.5 md:py-3 text-sm md:text-base font-semibold transition-all duration-300 hover:bg-[var(--color-primary)] hover:text-white hover:border-[var(--color-primary)] hover:scale-105 shadow-sm hover:shadow-[0_16px_40px_rgba(49,185,143,0.4)] cursor-pointer"
                   aria-label="Open Orbit AI assistant"
                 >
                   <BsRobot 

@@ -7,6 +7,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import Swal from "sweetalert2";
 
+import { trackEvent } from "@/lib/analytics";
+
 gsap.registerPlugin(ScrollTrigger);
 
 interface FormState {
@@ -159,6 +161,17 @@ const Contact: React.FC = () => {
     e.preventDefault();
     if (!validate()) return;
 
+    if (!process.env.NEXT_PUBLIC_ACCESS_KEY) {
+      Swal.fire({
+        title: "Configuration Error",
+        text: "Contact form is not configured correctly.",
+        icon: "error",
+        confirmButtonColor: "#27b990",
+      });
+
+      return;
+    }
+
     setSubmitting(true);
 
     const data = new FormData();
@@ -180,6 +193,11 @@ const Contact: React.FC = () => {
       const json = await res.json();
 
       if (json.success) {
+        trackEvent("generate_lead", {
+          form_name: "contact_form",
+          service: formState.service || "Not specified",
+        });
+
         setFormState({ name: "", email: "", phone: "", service: "", message: "" });
         await Swal.fire({
           title: "Message Sent!",
@@ -251,7 +269,7 @@ const Contact: React.FC = () => {
                   className="contact-info-card glass-effect rounded-3xl border border-[var(--color-glass-border)] p-6 flex items-center gap-5 group hover:-translate-y-1 transition-all duration-300 shadow-lg"
                 >
                   <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shrink-0 group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-md">
-                    <item.icon size={22} aria-hidden="true"/>
+                    <item.icon size={22} aria-hidden="true" />
                   </div>
                   <div>
                     <p className="text-[var(--color-text-muted)] text-xs font-black uppercase tracking-widest mb-1">
@@ -307,7 +325,7 @@ const Contact: React.FC = () => {
           <div className="contact-form-panel lg:col-span-3">
             <div className="glass-effect rounded-[2.5rem] border border-[var(--color-glass-border)] p-8 md:p-12 shadow-2xl relative overflow-hidden">
               {/* Top accent line */}
-              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-70" aria-hidden="true"/>
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-70" aria-hidden="true" />
 
               <h3 className="text-2xl font-black text-[var(--color-text)] mb-8">
                 Send us a message
@@ -335,7 +353,7 @@ const Contact: React.FC = () => {
                       required
                       aria-invalid={!!errors.name}
                       aria-describedby={
-                          errors.name ? "contact-name-error" : undefined
+                        errors.name ? "contact-name-error" : undefined
                       }
                       value={formState.name}
                       onChange={handleChange}
@@ -362,7 +380,7 @@ const Contact: React.FC = () => {
                       required
                       aria-invalid={!!errors.email}
                       aria-describedby={
-                          errors.email ? "contact-email-error" : undefined
+                        errors.email ? "contact-email-error" : undefined
                       }
                       value={formState.email}
                       onChange={handleChange}
@@ -433,8 +451,8 @@ const Contact: React.FC = () => {
                     name="message"
                     required
                     aria-invalid={!!errors.message}
-                        aria-describedby={
-                        errors.message ? "contact-message-error" : undefined
+                    aria-describedby={
+                      errors.message ? "contact-message-error" : undefined
                     }
                     value={formState.message}
                     onChange={handleChange}
@@ -461,7 +479,7 @@ const Contact: React.FC = () => {
                 >
                   {submitting ? (
                     <>
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" aria-hidden="true"/>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" aria-hidden="true" />
                       <span>Sending…</span>
                     </>
                   ) : (
