@@ -34,7 +34,10 @@ export default function AIInsightCard({
             bg-muted
           "
                 >
-                    <Sparkles className="h-5 w-5 text-primary" />
+                    <Sparkles
+                        aria-hidden="true"
+                        className="h-5 w-5 text-primary"
+                    />
                 </div>
 
                 <div>

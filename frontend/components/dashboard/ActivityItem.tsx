@@ -27,7 +27,10 @@ export default function ActivityItem({
           bg-muted
         "
             >
-                <Icon className="h-5 w-5 text-primary" />
+                <Icon
+                    aria-hidden="true"
+                    className="h-5 w-5 text-primary"
+                />
             </div>
 
             <div className="flex-1">
@@ -40,9 +43,9 @@ export default function ActivityItem({
                 </p>
             </div>
 
-            <span className="text-xs text-muted-foreground">
+            <time className="text-xs text-muted-foreground">
                 {time}
-            </span>
+            </time>
         </div>
     );
 }

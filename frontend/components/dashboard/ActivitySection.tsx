@@ -12,14 +12,13 @@ export default function ActivitySection() {
                 description="Latest updates from your workspace."
             />
 
-            <div className="space-y-6 rounded-2xl border border-border bg-card p-6">
+            <ul className="space-y-6 rounded-2xl border border-border bg-card p-6">
                 {recentActivities.map((activity) => (
-                    <ActivityItem
-                        key={activity.title}
-                        {...activity}
-                    />
+                    <li key={activity.title}>
+                        <ActivityItem {...activity} />
+                    </li>
                 ))}
-            </div>
+            </ul>
         </section>
     );
 }

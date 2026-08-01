@@ -7,7 +7,9 @@ import type { Metadata, Viewport } from "next";
 import Providers from "./providers";
 import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+import { Toaster } from "sonner";
+
+const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -18,7 +20,7 @@ const outfit = Outfit({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.aformix.com"),
-  
+
   manifest: "/site.webmanifest",
 
   applicationName: "Aformix",
@@ -179,8 +181,9 @@ export default function RootLayout({
 
         <Providers>
           {children}
+          <Toaster position="top-right" />
         </Providers>
-        
+
         <GoogleAnalytics
           gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID!}
         />

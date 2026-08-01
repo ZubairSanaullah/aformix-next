@@ -13,6 +13,7 @@ export default function QuickActionCard({
 }: QuickActionCardProps) {
     return (
         <button
+            aria-label={title}
             className="
         group
         rounded-2xl
@@ -25,7 +26,7 @@ export default function QuickActionCard({
         duration-200
         hover:-translate-y-1
         hover:shadow-md
-      "
+    "
         >
             <div
                 className="
