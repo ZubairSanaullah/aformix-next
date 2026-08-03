@@ -181,7 +181,7 @@ export default function RootLayout({
 
         <Providers>
           {children}
-          <Toaster position="top-right" />
+          <Toaster richColors position="bottom-center" />
         </Providers>
 
         <GoogleAnalytics
