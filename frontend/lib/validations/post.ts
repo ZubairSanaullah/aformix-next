@@ -15,6 +15,13 @@ export const postSchema = z.object({
         .string()
         .min(50, "Content must be at least 50 characters."),
 
+    categoryId: z
+        .string()
+        .min(1, "Please select a category."),
+
+    tagIds: z
+        .array(z.string()),
+
     seoTitle: z
         .string()
         .max(60, "SEO title cannot exceed 60 characters.")

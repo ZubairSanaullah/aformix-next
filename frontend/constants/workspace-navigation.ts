@@ -12,7 +12,8 @@ import {
   BookOpen,
   BarChart3,
   Settings,
-  FolderTree
+  FolderTree,
+  Tags
 } from "lucide-react";
 
 export const workspaceNavigation = [
@@ -63,6 +64,11 @@ export const workspaceNavigation = [
         title: "Categories",
         href: "/workspace/categories",
         icon: FolderTree,
+      },
+      {
+        title: "Tags",
+        href: "/workspace/tags",
+        icon: Tags,
       },
       {
         title: "Portfolio",

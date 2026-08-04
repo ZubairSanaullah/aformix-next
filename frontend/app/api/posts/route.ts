@@ -8,7 +8,7 @@ import { calculateReadingTime } from "@/lib/blog/reading-time";
 
 export async function POST(request: Request) {
     try {
-        const body = await request.json();
+        // 1. Authentication
 
         const session = await auth();
 
@@ -23,6 +23,10 @@ export async function POST(request: Request) {
                 }
             );
         }
+
+        // 2. Validate request
+
+        const body = await request.json();
 
         const result = postSchema.safeParse(body);
 
@@ -40,19 +44,22 @@ export async function POST(request: Request) {
 
         const data = result.data;
 
+        // 3. Generate slug
+
         const slug = generateSlug(data.title);
 
-        const existingPost = await prisma.post.findUnique({
+        const duplicate = await prisma.post.findUnique({
             where: {
                 slug,
             },
         });
 
-        if (existingPost) {
+        if (duplicate) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: "A post with this title already exists.",
+                    message:
+                        "A post with this title already exists.",
                 },
                 {
                     status: 409,
@@ -60,7 +67,13 @@ export async function POST(request: Request) {
             );
         }
 
-        const readingTime = calculateReadingTime(data.content);
+        // 4. Reading time
+
+        const readingTime = calculateReadingTime(
+            data.content
+        );
+
+        // 5. Create post
 
         const post = await prisma.post.create({
             data: {
@@ -68,10 +81,31 @@ export async function POST(request: Request) {
                 slug,
                 excerpt: data.excerpt,
                 content: data.content,
-                seoTitle: data.seoTitle || null,
-                seoDescription: data.seoDescription || null,
+
+                seoTitle:
+                    data.seoTitle || null,
+
+                seoDescription:
+                    data.seoDescription || null,
+
                 readingTime,
+
                 authorId: session.user.id,
+
+                categoryId: data.categoryId,
+
+                tags: {
+                    connect: data.tagIds.map(
+                        (id) => ({
+                            id,
+                        })
+                    ),
+                },
+            },
+
+            include: {
+                category: true,
+                tags: true,
             },
         });
 

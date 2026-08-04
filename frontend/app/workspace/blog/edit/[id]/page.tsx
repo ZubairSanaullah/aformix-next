@@ -1,30 +1,68 @@
 import { notFound } from "next/navigation";
 
 import { prisma } from "@/lib/prisma";
-import EditCategoryForm from "./EditCategoryForm";
+import EditPostForm from "./EditPostForm";
 
-interface EditCategoryPageProps {
+interface EditPostPageProps {
     params: Promise<{
         id: string;
     }>;
 }
 
-export default async function EditCategoryPage({
+export default async function EditPostPage({
     params,
-}: EditCategoryPageProps) {
+}: EditPostPageProps) {
     const { id } = await params;
 
-    const category = await prisma.category.findUnique({
+    const post = await prisma.post.findUnique({
         where: {
             id,
         },
+        include: {
+            tags: {
+                select: {
+                    id: true,
+                    name: true,
+                },
+            },
+            category: {
+                select: {
+                    id: true,
+                    name: true,
+                },
+            },
+        },
     });
 
-    if (!category) {
+    const categories = await prisma.category.findMany({
+        orderBy: {
+            name: "asc",
+        },
+        select: {
+            id: true,
+            name: true,
+        },
+    });
+
+    const tags = await prisma.tag.findMany({
+        orderBy: {
+            name: "asc",
+        },
+        select: {
+            id: true,
+            name: true,
+        },
+    });
+
+    if (!post) {
         notFound();
     }
 
     return (
-        <EditCategoryForm category={category} />
+        <EditPostForm
+            post={post}
+            categories={categories}
+            tags={tags}
+        />
     );
 }

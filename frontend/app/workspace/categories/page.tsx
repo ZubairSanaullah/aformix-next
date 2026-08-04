@@ -4,6 +4,13 @@ import CategoriesTable from "@/components/workspace/categories/CategoriesTable";
 
 export default async function CategoriesPage() {
     const categories = await prisma.category.findMany({
+        include: {
+            _count: {
+                select: {
+                    posts: true,
+                },
+            },
+        },
         orderBy: {
             createdAt: "desc",
         },

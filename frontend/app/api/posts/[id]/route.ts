@@ -35,6 +35,17 @@ export async function GET(
             where: {
                 id,
             },
+
+            include: {
+                category: true,
+
+                tags: {
+                    select: {
+                        id: true,
+                        name: true,
+                    },
+                },
+            },
         });
 
         if (!post) {
@@ -161,15 +172,48 @@ export async function PATCH(
         const readingTime = calculateReadingTime(data.content);
 
         const post = await prisma.post.update({
-            where: { id },
+            where: {
+                id,
+            },
+
             data: {
                 title: data.title,
+
                 slug,
+
                 excerpt: data.excerpt,
+
                 content: data.content,
-                seoTitle: data.seoTitle || null,
-                seoDescription: data.seoDescription || null,
+
+                seoTitle:
+                    data.seoTitle || null,
+
+                seoDescription:
+                    data.seoDescription ||
+                    null,
+
                 readingTime,
+
+                category: {
+                    connect: {
+                        id: data.categoryId,
+                    },
+                },
+
+                tags: {
+                    set: [],
+
+                    connect: data.tagIds.map(
+                        (id) => ({
+                            id,
+                        })
+                    ),
+                },
+            },
+
+            include: {
+                category: true,
+                tags: true,
             },
         });
 

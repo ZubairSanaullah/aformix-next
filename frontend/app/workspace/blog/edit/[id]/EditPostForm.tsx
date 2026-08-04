@@ -10,15 +10,37 @@ interface EditPostFormProps {
     post: {
         id: string;
         title: string;
-        excerpt: string;
+        excerpt: string | null;
         content: string;
         seoTitle: string | null;
         seoDescription: string | null;
+
+        category: {
+            id: string;
+            name: string;
+        } | null;
+
+        tags: {
+            id: string;
+            name: string;
+        }[];
     };
+
+    categories: {
+        id: string;
+        name: string;
+    }[];
+
+    tags: {
+        id: string;
+        name: string;
+    }[];
 }
 
 export default function EditPostForm({
     post,
+    categories,
+    tags,
 }: EditPostFormProps) {
     const router = useRouter();
 
@@ -52,10 +74,14 @@ export default function EditPostForm({
     return (
         <PostForm
             mode="edit"
+            categories={categories}
+            tags={tags}
             defaultValues={{
                 title: post.title,
-                excerpt: post.excerpt,
+                excerpt: post.excerpt ?? "",
                 content: post.content,
+                categoryId: post.category?.id ?? "",
+                tagIds: post.tags.map((tag) => tag.id),
                 seoTitle: post.seoTitle ?? "",
                 seoDescription: post.seoDescription ?? "",
             }}

@@ -17,9 +17,37 @@ export default function EditCategoryForm({
     const router = useRouter();
 
     const onSubmit = async (data: CategoryInput) => {
-        console.log(data);
+        try {
+            const response = await fetch(
+                `/api/categories/${category.id}`,
+                {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data),
+                }
+            );
 
-        toast.info("PATCH API will be implemented next.");
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    result.error || "Failed to update category."
+                );
+            }
+
+            toast.success("Category updated successfully.");
+
+            router.refresh();
+            router.push("/workspace/categories");
+        } catch (error) {
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "Something went wrong."
+            );
+        }
     };
 
     return (

@@ -2,6 +2,17 @@ import { prisma } from "@/lib/prisma";
 import { PostStatus } from "@prisma/client";
 
 export default async function CreateTestPostPage() {
+    let user = await prisma.user.findFirst();
+    if (!user) {
+        user = await prisma.user.create({
+            data: {
+                name: "Test User",
+                email: "test@test-db.com",
+                password: "dummy_password",
+            }
+        });
+    }
+
     const existingPost = await prisma.post.findUnique({
         where: {
             slug: "hello-world",
@@ -19,6 +30,7 @@ export default async function CreateTestPostPage() {
                 seoTitle: "Hello World",
                 seoDescription: "First blog post created with Prisma.",
                 seoKeywords: "hello, prisma, nextjs",
+                authorId: user.id,
             },
         });
     }

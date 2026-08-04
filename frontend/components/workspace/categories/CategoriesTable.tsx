@@ -1,7 +1,19 @@
-import { Category } from "@prisma/client";
+import { Prisma } from "@prisma/client";
+
+import CategoryActions from "./CategoryActions";
+
+type CategoryWithCount = Prisma.CategoryGetPayload<{
+    include: {
+        _count: {
+            select: {
+                posts: true;
+            };
+        };
+    };
+}>;
 
 interface CategoriesTableProps {
-    categories: Category[];
+    categories: CategoryWithCount[];
 }
 
 export default function CategoriesTable({
@@ -42,7 +54,10 @@ export default function CategoriesTable({
                         </tr>
                     ) : (
                         categories.map((category) => (
-                            <tr key={category.id} className="border-b last:border-0">
+                            <tr
+                                key={category.id}
+                                className="border-b last:border-0"
+                            >
                                 <td className="px-6 py-4 font-medium">
                                     {category.name}
                                 </td>
@@ -52,11 +67,13 @@ export default function CategoriesTable({
                                 </td>
 
                                 <td className="px-6 py-4">
-                                    —
+                                    {category._count.posts}
                                 </td>
 
                                 <td className="px-6 py-4 text-right">
-                                    Actions
+                                    <CategoryActions
+                                        category={category}
+                                    />
                                 </td>
                             </tr>
                         ))
