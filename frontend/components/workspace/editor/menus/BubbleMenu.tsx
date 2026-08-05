@@ -25,10 +25,6 @@ export default function BubbleMenu({
     return (
         <TiptapBubbleMenu
             editor={editor}
-            tippyOptions={{
-                duration: 150,
-                placement: "top",
-            }}
         >
             <div className="flex items-center gap-1 rounded-xl border bg-background p-1 shadow-lg">
                 <ToolbarButton

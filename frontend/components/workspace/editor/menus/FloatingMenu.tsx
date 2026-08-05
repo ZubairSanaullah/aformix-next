@@ -23,10 +23,6 @@ export default function FloatingMenu({ editor }: Props) {
     return (
         <TiptapFloatingMenu
             editor={editor}
-            tippyOptions={{
-                duration: 150,
-                placement: "right",
-            }}
         >
             <div className="flex items-center gap-1 rounded-xl border bg-background p-1 shadow-lg">
                 <ToolbarButton

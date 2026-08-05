@@ -3,6 +3,7 @@
 import { useCallback, useRef, useState } from "react";
 import { UploadCloud, X, ImageIcon, CheckCircle2, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { MediaItem } from "./MediaCard";
 
 interface UploadingFile {
     id: string;
@@ -14,15 +15,7 @@ interface UploadingFile {
 }
 
 interface UploadDropzoneProps {
-    onUploadComplete?: (media: {
-        id: string;
-        filename: string;
-        url: string;
-        mimeType: string;
-        size: number;
-        width?: number;
-        height?: number;
-    }) => void;
+    onUploadComplete?: (media: MediaItem) => void;
     accept?: string;
     maxSizeMb?: number;
 }
