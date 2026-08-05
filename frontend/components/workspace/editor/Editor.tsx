@@ -2,7 +2,7 @@
 
 import "./EditorStyles.css";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
 
 import { editorExtensions } from "./extensions";
@@ -24,14 +24,20 @@ export default function Editor({
     onChange,
     editable = true,
 }: EditorProps) {
-    async function handleDrop(file: File) {
+    const editorRef = useRef<any>(null);
+
+    const handleImageUpload = async (file: File) => {
         const src = await uploadImage(file);
 
-        editor?.chain().focus().setImage({
-            src,
-            alt: file.name,
-        }).run();
-    }
+        editorRef.current
+            ?.chain()
+            .focus()
+            .setImage({
+                src,
+                alt: file.name,
+            })
+            .run();
+    };
 
     const editor = useEditor({
         extensions: editorExtensions,
@@ -54,7 +60,7 @@ export default function Editor({
                     return false;
                 }
 
-                handleDrop(file);
+                handleImageUpload(file);
 
                 return true;
             },
@@ -69,7 +75,7 @@ export default function Editor({
                         const file = item.getAsFile();
 
                         if (file) {
-                            handleDrop(file);
+                            handleImageUpload(file);
                             return true;
                         }
                     }
@@ -83,6 +89,10 @@ export default function Editor({
             onChange(editor.getHTML());
         },
     });
+
+    useEffect(() => {
+        editorRef.current = editor;
+    }, [editor]);
 
     useEffect(() => {
         if (!editor) return;

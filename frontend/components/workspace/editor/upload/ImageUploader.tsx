@@ -25,14 +25,14 @@ export default function ImageUploader({ editor }: Props) {
 
         if (!file) return;
 
-        const src = await uploadImage(file);
+        const media = await uploadImage(file);
 
         editor
             .chain()
             .focus()
             .setImage({
-                src,
-                alt: file.name,
+                src: media.url,
+                alt: media.originalName,
             })
             .run();
 

@@ -353,8 +353,13 @@ html.light .glass-effect {
 }
 
 @keyframes marquee-rtl {
-  0% { transform: translateX(0%); }
-  100% { transform: translateX(-33.33%); }
+  0% {
+    transform: translateX(0%);
+  }
+
+  100% {
+    transform: translateX(-33.33%);
+  }
 }
 
 .animate-marquee {
@@ -472,4 +477,3 @@ html.light .light-mode-invert {
   outline: 3px solid #31B98F;
   outline-offset: 2px;
 }
-

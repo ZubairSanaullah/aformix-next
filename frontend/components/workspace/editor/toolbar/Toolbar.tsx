@@ -8,7 +8,7 @@ import AlignmentGroup from "./AlignmentGroup";
 import ListGroup from "./ListGroup";
 import HistoryGroup from "./HistoryGroup";
 import ToolbarDivider from "./ToolbarDivider";
-import ImageUploader from "../upload/ImageUploader";
+import MediaPickerButton from "../MediaPickerButton";
 
 interface Props {
     editor: Editor;
@@ -26,7 +26,7 @@ export default function Toolbar({
 
             <TextFormattingGroup editor={editor} />
 
-            <ImageUploader editor={editor} />
+            <MediaPickerButton editor={editor} />
 
             <ToolbarDivider />
 

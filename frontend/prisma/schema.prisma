@@ -51,6 +51,7 @@ model Post {
   author         User       @relation(fields: [authorId], references: [id])
   category       Category?  @relation(fields: [categoryId], references: [id])
   tags           Tag[]      @relation("PostToTag")
+  deletedAt DateTime?
 }
 
 model Tag {
@@ -72,4 +73,24 @@ enum PostStatus {
 enum Role {
   USER
   ADMIN
+}
+
+model Media {
+  id            String    @id @default(cuid())
+  filename      String
+  originalName  String
+  url           String
+  mimeType      String
+  size          Int
+  width         Int?
+  height        Int?
+  folder        String    @default("uploads")
+  alt           String?
+
+  deletedAt     DateTime?
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([deletedAt])
 }
