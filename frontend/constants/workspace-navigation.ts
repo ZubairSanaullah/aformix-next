@@ -13,7 +13,8 @@ import {
   BarChart3,
   Settings,
   FolderTree,
-  Tags
+  Tags,
+  Trash2
 } from "lucide-react";
 
 export const workspaceNavigation = [
@@ -69,6 +70,11 @@ export const workspaceNavigation = [
         title: "Tags",
         href: "/workspace/tags",
         icon: Tags,
+      },
+      {
+        title: "Trash",
+        href: "/workspace/blog/trash",
+        icon: Trash2,
       },
       {
         title: "Portfolio",

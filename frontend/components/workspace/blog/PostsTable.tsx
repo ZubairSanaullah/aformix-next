@@ -5,7 +5,12 @@ import Link from "next/link";
 import { PostStatus } from "@prisma/client";
 import { Pencil } from "lucide-react";
 
+import BulkActionsToolbar from "./BulkActionsToolbar";
 import DeletePostButton from "./DeletePostButton";
+import RestorePostButton from "./RestorePostButton";
+import PermanentDeletePostButton from "./PermanentDeletePostButton";
+import { useRouter } from "next/navigation";
+
 
 interface PostItem {
     id: string;
@@ -17,9 +22,10 @@ interface PostItem {
 
 interface PostsTableProps {
     posts: PostItem[];
+    isTrash?: boolean;
 }
 
-export default function PostsTable({ posts }: PostsTableProps) {
+export default function PostsTable({ posts, isTrash = false }: PostsTableProps) {
     const [selected, setSelected] = useState<string[]>([]);
 
     const allSelected =
@@ -68,6 +74,32 @@ export default function PostsTable({ posts }: PostsTableProps) {
         );
     }
 
+    const router = useRouter();
+
+    async function handleBulkAction(action: string) {
+        try {
+            const response = await fetch("/api/posts/bulk", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    ids: selected,
+                    action,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Bulk action failed.");
+            }
+
+            setSelected([]);
+            router.refresh();
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     return (
         <div className="overflow-hidden rounded-xl border bg-card">
             {selectedPosts.length > 0 && (
@@ -78,26 +110,51 @@ export default function PostsTable({ posts }: PostsTableProps) {
                     </span>
 
                     <div className="flex items-center gap-2">
-                        <button
-                            type="button"
-                            className="rounded-lg border px-3 py-2 text-sm transition hover:bg-muted"
-                        >
-                            Publish
-                        </button>
+                        {isTrash ? (
+                            <>
+                                <button
+                                    type="button"
+                                    onClick={() => handleBulkAction("restore")}
+                                    className="rounded-lg border px-3 py-2 text-sm transition hover:bg-muted"
+                                >
+                                    Restore
+                                </button>
 
-                        <button
-                            type="button"
-                            className="rounded-lg border px-3 py-2 text-sm transition hover:bg-muted"
-                        >
-                            Archive
-                        </button>
+                                <button
+                                    type="button"
+                                    onClick={() => handleBulkAction("permanentDelete")}
+                                    className="rounded-lg border border-red-500 px-3 py-2 text-sm text-red-600 transition hover:bg-red-50 dark:hover:bg-red-950/20"
+                                >
+                                    Permanently Delete
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <button
+                                    type="button"
+                                    onClick={() => handleBulkAction("publish")}
+                                    className="rounded-lg border px-3 py-2 text-sm transition hover:bg-muted"
+                                >
+                                    Publish
+                                </button>
 
-                        <button
-                            type="button"
-                            className="rounded-lg border border-red-500 px-3 py-2 text-sm text-red-600 transition hover:bg-red-50 dark:hover:bg-red-950/20"
-                        >
-                            Delete
-                        </button>
+                                <button
+                                    type="button"
+                                    onClick={() => handleBulkAction("archive")}
+                                    className="rounded-lg border px-3 py-2 text-sm transition hover:bg-muted"
+                                >
+                                    Archive
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={() => handleBulkAction("delete")}
+                                    className="rounded-lg border border-red-500 px-3 py-2 text-sm text-red-600 transition hover:bg-red-50 dark:hover:bg-red-950/20"
+                                >
+                                    Move to Trash
+                                </button>
+                            </>
+                        )}
                     </div>
                 </div>
             )}
@@ -144,8 +201,8 @@ export default function PostsTable({ posts }: PostsTableProps) {
                             <tr
                                 key={post.id}
                                 className={`border-b last:border-0 transition-colors ${isSelected
-                                        ? "bg-primary/5"
-                                        : "hover:bg-muted/40"
+                                    ? "bg-primary/5"
+                                    : "hover:bg-muted/40"
                                     }`}
                             >
                                 <td className="px-4">
@@ -175,15 +232,24 @@ export default function PostsTable({ posts }: PostsTableProps) {
 
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-2">
-                                        <Link
-                                            href={`/workspace/blog/edit/${post.id}`}
-                                            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border transition-colors hover:bg-muted"
-                                            title="Edit post"
-                                        >
-                                            <Pencil className="h-4 w-4" />
-                                        </Link>
+                                        {isTrash ? (
+                                            <>
+                                                <RestorePostButton postId={post.id} />
+                                                <PermanentDeletePostButton postId={post.id} />
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Link
+                                                    href={`/workspace/blog/edit/${post.id}`}
+                                                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg border transition-colors hover:bg-muted"
+                                                    title="Edit post"
+                                                >
+                                                    <Pencil className="h-4 w-4" />
+                                                </Link>
 
-                                        <DeletePostButton postId={post.id} />
+                                                <DeletePostButton postId={post.id} />
+                                            </>
+                                        )}
                                     </div>
                                 </td>
                             </tr>

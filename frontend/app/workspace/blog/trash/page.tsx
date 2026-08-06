@@ -1,15 +1,17 @@
 import Link from "next/link";
-
 import { prisma } from "@/lib/prisma";
 import PostsTable from "@/components/workspace/blog/PostsTable";
+import EmptyTrashButton from "@/components/workspace/blog/EmptyTrashButton";
 
-export default async function BlogPage() {
+export default async function BlogTrashPage() {
     const posts = await prisma.post.findMany({
         where: {
-            deletedAt: null,
+            deletedAt: {
+                not: null,
+            },
         },
         orderBy: {
-            createdAt: "desc",
+            deletedAt: "desc",
         },
         select: {
             id: true,
@@ -25,23 +27,27 @@ export default async function BlogPage() {
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">
-                        Blog CMS
+                        Trash
                     </h1>
 
                     <p className="mt-2 text-muted-foreground">
-                        Manage blog posts, drafts, categories, and published content.
+                        Restore or permanently delete posts.
                     </p>
                 </div>
 
-                <Link
-                    href="/workspace/blog/create"
-                    className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90"
-                >
-                    + New Post
-                </Link>
+                <div className="flex items-center gap-3">
+                    <Link
+                        href="/workspace/blog"
+                        className="rounded-lg border px-4 py-2 text-sm"
+                    >
+                        Back to Posts
+                    </Link>
+
+                    <EmptyTrashButton postId={""} />
+                </div>
             </div>
 
-            <PostsTable posts={posts} />
+            <PostsTable posts={posts} isTrash />
         </div>
     );
 }

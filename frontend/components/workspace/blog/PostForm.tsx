@@ -2,10 +2,19 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { useCallback } from "react";
+import type { ReactNode } from "react";
 
+import { useAutosave } from "@/hooks/useAutosave";
 import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/Textarea";
 import Editor from "@/components/workspace/editor/Editor";
+import EditorStatusBar from "@/components/workspace/blog/EditorStatusBar";
+import { calculateWordCount } from "@/lib/blog/word-count";
+import { calculateReadingTime } from "@/lib/blog/reading-time";
+import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
+import { useNavigationGuard } from "@/hooks/useNavigationGuard";
+import FeaturedImagePanel from "@/components/workspace/blog/FeaturedImagePanel";
 
 import {
     postSchema,
@@ -26,6 +35,8 @@ interface Tag {
 interface PostFormProps {
     mode: "create" | "edit";
 
+    postId?: string;
+
     categories: Category[];
 
     tags: Tag[];
@@ -33,6 +44,10 @@ interface PostFormProps {
     defaultValues?: Partial<PostInput>;
 
     onSubmit: SubmitHandler<PostInput>;
+
+    children?: (values: PostInput) => React.ReactNode;
+
+    renderWrapper?: (formElement: React.ReactNode, values: PostInput) => React.ReactNode;
 }
 
 const EMPTY_VALUES: PostInput = {
@@ -43,19 +58,25 @@ const EMPTY_VALUES: PostInput = {
     tagIds: [],
     seoTitle: "",
     seoDescription: "",
+    featuredImage: null,
 };
 
 export default function PostForm({
     mode,
+    postId,
     categories,
     tags,
     defaultValues,
     onSubmit,
+    children,
+    renderWrapper,
 }: PostFormProps) {
+
     const {
         register,
         control,
         handleSubmit,
+        watch,
         formState: {
             errors,
             isSubmitting,
@@ -68,23 +89,69 @@ export default function PostForm({
         },
     });
 
-    return (
+    const values = watch();
+
+    const wordCount = calculateWordCount(
+        values.content
+    );
+
+    const readingTime = calculateReadingTime(
+        values.content
+    );
+
+    const autosave = useCallback(
+        async (data: PostInput) => {
+            if (!postId) return;
+
+            const response = await fetch(
+                `/api/posts/${postId}/autosave`,
+                {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data),
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Autosave failed");
+            }
+        },
+        [postId]
+    );
+
+    const {
+        status: autosaveStatus,
+        timeAgo,
+        isDirty,
+    } = useAutosave({
+        enabled: mode === "edit" && !!postId,
+        values,
+        onSave: autosave,
+    });
+
+    useUnsavedChanges(isDirty);
+
+    useNavigationGuard(isDirty);
+
+    const formElement = (
         <form
             onSubmit={handleSubmit(onSubmit)}
             className="space-y-6 rounded-xl border bg-card p-6"
         >
+            {typeof children === "function"
+                ? children(values)
+                : children}
             <div>
-                <h2 className="text-2xl font-semibold">
-                    {mode === "create"
-                        ? "Create Post"
-                        : "Edit Post"}
-                </h2>
-
-                <p className="mt-2 text-sm text-muted-foreground">
-                    {mode === "create"
-                        ? "Create a new blog post."
-                        : "Update your blog post."}
-                </p>
+                {mode === "edit" && (
+                    <EditorStatusBar
+                        status={autosaveStatus}
+                        timeAgo={timeAgo}
+                        wordCount={wordCount}
+                        readingTime={readingTime}
+                    />
+                )}
             </div>
 
             {/* Title */}
@@ -207,10 +274,19 @@ export default function PostForm({
                     name="content"
                     control={control}
                     render={({ field }) => (
-                        <Editor
-                            value={field.value}
-                            onChange={field.onChange}
-                        />
+                        <>
+                            <Editor
+                                value={field.value}
+                                onChange={field.onChange}
+                            />
+
+                            {mode === "edit" && (
+                                <EditorStatusBar
+                                    status={autosaveStatus}
+                                    timeAgo={timeAgo}
+                                />
+                            )}
+                        </>
                     )}
                 />
 
@@ -220,6 +296,19 @@ export default function PostForm({
                     </p>
                 )}
             </div>
+
+            {/* Featured Image */}
+
+            <Controller
+                name="featuredImage"
+                control={control}
+                render={({ field }) => (
+                    <FeaturedImagePanel
+                        value={field.value}
+                        onChange={field.onChange}
+                    />
+                )}
+            />
 
             {/* SEO Title */}
 
@@ -263,4 +352,10 @@ export default function PostForm({
             </button>
         </form>
     );
+
+    if (renderWrapper) {
+        return renderWrapper(formElement, values);
+    }
+
+    return formElement;
 }

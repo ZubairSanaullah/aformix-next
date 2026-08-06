@@ -33,6 +33,11 @@ export const postSchema = z.object({
         .max(160, "SEO description cannot exceed 160 characters.")
         .optional()
         .or(z.literal("")),
+
+    featuredImage: z
+        .string()
+        .nullable()
+        .optional(),
 });
 
 export type PostInput = z.infer<typeof postSchema>;

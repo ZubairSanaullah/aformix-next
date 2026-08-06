@@ -12,17 +12,20 @@ import BubbleMenu from "./menus/BubbleMenu";
 import FloatingMenu from "./menus/FloatingMenu";
 import { uploadImage } from "@/lib/editor/uploadImage";
 
+
 interface EditorProps {
     value: string;
     onChange: (value: string) => void;
     placeholder?: string;
     editable?: boolean;
+    showToolbar?: boolean;
 }
 
 export default function Editor({
     value,
     onChange,
     editable = true,
+    showToolbar = true,
 }: EditorProps) {
     const editorRef = useRef<any>(null);
 
@@ -110,15 +113,19 @@ export default function Editor({
 
     return (
         <div className="editor-container">
-            <Toolbar editor={editor} />
+            {showToolbar && (
+                <>
+                    <Toolbar editor={editor} />
 
-            <BubbleMenu editor={editor} />
+                    <BubbleMenu editor={editor} />
 
-            <FloatingMenu editor={editor} />
+                    <FloatingMenu editor={editor} />
+                </>
+            )}
 
             <EditorContent editor={editor} />
 
-            <EditorFooter html={value} />
+            {showToolbar && <EditorFooter html={value} />}
         </div>
     );
 }

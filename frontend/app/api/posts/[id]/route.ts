@@ -171,6 +171,30 @@ export async function PATCH(
 
         const readingTime = calculateReadingTime(data.content);
 
+        await prisma.postRevision.create({
+            data: {
+                postId: existingPost.id,
+
+                title: existingPost.title,
+                slug: existingPost.slug,
+                excerpt: existingPost.excerpt,
+                content: existingPost.content,
+
+                featuredImage: existingPost.featuredImage,
+
+                status: existingPost.status,
+
+                seoTitle: existingPost.seoTitle,
+                seoDescription: existingPost.seoDescription,
+                seoKeywords: existingPost.seoKeywords,
+
+                readingTime: existingPost.readingTime,
+
+                categoryId: existingPost.categoryId,
+                authorId: existingPost.authorId,
+            },
+        });
+
         const post = await prisma.post.update({
             where: {
                 id,
@@ -184,6 +208,9 @@ export async function PATCH(
                 excerpt: data.excerpt,
 
                 content: data.content,
+
+                featuredImage:
+                    data.featuredImage || null,
 
                 seoTitle:
                     data.seoTitle || null,
@@ -293,15 +320,18 @@ export async function DELETE(
             );
         }
 
-        await prisma.post.delete({
+        await prisma.post.update({
             where: {
                 id,
+            },
+            data: {
+                deletedAt: new Date(),
             },
         });
 
         return NextResponse.json({
             success: true,
-            message: "Post deleted successfully.",
+            message: "Post moved to Trash.",
         });
     } catch (error) {
         console.error(error);

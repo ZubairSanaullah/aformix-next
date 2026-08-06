@@ -11,7 +11,9 @@ export function buildBlogQuery({
     status,
     sort,
 }: BlogQueryOptions) {
-    const where: Prisma.PostWhereInput = {};
+    const where: Prisma.PostWhereInput = {
+        deletedAt: null,
+    };
 
     if (search?.trim()) {
         where.OR = [
@@ -71,6 +73,11 @@ export function buildBlogQuery({
                 publishedAt: "desc",
             };
             break;
+
+        default:
+            orderBy = {
+                createdAt: "desc",
+            };
     }
 
     return {

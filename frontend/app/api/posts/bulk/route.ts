@@ -20,6 +20,10 @@ export async function POST(request: Request) {
                         id: {
                             in: ids,
                         },
+                        deletedAt: null,
+                        status: {
+                            not: PostStatus.PUBLISHED,
+                        },
                     },
                     data: {
                         status: PostStatus.PUBLISHED,
@@ -34,6 +38,7 @@ export async function POST(request: Request) {
                         id: {
                             in: ids,
                         },
+                        deletedAt: null,
                     },
                     data: {
                         status: PostStatus.ARCHIVED,
@@ -42,10 +47,43 @@ export async function POST(request: Request) {
                 break;
 
             case "delete":
+                await prisma.post.updateMany({
+                    where: {
+                        id: {
+                            in: ids,
+                        },
+                        deletedAt: null,
+                    },
+                    data: {
+                        deletedAt: new Date(),
+                    },
+                });
+                break;
+
+            case "restore":
+                await prisma.post.updateMany({
+                    where: {
+                        id: {
+                            in: ids,
+                        },
+                        deletedAt: {
+                            not: null,
+                        },
+                    },
+                    data: {
+                        deletedAt: null,
+                    },
+                });
+                break;
+
+            case "permanentDelete":
                 await prisma.post.deleteMany({
                     where: {
                         id: {
                             in: ids,
+                        },
+                        deletedAt: {
+                            not: null,
                         },
                     },
                 });
@@ -53,8 +91,12 @@ export async function POST(request: Request) {
 
             default:
                 return NextResponse.json(
-                    { error: "Invalid action." },
-                    { status: 400 }
+                    {
+                        error: "Invalid action.",
+                    },
+                    {
+                        status: 400,
+                    }
                 );
         }
 
@@ -65,8 +107,12 @@ export async function POST(request: Request) {
         console.error("[POST_BULK]", error);
 
         return NextResponse.json(
-            { error: "Bulk action failed." },
-            { status: 500 }
+            {
+                error: "Bulk action failed.",
+            },
+            {
+                status: 500,
+            }
         );
     }
 }
