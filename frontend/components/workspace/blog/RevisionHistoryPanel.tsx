@@ -8,8 +8,7 @@ import {
     RefreshCw,
 } from "lucide-react";
 
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+
 import GlassCard from "@/components/ui/GlassCard";
 import Badge from "@/components/ui/Badge";
 import Divider from "@/components/ui/Divider";
@@ -17,7 +16,6 @@ import EmptyState from "@/components/ui/EmptyState";
 import Skeleton from "@/components/ui/Skeleton";
 import { Button } from "@/components/ui/button";
 import RevisionPreviewDrawer from "@/components/workspace/blog/RevisionPreviewDrawer";
-import RevisionPreviewDialog from "@/components/workspace/blog/RevisionPreviewDialog";
 
 
 type Revision = {
@@ -44,15 +42,9 @@ interface RevisionHistoryPanelProps {
 export default function RevisionHistoryPanel({
     postId,
 }: RevisionHistoryPanelProps) {
-    const router = useRouter();
     const [revisions, setRevisions] = useState<Revision[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-    const [selectedRevision, setSelectedRevision] =
-        useState<Revision | null>(null);
-
-    const [previewOpen, setPreviewOpen] =
-        useState(false);
     const [selectedRevisionId, setSelectedRevisionId] =
         useState<string | null>(null);
 
@@ -99,52 +91,6 @@ export default function RevisionHistoryPanel({
 
             default:
                 return "default";
-        }
-    };
-    const handleRestore = async (
-        revision: Revision
-    ) => {
-        try {
-            const response = await fetch(
-                `/api/posts/${postId}/revisions/${revision.id}/restore`,
-                {
-                    method: "PATCH",
-                }
-            );
-
-
-            const result = await response.json();
-
-
-            if (!response.ok) {
-                toast.error(
-                    result.message ||
-                    "Failed to restore revision."
-                );
-
-                return;
-            }
-
-
-            toast.success(
-                "Revision restored successfully!"
-            );
-
-
-            setPreviewOpen(false);
-
-            setSelectedRevision(null);
-
-
-            router.refresh();
-
-        } catch (error) {
-
-            console.error(error);
-
-            toast.error(
-                "Something went wrong."
-            );
         }
     };
 
@@ -274,14 +220,7 @@ export default function RevisionHistoryPanel({
                     }
                 }}
             />
-            <RevisionPreviewDialog
-                revision={selectedRevision}
-                open={previewOpen}
-                onClose={() =>
-                    setPreviewOpen(false)
-                }
-                onRestore={handleRestore}
-            />
+
         </GlassCard>
     );
 }
