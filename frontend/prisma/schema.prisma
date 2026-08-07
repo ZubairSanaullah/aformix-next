@@ -9,13 +9,13 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  name      String?
-  email     String   @unique
-  password  String
-  image     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String         @id @default(cuid())
+  name          String?
+  email         String         @unique
+  password      String
+  image         String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
   role          Role           @default(USER)
   posts         Post[]
   postRevisions PostRevision[]
@@ -32,28 +32,28 @@ model Category {
 }
 
 model Post {
-  id             String     @id @default(cuid())
+  id             String         @id @default(cuid())
   title          String
-  slug           String     @unique
+  slug           String         @unique
   excerpt        String?
   content        String
   featuredImage  String?
-  status         PostStatus @default(DRAFT)
+  status         PostStatus     @default(DRAFT)
   seoTitle       String?
   seoDescription String?
   seoKeywords    String?
-  views          Int        @default(0)
-  readingTime    Int        @default(1)
+  views          Int            @default(0)
+  readingTime    Int            @default(1)
   publishedAt    DateTime?
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
   categoryId     String?
   authorId       String
-  author         User       @relation(fields: [authorId], references: [id])
-  category       Category?  @relation(fields: [categoryId], references: [id])
-  tags           Tag[]      @relation("PostToTag")
-  deletedAt DateTime?
-  revisions PostRevision[]
+  deletedAt      DateTime?
+  author         User           @relation(fields: [authorId], references: [id])
+  category       Category?      @relation(fields: [categoryId], references: [id])
+  revisions      PostRevision[]
+  tags           Tag[]          @relation("PostToTag")
 }
 
 model Tag {
@@ -66,6 +66,58 @@ model Tag {
   posts       Post[]   @relation("PostToTag")
 }
 
+model Media {
+  id           String    @id @default(cuid())
+  filename     String
+  originalName String
+  url          String
+  mimeType     String
+  type         MediaType @default(OTHER)
+  size         Int
+  width        Int?
+  height       Int?
+  folder       String    @default("uploads")
+  alt          String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+
+  @@index([deletedAt])
+  @@index([type])
+  @@index([folder])
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+  AUDIO
+  DOCUMENT
+  OTHER
+}
+
+model PostRevision {
+  id             String     @id @default(cuid())
+  postId         String
+  title          String
+  slug           String
+  excerpt        String?
+  content        String
+  featuredImage  String?
+  status         PostStatus
+  seoTitle       String?
+  seoDescription String?
+  seoKeywords    String?
+  readingTime    Int
+  categoryId     String?
+  authorId       String
+  createdAt      DateTime   @default(now())
+  author         User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  post           Post       @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([postId])
+  @@index([createdAt])
+}
+
 enum PostStatus {
   DRAFT
   PUBLISHED
@@ -75,56 +127,4 @@ enum PostStatus {
 enum Role {
   USER
   ADMIN
-}
-
-model Media {
-  id            String    @id @default(cuid())
-  filename      String
-  originalName  String
-  url           String
-  mimeType      String
-  size          Int
-  width         Int?
-  height        Int?
-  folder        String    @default("uploads")
-  alt           String?
-
-  deletedAt     DateTime?
-
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
-  @@index([deletedAt])
-}
-
-model PostRevision {
-  id             String   @id @default(cuid())
-
-  postId         String
-  post           Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
-
-  title          String
-  slug           String
-  excerpt        String?
-  content        String
-
-  featuredImage  String?
-
-  status         PostStatus
-
-  seoTitle       String?
-  seoDescription String?
-  seoKeywords    String?
-
-  readingTime    Int
-
-  categoryId     String?
-
-  authorId       String
-  author         User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
-
-  createdAt      DateTime @default(now())
-
-  @@index([postId])
-  @@index([createdAt])
 }

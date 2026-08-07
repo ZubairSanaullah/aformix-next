@@ -1,58 +1,49 @@
 "use client";
 
-import { useRef } from "react";
+import { useState } from "react";
 import type { Editor } from "@tiptap/react";
 import { ImagePlus } from "lucide-react";
 
 import ToolbarButton from "../toolbar/ToolbarButton";
-import { uploadImage } from "@/lib/editor/uploadImage";
+import type { MediaItem } from "@/components/workspace/media/MediaCard";
+import MediaPickerDialog from "@/components/workspace/media/MediaPickerDialog";
 
 interface Props {
     editor: Editor;
 }
 
-export default function ImageUploader({ editor }: Props) {
-    const inputRef = useRef<HTMLInputElement>(null);
+export default function ImageUploader({
+    editor,
+}: Props) {
+    const [open, setOpen] = useState(false);
 
-    function openPicker() {
-        inputRef.current?.click();
-    }
-
-    async function handleChange(
-        event: React.ChangeEvent<HTMLInputElement>
-    ) {
-        const file = event.target.files?.[0];
-
-        if (!file) return;
-
-        const url = await uploadImage(file);
-
+    const handleSelect = (media: MediaItem) => {
         editor
             .chain()
             .focus()
             .setImage({
-                src: url,
-                alt: file.name,
+                src: media.url,
+                alt:
+                    media.alt ||
+                    media.originalName,
             })
             .run();
 
-        event.target.value = "";
-    }
+        setOpen(false);
+    };
 
     return (
         <>
             <ToolbarButton
                 icon={ImagePlus}
                 title="Insert Image"
-                onClick={openPicker}
+                onClick={() => setOpen(true)}
             />
 
-            <input
-                ref={inputRef}
-                type="file"
-                accept="image/*"
-                hidden
-                onChange={handleChange}
+            <MediaPickerDialog
+                open={open}
+                onClose={() => setOpen(false)}
+                onSelect={handleSelect}
             />
         </>
     );

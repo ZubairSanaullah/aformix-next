@@ -37,32 +37,7 @@ import Divider from "@/components/ui/Divider";
 import Skeleton from "@/components/ui/Skeleton";
 import { Button } from "@/components/ui/button";
 import RevisionDiffDrawer from "./RevisionDiffDrawer";
-
-
-type Revision = {
-    id: string;
-    title: string;
-    slug: string;
-    excerpt: string | null;
-    content: string;
-
-    status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
-
-    seoTitle: string | null;
-    seoDescription: string | null;
-    seoKeywords: string | null;
-
-    readingTime: number;
-
-    createdAt: string;
-
-    author: {
-        id: string;
-        name: string | null;
-        email: string;
-        image: string | null;
-    };
-};
+import type { Revision } from "./types";
 
 
 interface RevisionPreviewDrawerProps {
@@ -354,8 +329,8 @@ export default function RevisionPreviewDrawer({
 
                                     <User className="h-4 w-4" />
 
-                                    {revision.author.name ??
-                                        revision.author.email}
+                                    {revision?.author?.name ??
+                                        revision?.author?.email}
 
                                 </div>
 
@@ -537,8 +512,8 @@ export default function RevisionPreviewDrawer({
             <RevisionDiffDrawer
                 open={diffOpen}
                 onOpenChange={setDiffOpen}
-                oldRevision={revision}
-                currentPost={currentPost}
+                leftRevision={revision}
+                rightRevision={currentPost}
             />
         </>
     );

@@ -7,8 +7,7 @@ export type MediaTab = "active" | "trash";
 
 interface MediaGridProps {
     media: MediaItem[];
-    tab: MediaTab;
-
+    tab: "active" | "trash";
     isLoading: boolean;
     error: string | null;
     search: string;
@@ -20,9 +19,11 @@ interface MediaGridProps {
     onRestore: (id: string) => void;
     onConfirmChange: (id: string | null) => void;
 
+
+    // picker support
     selectionMode?: boolean;
     selectedId?: string | null;
-    onSelect?: (item: MediaItem) => void;
+    onSelect?: (media: MediaItem) => void;
 }
 
 export default function MediaGrid({
@@ -36,11 +37,12 @@ export default function MediaGrid({
     onDelete,
     onRestore,
     onConfirmChange,
-    selectionMode = false,
+
+    selectionMode,
     selectedId,
     onSelect,
-}: MediaGridProps) {
 
+}: MediaGridProps) {
     if (error) {
         return (
             <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-600">
@@ -69,8 +71,10 @@ export default function MediaGrid({
 
                 <p className="text-sm text-muted-foreground">
                     {search
-                        ? "No images match your search."
-                        : "No media uploaded yet."}
+                        ? "No media matches your search."
+                        : tab === "trash"
+                            ? "Trash is empty."
+                            : "No media uploaded yet."}
                 </p>
             </div>
         );
@@ -83,13 +87,14 @@ export default function MediaGrid({
                     key={item.id}
                     item={item}
                     tab={tab}
-                    pending={pendingIds.has(item.id)}
-                    confirming={confirmId === item.id}
 
-                    selected={selectedId === item.id}
-                    selectionMode={selectionMode}
+                    pending={
+                        pendingIds.has(item.id)
+                    }
 
-                    onSelect={() => onSelect?.(item)}
+                    confirming={
+                        confirmId === item.id
+                    }
 
                     onDeleteClick={() =>
                         onConfirmChange(item.id)
@@ -106,6 +111,17 @@ export default function MediaGrid({
                     onRestore={() =>
                         onRestore(item.id)
                     }
+
+
+                    selectionMode={selectionMode}
+
+                    selected={
+                        selectedId === item.id
+                    }
+
+                    onSelect={() => {
+                        onSelect?.(item)
+                    }}
                 />
             ))}
         </div>
