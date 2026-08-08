@@ -1,5 +1,12 @@
 "use client";
 
+import {
+    CheckCircle2,
+    Clock3,
+    Loader2,
+    AlertCircle,
+} from "lucide-react";
+
 interface EditorStatusBarProps {
     status:
     | "idle"
@@ -21,37 +28,70 @@ export default function EditorStatusBar({
     readingTime,
 }: EditorStatusBarProps) {
     return (
-        <div className="flex flex-col gap-2 rounded-lg border bg-card px-4 py-3 text-sm sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-[var(--workspace-border)] bg-[var(--workspace-surface-soft)] px-3 py-2">
+            <div className="flex items-center gap-1.5 text-[10px]">
+                {status === "saving" && (
+                    <>
+                        <Loader2 className="h-3 w-3 animate-spin text-[var(--workspace-primary)]" />
 
-            <div className="text-muted-foreground">
-                {status === "saving" &&
-                    "Saving..."}
-
-                {status === "saved" &&
-                    `✓ Saved ${timeAgo ?? ""}`}
-
-                {status === "error" &&
-                    "Autosave failed"}
-
-                {status === "idle" &&
-                    "No changes"}
-            </div>
-
-
-            <div className="flex gap-4 text-xs text-muted-foreground">
-                {wordCount !== undefined && (
-                    <span>
-                        {wordCount} words
-                    </span>
+                        <span className="text-[var(--workspace-text-muted)]">
+                            Saving changes...
+                        </span>
+                    </>
                 )}
 
-                {readingTime !== undefined && (
-                    <span>
-                        {readingTime} min read
-                    </span>
+                {status === "saved" && (
+                    <>
+                        <CheckCircle2 className="h-3 w-3 text-emerald-500" />
+
+                        <span className="text-[var(--workspace-text-muted)]">
+                            Saved{" "}
+                            {timeAgo ?? ""}
+                        </span>
+                    </>
+                )}
+
+                {status === "error" && (
+                    <>
+                        <AlertCircle className="h-3 w-3 text-red-500" />
+
+                        <span className="text-red-500">
+                            Autosave failed
+                        </span>
+                    </>
+                )}
+
+                {status === "idle" && (
+                    <>
+                        <Clock3 className="h-3 w-3 text-[var(--workspace-text-subtle)]" />
+
+                        <span className="text-[var(--workspace-text-subtle)]">
+                            No unsaved changes
+                        </span>
+                    </>
                 )}
             </div>
 
+            {(wordCount !==
+                undefined ||
+                readingTime !==
+                undefined) && (
+                    <div className="flex items-center gap-3 text-[10px] text-[var(--workspace-text-subtle)]">
+                        {wordCount !==
+                            undefined && (
+                                <span>
+                                    {wordCount} words
+                                </span>
+                            )}
+
+                        {readingTime !==
+                            undefined && (
+                                <span>
+                                    {readingTime} min read
+                                </span>
+                            )}
+                    </div>
+                )}
         </div>
     );
 }

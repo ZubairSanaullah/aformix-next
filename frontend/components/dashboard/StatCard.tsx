@@ -1,4 +1,6 @@
-import { LucideIcon } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+
+import WorkspaceCard from "@/components/workspace/ui/WorkspaceCard";
 
 interface StatCardProps {
     title: string;
@@ -14,50 +16,55 @@ export default function StatCard({
     icon: Icon,
 }: StatCardProps) {
     return (
-        <div
+        <WorkspaceCard
+            padding="md"
             className="
-        rounded-2xl
-        border
-        border-border
-        bg-card
-        p-6
-        transition-all
-        duration-200
-        hover:-translate-y-1
-        hover:shadow-md
-      "
+                group
+                relative
+                overflow-hidden
+                transition-all
+                duration-200
+                hover:-translate-y-0.5
+                hover:shadow-[var(--workspace-shadow-md)]
+            "
         >
-            <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-muted-foreground">
-                    {title}
-                </p>
+            <div className="flex items-start justify-between gap-4">
+                <div className="min-w-0">
+                    <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--workspace-text-muted)]">
+                        {title}
+                    </p>
+
+                    <p className="mt-2 text-2xl font-semibold tracking-tight text-[var(--workspace-text)]">
+                        {value}
+                    </p>
+
+                    {description && (
+                        <p className="mt-1 text-[10px] text-[var(--workspace-text-muted)]">
+                            {description}
+                        </p>
+                    )}
+                </div>
 
                 <div
                     className="
-            flex
-            h-10
-            w-10
-            items-center
-            justify-center
-            rounded-xl
-            bg-muted
-          "
+                        flex
+                        h-9
+                        w-9
+                        shrink-0
+                        items-center
+                        justify-center
+                        rounded-lg
+                        bg-[var(--workspace-primary-soft)]
+                        transition-transform
+                        duration-200
+                        group-hover:scale-105
+                    "
                 >
-                    <Icon className="h-5 w-5 text-primary" />
+                    <Icon className="h-4 w-4 text-[var(--workspace-primary)]" />
                 </div>
             </div>
 
-            <div className="mt-5">
-                <h3 className="text-3xl font-bold tracking-tight">
-                    {value}
-                </h3>
-
-                {description && (
-                    <p className="mt-2 text-sm text-muted-foreground">
-                        {description}
-                    </p>
-                )}
-            </div>
-        </div>
+            <div className="absolute inset-x-0 bottom-0 h-px bg-[var(--workspace-primary)]/10 transition-colors group-hover:bg-[var(--workspace-primary)]/30" />
+        </WorkspaceCard>
     );
 }

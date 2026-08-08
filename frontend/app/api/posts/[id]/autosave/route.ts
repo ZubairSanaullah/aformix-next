@@ -49,6 +49,18 @@ export async function PATCH(
             );
         }
 
+        if (existingPost.deletedAt) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "This post is in Trash and cannot be autosaved.",
+                },
+                {
+                    status: 410,
+                }
+            );
+        }
+
         const isAdmin = session.user.role === "ADMIN";
         const isAuthor =
             existingPost.authorId === session.user.id;
@@ -67,25 +79,27 @@ export async function PATCH(
 
         const body = await request.json();
 
-        const readingTime = calculateReadingTime(
-            body.content ?? ""
-        );
+        const content =
+            body.content ?? existingPost.content;
+
+        const readingTime =
+            calculateReadingTime(content);
 
         const post = await prisma.post.update({
             where: {
                 id,
             },
+
             data: {
                 title:
-                    body.title ?? existingPost.title,
+                    body.title ??
+                    existingPost.title,
 
                 excerpt:
                     body.excerpt ??
                     existingPost.excerpt,
 
-                content:
-                    body.content ??
-                    existingPost.content,
+                content,
 
                 seoTitle:
                     body.seoTitle ??
@@ -95,18 +109,48 @@ export async function PATCH(
                     body.seoDescription ??
                     existingPost.seoDescription,
 
+                featuredImage:
+                    body.featuredImage !== undefined
+                        ? body.featuredImage || null
+                        : existingPost.featuredImage,
+
+                categoryId:
+                    body.categoryId !== undefined
+                        ? body.categoryId || null
+                        : existingPost.categoryId,
+
+                tags:
+                    body.tagIds !== undefined
+                        ? {
+                            set: body.tagIds.map(
+                                (tagId: string) => ({
+                                    id: tagId,
+                                })
+                            ),
+                        }
+                        : undefined,
+
                 readingTime,
 
                 updatedAt: new Date(),
+            },
+
+            select: {
+                id: true,
+                updatedAt: true,
+                readingTime: true,
+                categoryId: true,
+                featuredImage: true,
             },
         });
 
         return NextResponse.json({
             success: true,
             updatedAt: post.updatedAt,
+            readingTime: post.readingTime,
         });
     } catch (error) {
-        console.error(error);
+        console.error("Autosave error:", error);
 
         return NextResponse.json(
             {

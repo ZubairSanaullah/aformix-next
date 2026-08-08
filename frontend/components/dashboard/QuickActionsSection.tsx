@@ -1,18 +1,21 @@
-import SectionHeader from "@/components/ui/SectionHeader";
-
 import { quickActions } from "@/constants/dashboard";
 
 import QuickActionCard from "./QuickActionCard";
 
 export default function QuickActionsSection() {
     return (
-        <section className="space-y-6">
-            <SectionHeader
-                title="Quick Actions"
-                description="Create and manage your workspace faster."
-            />
+        <section>
+            <div className="mb-4">
+                <h2 className="text-sm font-semibold tracking-tight text-[var(--workspace-text)]">
+                    Quick Actions
+                </h2>
 
-            <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+                <p className="mt-1 text-xs text-[var(--workspace-text-muted)]">
+                    Common workspace tasks and shortcuts.
+                </p>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
                 {quickActions.map((action) => (
                     <QuickActionCard
                         key={action.title}

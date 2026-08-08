@@ -1,16 +1,19 @@
-import SectionHeader from "@/components/ui/SectionHeader";
-
 import { aiInsights } from "@/constants/dashboard";
 
 import AIInsightCard from "./AIInsightCard";
 
 export default function AIInsightsSection() {
     return (
-        <section className="space-y-6">
-            <SectionHeader
-                title="AI Insights"
-                description="Smart recommendations for your workspace."
-            />
+        <section>
+            <div className="mb-4">
+                <h2 className="text-sm font-semibold tracking-tight text-[var(--workspace-text)]">
+                    AI Insights
+                </h2>
+
+                <p className="mt-1 text-xs text-[var(--workspace-text-muted)]">
+                    Suggestions based on your workspace activity.
+                </p>
+            </div>
 
             <AIInsightCard
                 title="Workspace Growth Opportunities"

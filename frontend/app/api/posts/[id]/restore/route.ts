@@ -24,7 +24,46 @@ export async function PATCH(
 
         const { id } = await params;
 
-        const post = await prisma.post.update({
+        const post = await prisma.post.findUnique({
+            where: {
+                id,
+            },
+        });
+
+        if (!post) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Post not found.",
+                },
+                { status: 404 }
+            );
+        }
+
+        const isAdmin = session.user.role === "ADMIN";
+        const isAuthor = post.authorId === session.user.id;
+
+        if (!isAdmin && !isAuthor) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Forbidden",
+                },
+                { status: 403 }
+            );
+        }
+
+        if (!post.deletedAt) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Post is not in Trash.",
+                },
+                { status: 400 }
+            );
+        }
+
+        const updatedPost = await prisma.post.update({
             where: {
                 id,
             },

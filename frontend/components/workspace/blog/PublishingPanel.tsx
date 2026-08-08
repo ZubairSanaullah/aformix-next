@@ -1,15 +1,25 @@
 "use client";
 
 import { useState } from "react";
+import {
+    Archive,
+    CheckCircle2,
+    FileEdit,
+    Send,
+} from "lucide-react";
 import { toast } from "sonner";
 
-import GlassCard from "@/components/ui/GlassCard";
-import Badge from "@/components/ui/Badge";
-import { Button } from "@/components/ui/button";
+import WorkspaceCard from "@/components/workspace/ui/WorkspaceCard";
+import WorkspaceBadge from "@/components/workspace/ui/WorkspaceBadge";
+import WorkspaceButton from "@/components/workspace/ui/WorkspaceButton";
 
 interface PublishingPanelProps {
     postId: string;
-    status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+
+    status:
+    | "DRAFT"
+    | "PUBLISHED"
+    | "ARCHIVED";
 }
 
 export default function PublishingPanel({
@@ -21,7 +31,6 @@ export default function PublishingPanel({
 
     const [loading, setLoading] =
         useState(false);
-
 
     async function updateStatus(
         newStatus:
@@ -46,59 +55,72 @@ export default function PublishingPanel({
                 }
             );
 
-
             const data =
                 await response.json();
-
 
             if (!response.ok) {
                 throw new Error(
                     data.message ||
-                    "Failed"
+                    "Failed to update status."
                 );
             }
-
 
             setCurrentStatus(newStatus);
 
             toast.success(
-                "Status updated"
+                "Publishing status updated."
             );
-
         } catch (error) {
             console.error(error);
 
             toast.error(
-                "Failed to update status"
+                "Failed to update publishing status."
             );
-
         } finally {
             setLoading(false);
         }
     }
 
+    const statusVariant =
+        currentStatus === "PUBLISHED"
+            ? "success"
+            : currentStatus === "DRAFT"
+                ? "warning"
+                : "default";
 
     return (
-        <GlassCard className="space-y-5 p-6">
+        <WorkspaceCard
+            padding="md"
+            className="space-y-5"
+        >
+            <div className="flex items-center justify-between gap-3">
+                <div>
+                    <h2 className="text-sm font-semibold text-[var(--workspace-text)]">
+                        Publishing
+                    </h2>
 
-            <div className="flex items-center justify-between">
+                    <p className="mt-1 text-[10px] text-[var(--workspace-text-muted)]">
+                        Manage post visibility.
+                    </p>
+                </div>
 
-                <h2 className="font-semibold">
-                    Publishing
-                </h2>
-
-
-                <Badge>
-                    {currentStatus}
-                </Badge>
-
+                <WorkspaceBadge
+                    variant={statusVariant}
+                >
+                    {currentStatus ===
+                        "PUBLISHED"
+                        ? "Published"
+                        : currentStatus ===
+                            "DRAFT"
+                            ? "Draft"
+                            : "Archived"}
+                </WorkspaceBadge>
             </div>
 
-
-            <div className="space-y-3">
-
-                <Button
+            <div className="space-y-2">
+                <WorkspaceButton
                     className="w-full"
+                    size="sm"
                     disabled={loading}
                     onClick={() =>
                         updateStatus(
@@ -106,13 +128,14 @@ export default function PublishingPanel({
                         )
                     }
                 >
+                    <Send className="h-3.5 w-3.5" />
                     Publish
-                </Button>
+                </WorkspaceButton>
 
-
-                <Button
+                <WorkspaceButton
                     variant="outline"
                     className="w-full"
+                    size="sm"
                     disabled={loading}
                     onClick={() =>
                         updateStatus(
@@ -120,13 +143,14 @@ export default function PublishingPanel({
                         )
                     }
                 >
+                    <FileEdit className="h-3.5 w-3.5" />
                     Move to Draft
-                </Button>
+                </WorkspaceButton>
 
-
-                <Button
+                <WorkspaceButton
                     variant="outline"
                     className="w-full"
+                    size="sm"
                     disabled={loading}
                     onClick={() =>
                         updateStatus(
@@ -134,11 +158,19 @@ export default function PublishingPanel({
                         )
                     }
                 >
+                    <Archive className="h-3.5 w-3.5" />
                     Archive
-                </Button>
-
+                </WorkspaceButton>
             </div>
 
-        </GlassCard>
+            <div className="flex items-center gap-2 border-t border-[var(--workspace-border)] pt-4 text-[10px] text-[var(--workspace-text-subtle)]">
+                <CheckCircle2 className="h-3.5 w-3.5" />
+
+                <span>
+                    Changes are saved to the post
+                    immediately.
+                </span>
+            </div>
+        </WorkspaceCard>
     );
 }

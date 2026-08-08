@@ -31,9 +31,10 @@ export async function GET(
 
         const { id } = await params;
 
-        const post = await prisma.post.findUnique({
+        const post = await prisma.post.findFirst({
             where: {
                 id,
+                deletedAt: null,
             },
 
             include: {
@@ -101,6 +102,7 @@ export async function PATCH(
         const existingPost = await prisma.post.findUnique({
             where: { id },
         });
+
 
         if (!existingPost) {
             return NextResponse.json(
@@ -171,78 +173,79 @@ export async function PATCH(
 
         const readingTime = calculateReadingTime(data.content);
 
-        await prisma.postRevision.create({
-            data: {
-                postId: existingPost.id,
+        const [, post] = await prisma.$transaction([
+            prisma.postRevision.create({
+                data: {
+                    postId: existingPost.id,
 
-                title: existingPost.title,
-                slug: existingPost.slug,
-                excerpt: existingPost.excerpt,
-                content: existingPost.content,
+                    title: existingPost.title,
+                    slug: existingPost.slug,
+                    excerpt: existingPost.excerpt,
+                    content: existingPost.content,
 
-                featuredImage: existingPost.featuredImage,
+                    featuredImage: existingPost.featuredImage,
 
-                status: existingPost.status,
+                    status: existingPost.status,
 
-                seoTitle: existingPost.seoTitle,
-                seoDescription: existingPost.seoDescription,
-                seoKeywords: existingPost.seoKeywords,
+                    seoTitle: existingPost.seoTitle,
+                    seoDescription: existingPost.seoDescription,
+                    seoKeywords: existingPost.seoKeywords,
 
-                readingTime: existingPost.readingTime,
+                    readingTime: existingPost.readingTime,
 
-                categoryId: existingPost.categoryId,
-                authorId: existingPost.authorId,
-            },
-        });
+                    categoryId: existingPost.categoryId,
+                    authorId: existingPost.authorId,
+                },
+            }),
 
-        const post = await prisma.post.update({
-            where: {
-                id,
-            },
+            prisma.post.update({
+                where: {
+                    id,
+                },
 
-            data: {
-                title: data.title,
+                data: {
+                    title: data.title,
 
-                slug,
+                    slug,
 
-                excerpt: data.excerpt,
+                    excerpt: data.excerpt,
 
-                content: data.content,
+                    content: data.content,
 
-                featuredImage:
-                    data.featuredImage || null,
+                    featuredImage:
+                        data.featuredImage || null,
 
-                seoTitle:
-                    data.seoTitle || null,
+                    seoTitle:
+                        data.seoTitle || null,
 
-                seoDescription:
-                    data.seoDescription ||
-                    null,
+                    seoDescription:
+                        data.seoDescription || null,
 
-                readingTime,
+                    readingTime,
 
-                category: {
-                    connect: {
-                        id: data.categoryId,
+                    category: {
+                        connect: {
+                            id: data.categoryId,
+                        },
+                    },
+
+                    tags: {
+                        set: [],
+
+                        connect: data.tagIds.map(
+                            (tagId) => ({
+                                id: tagId,
+                            })
+                        ),
                     },
                 },
 
-                tags: {
-                    set: [],
-
-                    connect: data.tagIds.map(
-                        (id) => ({
-                            id,
-                        })
-                    ),
+                include: {
+                    category: true,
+                    tags: true,
                 },
-            },
-
-            include: {
-                category: true,
-                tags: true,
-            },
-        });
+            }),
+        ]);
 
         return NextResponse.json({
             success: true,

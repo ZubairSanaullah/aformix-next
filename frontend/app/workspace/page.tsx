@@ -7,29 +7,20 @@ import AIInsightsSection from "@/components/dashboard/AIInsightsSection";
 
 export default function WorkspacePage() {
   return (
-    <div className="space-y-10 py-8">
+    <div className="mx-auto w-full max-w-[1600px]">
+      <div className="space-y-8">
+        <DashboardHero />
 
-      {/* Hero */}
-      <DashboardHero />
+        <StatsSection />
 
+        <AnalyticsSection />
 
-      {/* Stats */}
-      <StatsSection />
+        <QuickActionsSection />
 
+        <ActivitySection />
 
-      {/* Analytics */}
-      <AnalyticsSection />
-
-
-      {/* Quick Actions */}
-      <QuickActionsSection />
-
-      {/* Recent Activity */}
-      <ActivitySection />
-
-      {/* AI Insights */}
-      <AIInsightsSection />
-
+        <AIInsightsSection />
+      </div>
     </div>
   );
 }

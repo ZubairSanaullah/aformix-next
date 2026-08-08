@@ -1,13 +1,17 @@
 "use client";
 
 import { ImageIcon } from "lucide-react";
-import MediaCard, { MediaItem } from "./MediaCard";
+
+import MediaCard, {
+    type MediaItem,
+} from "./MediaCard";
 
 export type MediaTab = "active" | "trash";
 
 interface MediaGridProps {
     media: MediaItem[];
-    tab: "active" | "trash";
+    tab: MediaTab;
+
     isLoading: boolean;
     error: string | null;
     search: string;
@@ -17,13 +21,31 @@ interface MediaGridProps {
 
     onDelete: (id: string) => void;
     onRestore: (id: string) => void;
-    onConfirmChange: (id: string | null) => void;
+    onConfirmChange: (
+        id: string | null
+    ) => void;
 
+    onDetailsClick?: (
+        media: MediaItem
+    ) => void;
 
-    // picker support
+    /*
+     * Picker support — single select
+     */
     selectionMode?: boolean;
     selectedId?: string | null;
-    onSelect?: (media: MediaItem) => void;
+    onSelect?: (
+        media: MediaItem
+    ) => void;
+
+    /*
+     * Bulk support — multi select
+     */
+    multiSelectMode?: boolean;
+    multiSelectedIds?: Set<string>;
+    onToggleMultiSelect?: (
+        media: MediaItem
+    ) => void;
 }
 
 export default function MediaGrid({
@@ -37,26 +59,40 @@ export default function MediaGrid({
     onDelete,
     onRestore,
     onConfirmChange,
+    onDetailsClick,
 
     selectionMode,
     selectedId,
     onSelect,
 
+    multiSelectMode,
+    multiSelectedIds,
+    onToggleMultiSelect,
 }: MediaGridProps) {
+    /*
+     * Error state
+     */
     if (error) {
         return (
-            <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-600">
-                {error}
+            <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-16 text-center">
+                <p className="text-sm text-destructive">
+                    {error}
+                </p>
             </div>
         );
     }
 
+    /*
+     * Loading state
+     */
     if (isLoading) {
         return (
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-                {Array.from({ length: 10 }).map((_, i) => (
+                {Array.from({
+                    length: 10,
+                }).map((_, index) => (
                     <div
-                        key={i}
+                        key={index}
                         className="aspect-square animate-pulse rounded-md bg-muted"
                     />
                 ))}
@@ -64,6 +100,9 @@ export default function MediaGrid({
         );
     }
 
+    /*
+     * Empty state
+     */
     if (media.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-16 text-center">
@@ -80,6 +119,9 @@ export default function MediaGrid({
         );
     }
 
+    /*
+     * Media grid
+     */
     return (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
             {media.map((item) => (
@@ -87,41 +129,65 @@ export default function MediaGrid({
                     key={item.id}
                     item={item}
                     tab={tab}
-
-                    pending={
-                        pendingIds.has(item.id)
-                    }
-
+                    pending={pendingIds.has(
+                        item.id
+                    )}
                     confirming={
                         confirmId === item.id
                     }
-
                     onDeleteClick={() =>
-                        onConfirmChange(item.id)
+                        onConfirmChange(
+                            item.id
+                        )
                     }
-
                     onDeleteConfirm={() =>
                         onDelete(item.id)
                     }
-
                     onDeleteCancel={() =>
                         onConfirmChange(null)
                     }
-
                     onRestore={() =>
                         onRestore(item.id)
                     }
-
-
-                    selectionMode={selectionMode}
-
+                    onDetailsClick={
+                        onDetailsClick
+                            ? () =>
+                                onDetailsClick(
+                                    item
+                                )
+                            : undefined
+                    }
+                    /*
+                     * Single selection / picker
+                     */
+                    selectionMode={
+                        selectionMode
+                    }
                     selected={
                         selectedId === item.id
                     }
-
-                    onSelect={() => {
+                    onSelect={() =>
                         onSelect?.(item)
-                    }}
+                    }
+                    /*
+                     * Multi selection / bulk actions
+                     */
+                    multiSelectMode={
+                        multiSelectMode
+                    }
+                    multiSelected={
+                        multiSelectedIds?.has(
+                            item.id
+                        ) ?? false
+                    }
+                    onToggleMultiSelect={
+                        onToggleMultiSelect
+                            ? () =>
+                                onToggleMultiSelect(
+                                    item
+                                )
+                            : undefined
+                    }
                 />
             ))}
         </div>

@@ -12,12 +12,21 @@ export async function DELETE() {
                     success: false,
                     message: "Unauthorized",
                 },
-                {
-                    status: 401,
-                }
+                { status: 401 }
             );
         }
 
+        if (session.user.role !== "ADMIN") {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Forbidden",
+                },
+                { status: 403 }
+            );
+        }
+
+        // 3. Permanently delete all trashed posts
         await prisma.post.deleteMany({
             where: {
                 deletedAt: {
@@ -26,12 +35,13 @@ export async function DELETE() {
             },
         });
 
+        // 4. Success
         return NextResponse.json({
             success: true,
             message: "Trash emptied successfully.",
         });
     } catch (error) {
-        console.error(error);
+        console.error("[EMPTY_TRASH]", error);
 
         return NextResponse.json(
             {

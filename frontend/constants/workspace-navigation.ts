@@ -8,14 +8,15 @@ import {
   CalendarDays,
   Search,
   Wallet,
-  FolderOpen,
   BookOpen,
   BarChart3,
   Settings,
   FolderTree,
   Tags,
-  Trash2
+  Trash2,
+  FileUp
 } from "lucide-react";
+import { title } from "process";
 
 export const workspaceNavigation = [
   {
@@ -72,6 +73,11 @@ export const workspaceNavigation = [
         icon: Tags,
       },
       {
+        title: 'Media',
+        href: '/workspace/media',
+        icon: FileUp,
+      },
+      {
         title: "Trash",
         href: "/workspace/blog/trash",
         icon: Trash2,
@@ -80,11 +86,6 @@ export const workspaceNavigation = [
         title: "Portfolio",
         href: "/workspace/portfolio",
         icon: Briefcase,
-      },
-      {
-        title: "Assets",
-        href: "/workspace/assets",
-        icon: FolderOpen,
       },
       {
         title: "Knowledge Base",

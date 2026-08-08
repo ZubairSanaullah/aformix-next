@@ -3,14 +3,27 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { PostStatus } from "@prisma/client";
-import { Pencil } from "lucide-react";
+import {
+    Eye,
+    MoreHorizontal,
+    Pencil,
+} from "lucide-react";
+
+import {
+    WorkspaceTable,
+    WorkspaceTableCell,
+    WorkspaceTableHead,
+    WorkspaceTableHeader,
+    WorkspaceTableRow,
+} from "@/components/workspace/ui/WorkspaceTable";
+
+import WorkspaceBadge from "@/components/workspace/ui/WorkspaceBadge";
+import WorkspaceEmptyState from "@/components/workspace/ui/WorkspaceEmptyState";
 
 import BulkActionsToolbar from "./BulkActionsToolbar";
 import DeletePostButton from "./DeletePostButton";
 import RestorePostButton from "./RestorePostButton";
 import PermanentDeletePostButton from "./PermanentDeletePostButton";
-import { useRouter } from "next/navigation";
-
 
 interface PostItem {
     id: string;
@@ -18,6 +31,14 @@ interface PostItem {
     status: PostStatus;
     readingTime: number;
     createdAt: Date;
+    category: {
+        id: string;
+        name: string;
+    } | null;
+    tags: {
+        id: string;
+        name: string;
+    }[];
 }
 
 interface PostsTableProps {
@@ -25,238 +46,322 @@ interface PostsTableProps {
     isTrash?: boolean;
 }
 
-export default function PostsTable({ posts, isTrash = false }: PostsTableProps) {
-    const [selected, setSelected] = useState<string[]>([]);
+function getStatusVariant(status: PostStatus) {
+    switch (status) {
+        case "PUBLISHED":
+            return "success" as const;
+
+        case "DRAFT":
+            return "warning" as const;
+
+        case "ARCHIVED":
+            return "default" as const;
+
+        default:
+            return "default" as const;
+    }
+}
+
+function formatDate(date: Date) {
+    return new Intl.DateTimeFormat("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+    }).format(new Date(date));
+}
+
+export default function PostsTable({
+    posts,
+    isTrash = false,
+}: PostsTableProps) {
+    const [selected, setSelected] = useState<string[]>(
+        []
+    );
 
     const allSelected =
-        posts.length > 0 && selected.length === posts.length;
+        posts.length > 0 &&
+        selected.length === posts.length;
 
     const selectedPosts = useMemo(
-        () => posts.filter((post) => selected.includes(post.id)),
+        () =>
+            posts.filter((post) =>
+                selected.includes(post.id)
+            ),
         [posts, selected]
     );
 
-    const toggleAll = () => {
+    function toggleAll() {
         if (allSelected) {
             setSelected([]);
             return;
         }
 
         setSelected(posts.map((post) => post.id));
-    };
+    }
 
-    const toggleOne = (id: string) => {
-        setSelected((prev) =>
-            prev.includes(id)
-                ? prev.filter((item) => item !== id)
-                : [...prev, id]
+    function toggleOne(id: string) {
+        setSelected((previous) =>
+            previous.includes(id)
+                ? previous.filter((item) => item !== id)
+                : [...previous, id]
         );
-    };
+    }
 
     if (posts.length === 0) {
         return (
-            <div className="rounded-xl border bg-card p-12 text-center">
-                <h2 className="text-xl font-semibold">
-                    No posts yet
-                </h2>
-
-                <p className="mt-2 text-muted-foreground">
-                    Create your first blog post to get started.
-                </p>
-
-                <Link
-                    href="/workspace/blog/create"
-                    className="mt-6 inline-flex rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
-                >
-                    + Create First Post
-                </Link>
-            </div>
+            <WorkspaceEmptyState
+                title="No posts found"
+                description={
+                    isTrash
+                        ? "There are no posts in the trash."
+                        : "No posts match your current filters. Create a new post or adjust your filters."
+                }
+                actionLabel={
+                    isTrash ? undefined : "Create New Post"
+                }
+                onAction={
+                    isTrash
+                        ? undefined
+                        : () => {
+                            window.location.href =
+                                "/workspace/blog/create";
+                        }
+                }
+            />
         );
     }
 
-    const router = useRouter();
-
-    async function handleBulkAction(action: string) {
-        try {
-            const response = await fetch("/api/posts/bulk", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    ids: selected,
-                    action,
-                }),
-            });
-
-            if (!response.ok) {
-                throw new Error("Bulk action failed.");
-            }
-
-            setSelected([]);
-            router.refresh();
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
     return (
-        <div className="overflow-hidden rounded-xl border bg-card">
+        <div className="space-y-3">
             {selectedPosts.length > 0 && (
-                <div className="flex items-center justify-between border-b bg-primary/5 px-6 py-3">
-                    <span className="text-sm font-medium">
-                        {selectedPosts.length} post
-                        {selectedPosts.length > 1 ? "s" : ""} selected
-                    </span>
-
-                    <div className="flex items-center gap-2">
-                        {isTrash ? (
-                            <>
-                                <button
-                                    type="button"
-                                    onClick={() => handleBulkAction("restore")}
-                                    className="rounded-lg border px-3 py-2 text-sm transition hover:bg-muted"
-                                >
-                                    Restore
-                                </button>
-
-                                <button
-                                    type="button"
-                                    onClick={() => handleBulkAction("permanentDelete")}
-                                    className="rounded-lg border border-red-500 px-3 py-2 text-sm text-red-600 transition hover:bg-red-50 dark:hover:bg-red-950/20"
-                                >
-                                    Permanently Delete
-                                </button>
-                            </>
-                        ) : (
-                            <>
-                                <button
-                                    type="button"
-                                    onClick={() => handleBulkAction("publish")}
-                                    className="rounded-lg border px-3 py-2 text-sm transition hover:bg-muted"
-                                >
-                                    Publish
-                                </button>
-
-                                <button
-                                    type="button"
-                                    onClick={() => handleBulkAction("archive")}
-                                    className="rounded-lg border px-3 py-2 text-sm transition hover:bg-muted"
-                                >
-                                    Archive
-                                </button>
-
-                                <button
-                                    type="button"
-                                    onClick={() => handleBulkAction("delete")}
-                                    className="rounded-lg border border-red-500 px-3 py-2 text-sm text-red-600 transition hover:bg-red-50 dark:hover:bg-red-950/20"
-                                >
-                                    Move to Trash
-                                </button>
-                            </>
-                        )}
-                    </div>
-                </div>
+                <BulkActionsToolbar
+                    ids={selected}
+                    onSuccess={() => setSelected([])}
+                />
             )}
 
-            <table className="w-full">
-                <thead className="border-b bg-muted/40">
+            <WorkspaceTable>
+                <WorkspaceTableHeader>
                     <tr>
-                        <th className="w-12 px-4">
+                        <WorkspaceTableHead className="w-10 px-3">
                             <input
                                 type="checkbox"
                                 checked={allSelected}
                                 onChange={toggleAll}
-                                className="h-4 w-4 cursor-pointer rounded"
+                                aria-label="Select all posts"
+                                className="
+                                    h-3.5
+                                    w-3.5
+                                    cursor-pointer
+                                    rounded
+                                    border-[var(--workspace-border)]
+                                    accent-[var(--workspace-primary)]
+                                "
                             />
-                        </th>
+                        </WorkspaceTableHead>
 
-                        <th className="px-6 py-4 text-left text-sm font-semibold">
-                            Title
-                        </th>
+                        <WorkspaceTableHead>
+                            Post
+                        </WorkspaceTableHead>
 
-                        <th className="px-6 py-4 text-left text-sm font-semibold">
+                        <WorkspaceTableHead>
+                            Category
+                        </WorkspaceTableHead>
+
+                        <WorkspaceTableHead>
                             Status
-                        </th>
+                        </WorkspaceTableHead>
 
-                        <th className="px-6 py-4 text-left text-sm font-semibold">
-                            Reading Time
-                        </th>
+                        <WorkspaceTableHead>
+                            Reading
+                        </WorkspaceTableHead>
 
-                        <th className="px-6 py-4 text-left text-sm font-semibold">
+                        <WorkspaceTableHead>
                             Created
-                        </th>
+                        </WorkspaceTableHead>
 
-                        <th className="px-6 py-4 text-left text-sm font-semibold">
+                        <WorkspaceTableHead className="text-right">
                             Actions
-                        </th>
+                        </WorkspaceTableHead>
                     </tr>
-                </thead>
+                </WorkspaceTableHeader>
 
                 <tbody>
                     {posts.map((post) => {
-                        const isSelected = selected.includes(post.id);
+                        const isSelected =
+                            selected.includes(post.id);
 
                         return (
-                            <tr
+                            <WorkspaceTableRow
                                 key={post.id}
-                                className={`border-b last:border-0 transition-colors ${isSelected
-                                    ? "bg-primary/5"
-                                    : "hover:bg-muted/40"
-                                    }`}
+                                className={
+                                    isSelected
+                                        ? "bg-[var(--workspace-primary-soft)]/50"
+                                        : undefined
+                                }
                             >
-                                <td className="px-4">
+                                <WorkspaceTableCell className="w-10 px-3">
                                     <input
                                         type="checkbox"
                                         checked={isSelected}
-                                        onChange={() => toggleOne(post.id)}
-                                        className="h-4 w-4 cursor-pointer rounded"
+                                        onChange={() =>
+                                            toggleOne(post.id)
+                                        }
+                                        aria-label={`Select ${post.title}`}
+                                        className="
+                                            h-3.5
+                                            w-3.5
+                                            cursor-pointer
+                                            rounded
+                                            border-[var(--workspace-border)]
+                                            accent-[var(--workspace-primary)]
+                                        "
                                     />
-                                </td>
+                                </WorkspaceTableCell>
 
-                                <td className="px-6 py-4 font-medium">
-                                    {post.title}
-                                </td>
+                                <WorkspaceTableCell className="min-w-[260px]">
+                                    <div className="min-w-0">
+                                        <Link
+                                            href={`/workspace/blog/edit/${post.id}`}
+                                            className="
+                                                line-clamp-1
+                                                text-xs
+                                                font-semibold
+                                                text-[var(--workspace-text)]
+                                                transition-colors
+                                                hover:text-[var(--workspace-primary)]
+                                            "
+                                        >
+                                            {post.title}
+                                        </Link>
 
-                                <td className="px-6 py-4">
-                                    {post.status}
-                                </td>
+                                        <div className="mt-1 flex items-center gap-2 text-[10px] text-[var(--workspace-text-subtle)]">
+                                            <span className="inline-flex items-center gap-1">
+                                                <Eye className="h-3 w-3" />
+                                                Manage post
+                                            </span>
+                                        </div>
+                                    </div>
+                                </WorkspaceTableCell>
 
-                                <td className="px-6 py-4">
-                                    {post.readingTime} min
-                                </td>
+                                <WorkspaceTableCell>
+                                    {post.category ? (
+                                        <span className="text-xs text-[var(--workspace-text-muted)]">
+                                            {post.category.name}
+                                        </span>
+                                    ) : (
+                                        <span className="text-[10px] text-[var(--workspace-text-subtle)]">
+                                            Uncategorized
+                                        </span>
+                                    )}
+                                </WorkspaceTableCell>
 
-                                <td className="px-6 py-4">
-                                    {new Date(post.createdAt).toLocaleDateString()}
-                                </td>
+                                <WorkspaceTableCell>
+                                    <WorkspaceBadge
+                                        variant={getStatusVariant(
+                                            post.status
+                                        )}
+                                    >
+                                        {post.status ===
+                                            "PUBLISHED"
+                                            ? "Published"
+                                            : post.status ===
+                                                "DRAFT"
+                                                ? "Draft"
+                                                : "Archived"}
+                                    </WorkspaceBadge>
+                                </WorkspaceTableCell>
 
-                                <td className="px-6 py-4">
-                                    <div className="flex items-center gap-2">
+                                <WorkspaceTableCell>
+                                    <span className="whitespace-nowrap text-xs text-[var(--workspace-text-muted)]">
+                                        {post.readingTime} min
+                                    </span>
+                                </WorkspaceTableCell>
+
+                                <WorkspaceTableCell>
+                                    <span className="whitespace-nowrap text-xs text-[var(--workspace-text-muted)]">
+                                        {formatDate(
+                                            post.createdAt
+                                        )}
+                                    </span>
+                                </WorkspaceTableCell>
+
+                                <WorkspaceTableCell>
+                                    <div className="flex items-center justify-end gap-1.5">
                                         {isTrash ? (
                                             <>
-                                                <RestorePostButton postId={post.id} />
-                                                <PermanentDeletePostButton postId={post.id} />
+                                                <RestorePostButton
+                                                    postId={post.id}
+                                                />
+
+                                                <PermanentDeletePostButton
+                                                    postId={post.id}
+                                                />
                                             </>
                                         ) : (
                                             <>
                                                 <Link
                                                     href={`/workspace/blog/edit/${post.id}`}
-                                                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg border transition-colors hover:bg-muted"
+                                                    className="
+                                                        inline-flex
+                                                        h-8
+                                                        w-8
+                                                        items-center
+                                                        justify-center
+                                                        rounded-lg
+                                                        border
+                                                        border-[var(--workspace-border)]
+                                                        text-[var(--workspace-text-muted)]
+                                                        transition-colors
+                                                        hover:border-[var(--workspace-primary)]/30
+                                                        hover:bg-[var(--workspace-primary-soft)]
+                                                        hover:text-[var(--workspace-primary)]
+                                                    "
                                                     title="Edit post"
+                                                    aria-label="Edit post"
                                                 >
-                                                    <Pencil className="h-4 w-4" />
+                                                    <Pencil className="h-3.5 w-3.5" />
                                                 </Link>
 
-                                                <DeletePostButton postId={post.id} />
+                                                <DeletePostButton
+                                                    postId={post.id}
+                                                />
+
+                                                <button
+                                                    type="button"
+                                                    className="
+                                                        hidden
+                                                        h-8
+                                                        w-8
+                                                        items-center
+                                                        justify-center
+                                                        rounded-lg
+                                                        border
+                                                        border-[var(--workspace-border)]
+                                                        text-[var(--workspace-text-subtle)]
+                                                    "
+                                                    title="More actions"
+                                                    aria-label="More actions"
+                                                >
+                                                    <MoreHorizontal className="h-3.5 w-3.5" />
+                                                </button>
                                             </>
                                         )}
                                     </div>
-                                </td>
-                            </tr>
+                                </WorkspaceTableCell>
+                            </WorkspaceTableRow>
                         );
                     })}
                 </tbody>
-            </table>
+            </WorkspaceTable>
+
+            {selectedPosts.length > 0 && (
+                <p className="px-1 text-[10px] text-[var(--workspace-text-muted)]">
+                    {selectedPosts.length} post
+                    {selectedPosts.length === 1 ? "" : "s"}{" "}
+                    selected
+                </p>
+            )}
         </div>
     );
 }

@@ -2,7 +2,14 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import {
+    Archive,
+    Send,
+    Trash2,
+} from "lucide-react";
 import { toast } from "sonner";
+
+import WorkspaceButton from "@/components/workspace/ui/WorkspaceButton";
 
 import {
     AlertDialog,
@@ -27,31 +34,49 @@ export default function BulkActionsToolbar({
 }: BulkActionsToolbarProps) {
     const router = useRouter();
 
-    const [deleteOpen, setDeleteOpen] = useState(false);
+    const [deleteOpen, setDeleteOpen] =
+        useState(false);
 
-    const [isPending, startTransition] = useTransition();
+    const [isPending, startTransition] =
+        useTransition();
 
-    async function runAction(action: "publish" | "archive" | "delete") {
+    async function runAction(
+        action: "publish" | "archive" | "delete"
+    ) {
         try {
-            const response = await fetch("/api/posts/bulk", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    ids,
-                    action,
-                }),
-            });
+            const response = await fetch(
+                "/api/posts/bulk",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type":
+                            "application/json",
+                    },
+                    body: JSON.stringify({
+                        ids,
+                        action,
+                    }),
+                }
+            );
 
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.error || "Action failed");
+                throw new Error(
+                    data.error || "Action failed"
+                );
             }
 
+            const actionLabel =
+                action === "publish"
+                    ? "published"
+                    : action === "archive"
+                        ? "archived"
+                        : "moved to trash";
+
             toast.success(
-                `${ids.length} post${ids.length > 1 ? "s" : ""} ${action}d successfully.`
+                `${ids.length} post${ids.length > 1 ? "s" : ""
+                } ${actionLabel} successfully.`
             );
 
             onSuccess();
@@ -61,55 +86,80 @@ export default function BulkActionsToolbar({
             });
         } catch (error) {
             console.error(error);
-
-            toast.error("Bulk action failed.");
+            toast.error(
+                "The bulk action could not be completed."
+            );
         }
     }
 
     return (
-        <div className="flex items-center justify-between border-b bg-primary/5 px-6 py-3">
-            <span className="text-sm font-medium">
-                {ids.length} post{ids.length > 1 ? "s" : ""} selected
-            </span>
-
+        <div className="flex flex-col gap-3 rounded-xl border border-[var(--workspace-border)] bg-[var(--workspace-surface)] px-3 py-2.5 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-2">
-                <button
-                    disabled={isPending}
-                    onClick={() => runAction("publish")}
-                    className="rounded-lg border px-3 py-2 text-sm hover:bg-muted disabled:opacity-50"
-                >
-                    Publish
-                </button>
+                <div className="flex h-7 min-w-7 items-center justify-center rounded-full bg-[var(--workspace-primary-soft)] px-2 text-[10px] font-semibold text-[var(--workspace-primary)]">
+                    {ids.length}
+                </div>
 
-                <button
+                <span className="text-xs font-medium text-[var(--workspace-text)]">
+                    {ids.length === 1
+                        ? "Post selected"
+                        : "Posts selected"}
+                </span>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-1.5">
+                <WorkspaceButton
+                    size="sm"
+                    variant="secondary"
                     disabled={isPending}
-                    onClick={() => runAction("archive")}
-                    className="rounded-lg border px-3 py-2 text-sm hover:bg-muted disabled:opacity-50"
+                    onClick={() =>
+                        runAction("publish")
+                    }
                 >
+                    <Send className="h-3 w-3" />
+                    Publish
+                </WorkspaceButton>
+
+                <WorkspaceButton
+                    size="sm"
+                    variant="secondary"
+                    disabled={isPending}
+                    onClick={() =>
+                        runAction("archive")
+                    }
+                >
+                    <Archive className="h-3 w-3" />
                     Archive
-                </button>
+                </WorkspaceButton>
 
                 <AlertDialog
                     open={deleteOpen}
                     onOpenChange={setDeleteOpen}
                 >
                     <AlertDialogTrigger asChild>
-                        <button
+                        <WorkspaceButton
+                            size="sm"
+                            variant="danger"
                             disabled={isPending}
-                            className="rounded-lg border border-red-500 px-3 py-2 text-sm text-red-600 hover:bg-red-50 disabled:opacity-50"
                         >
-                            Delete
-                        </button>
+                            <Trash2 className="h-3 w-3" />
+                            Move to Trash
+                        </WorkspaceButton>
                     </AlertDialogTrigger>
 
-                    <AlertDialogContent>
+                    <AlertDialogContent className="rounded-xl border border-[var(--workspace-border)]">
                         <AlertDialogHeader>
                             <AlertDialogTitle>
-                                Delete selected posts?
+                                Move selected posts to
+                                Trash?
                             </AlertDialogTitle>
 
                             <AlertDialogDescription>
-                                This will move the selected posts to Trash.
+                                {ids.length} selected post
+                                {ids.length > 1
+                                    ? "s will"
+                                    : " will"}{" "}
+                                be moved to Trash. You can
+                                restore them later.
                             </AlertDialogDescription>
                         </AlertDialogHeader>
 
@@ -119,15 +169,18 @@ export default function BulkActionsToolbar({
                             </AlertDialogCancel>
 
                             <AlertDialogAction
-                                onClick={(e) => {
-                                    e.preventDefault();
+                                onClick={(event) => {
+                                    event.preventDefault();
 
                                     setDeleteOpen(false);
 
-                                    runAction("delete");
+                                    runAction(
+                                        "delete"
+                                    );
                                 }}
+                                disabled={isPending}
                             >
-                                Delete
+                                Move to Trash
                             </AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>

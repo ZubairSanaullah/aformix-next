@@ -15,6 +15,7 @@ import Input from "@/components/ui/Input";
 import { UploadDropzone } from "@/components/workspace/media/UploadDropzone";
 import MediaGrid from "@/components/workspace/media/MediaGrid";
 import type { MediaItem } from "@/components/workspace/media/MediaCard";
+import type { FolderItem } from "@/components/workspace/media/FolderSidebar";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 
 interface MediaPickerDialogProps {
@@ -51,7 +52,8 @@ export default function MediaPickerDialog({
 
     const [searchInput, setSearchInput] = useState("");
 
-    const [folder, setFolder] = useState("");
+    const [folders, setFolders] = useState<FolderItem[]>([]);
+    const [folderId, setFolderId] = useState("");
 
     const [page, setPage] = useState(1);
 
@@ -66,6 +68,18 @@ export default function MediaPickerDialog({
 
     const [error, setError] =
         useState<string | null>(null);
+
+    const fetchFolders = useCallback(async () => {
+        try {
+            const res = await fetch("/api/folders");
+            if (!res.ok) return;
+
+            const data = await res.json();
+            setFolders(data.folders);
+        } catch {
+            /* non-critical: dropdown just stays empty */
+        }
+    }, []);
 
     const fetchMedia = useCallback(
         async (requestedPage: number) => {
@@ -82,9 +96,11 @@ export default function MediaPickerDialog({
                     );
                 }
 
-                if (folder) {
-                    params.set("folder", folder);
+                if (folderId) {
+                    params.set("folderId", folderId);
                 }
+
+                params.set("type", "IMAGE");
 
                 params.set(
                     "page",
@@ -121,7 +137,7 @@ export default function MediaPickerDialog({
                 setIsLoading(false);
             }
         },
-        [debouncedSearch, folder]
+        [debouncedSearch, folderId]
     );
 
     /*
@@ -134,7 +150,7 @@ export default function MediaPickerDialog({
     }, [
         open,
         debouncedSearch,
-        folder,
+        folderId,
     ]);
 
     /*
@@ -152,13 +168,14 @@ export default function MediaPickerDialog({
     ]);
 
     /*
-     * Reset selection when opening the picker.
+     * Fetch folders and reset selection when opening the picker.
      */
     useEffect(() => {
         if (!open) return;
 
         setSelected(null);
-    }, [open]);
+        fetchFolders();
+    }, [open, fetchFolders]);
 
     const handleUploadComplete = useCallback(
         async () => {
@@ -166,8 +183,9 @@ export default function MediaPickerDialog({
              * Refresh the current page after upload.
              */
             await fetchMedia(page);
+            await fetchFolders();
         },
-        [fetchMedia, page]
+        [fetchMedia, fetchFolders, page]
     );
 
     const goToPreviousPage = () => {
@@ -241,10 +259,31 @@ export default function MediaPickerDialog({
 
                 {/* Upload */}
                 <div className="border-b bg-muted/20 p-6">
+                    {folderId && (
+                        <div className="mb-3 rounded-md border bg-background px-3 py-2 text-xs text-muted-foreground">
+                            New uploads will be added to{" "}
+                            <span className="font-medium text-foreground">
+                                {folders.find(
+                                    (folder) => folder.id === folderId
+                                )?.name ?? "selected folder"}
+                            </span>
+                            .
+                        </div>
+                    )}
+
+                    {!folderId && (
+                        <div className="mb-3 rounded-md border bg-background px-3 py-2 text-xs text-muted-foreground">
+                            New uploads will be added to the{" "}
+                            <span className="font-medium text-foreground">
+                                uploads
+                            </span>{" "}
+                            folder.
+                        </div>
+                    )}
+
                     <UploadDropzone
-                        onUploadComplete={
-                            handleUploadComplete
-                        }
+                        onUploadComplete={handleUploadComplete}
+                        folderId={folderId || undefined}
                     />
                 </div>
 
@@ -295,9 +334,9 @@ export default function MediaPickerDialog({
                         </div>
 
                         <select
-                            value={folder}
+                            value={folderId}
                             onChange={(e) =>
-                                setFolder(
+                                setFolderId(
                                     e.target.value
                                 )
                             }
@@ -317,9 +356,11 @@ export default function MediaPickerDialog({
                                 All folders
                             </option>
 
-                            <option value="uploads">
-                                uploads
-                            </option>
+                            {folders.map((folder) => (
+                                <option key={folder.id} value={folder.id}>
+                                    {folder.name}
+                                </option>
+                            ))}
                         </select>
                     </div>
                 </div>

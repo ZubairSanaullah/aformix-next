@@ -9,7 +9,7 @@ export async function GET(request: Request) {
         const status = searchParams.get("status");
         const query = searchParams.get("q")?.trim();
         const type = searchParams.get("type");
-        const folder = searchParams.get("folder")?.trim();
+        const folderId = searchParams.get("folderId")?.trim();
 
         const page = Math.max(
             1,
@@ -24,12 +24,35 @@ export async function GET(request: Request) {
             )
         );
 
+        /*
+         * Build the Prisma Media filter.
+         *
+         * Media.folder is a relation to Folder,
+         * therefore folder filtering must use:
+         *
+         * folder: {
+         *     is: {
+         *         id: folderId
+         *     }
+         * }
+         */
         const where: Prisma.MediaWhereInput = {
+            /*
+             * Active media:
+             * deletedAt = null
+             *
+             * Trash:
+             * deletedAt != null
+             */
             deletedAt:
                 status === "trash"
                     ? { not: null }
                     : null,
 
+            /*
+             * Search by original filename,
+             * stored filename, or alt text.
+             */
             ...(query
                 ? {
                     OR: [
@@ -55,6 +78,9 @@ export async function GET(request: Request) {
                 }
                 : {}),
 
+            /*
+             * Filter by MediaType when supplied.
+             */
             ...(type &&
                 Object.values(MediaType).includes(
                     type as MediaType
@@ -64,53 +90,89 @@ export async function GET(request: Request) {
                 }
                 : {}),
 
-            ...(folder
+            /*
+             * Folder is a Prisma relation.
+             *
+             * Empty folderId means:
+             *     all folders
+             *
+             * Specific folderId means:
+             *     media belonging to that folder
+             */
+            ...(folderId
                 ? {
-                    folder,
+                    folder: {
+                        is: {
+                            id: folderId,
+                        },
+                    },
                 }
                 : {}),
         };
 
-        const [total, media] =
-            await Promise.all([
-                prisma.media.count({
-                    where,
-                }),
+        /*
+         * Count and fetch media in parallel.
+         */
+        const [total, media] = await Promise.all([
+            prisma.media.count({
+                where,
+            }),
 
-                prisma.media.findMany({
-                    where,
-                    orderBy:
-                        status === "trash"
-                            ? {
-                                updatedAt: "desc",
-                            }
-                            : {
-                                createdAt: "desc",
-                            },
-                    skip:
-                        (page - 1) * limit,
-                    take: limit,
-                }),
-            ]);
+            prisma.media.findMany({
+                where,
+
+                /*
+                 * Trash is sorted by updatedAt so recently
+                 * modified/deleted items appear first.
+                 *
+                 * Active media is sorted by creation date.
+                 */
+                orderBy:
+                    status === "trash"
+                        ? {
+                            updatedAt: "desc",
+                        }
+                        : {
+                            createdAt: "desc",
+                        },
+
+                skip: (page - 1) * limit,
+
+                take: limit,
+
+                /*
+                 * Include the related folder so the frontend
+                 * can access folder information if needed.
+                 */
+                include: {
+                    folder: true,
+                },
+            }),
+        ]);
 
         const totalPages = Math.ceil(
             total / limit
         );
 
+        /*
+         * Protect against requesting a page that no longer
+         * exists after deleting/filtering media.
+         */
         const safePage =
             totalPages > 0
                 ? Math.min(page, totalPages)
                 : 1;
 
         /*
-         * If the requested page is beyond the
-         * available pages, fetch the correct page.
+         * If the requested page is beyond the available
+         * pages, fetch the correct final page.
          */
         const finalMedia =
             safePage === page
                 ? media
                 : await prisma.media.findMany({
                     where,
+
                     orderBy:
                         status === "trash"
                             ? {
@@ -119,10 +181,16 @@ export async function GET(request: Request) {
                             : {
                                 createdAt: "desc",
                             },
+
                     skip:
                         (safePage - 1) *
                         limit,
+
                     take: limit,
+
+                    include: {
+                        folder: true,
+                    },
                 });
 
         return NextResponse.json({
@@ -149,8 +217,7 @@ export async function GET(request: Request) {
 
         return NextResponse.json(
             {
-                error:
-                    "Failed to fetch media",
+                error: "Failed to fetch media",
             },
             {
                 status: 500,

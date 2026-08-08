@@ -2,7 +2,12 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+    ChevronLeft,
+    ChevronRight,
+} from "lucide-react";
+
+import WorkspaceButton from "@/components/workspace/ui/WorkspaceButton";
 
 interface PaginationProps {
     page: number;
@@ -17,48 +22,101 @@ export default function Pagination({
 }: PaginationProps) {
     const searchParams = useSearchParams();
 
-    const totalPages = Math.max(1, Math.ceil(total / pageSize));
+    const totalPages = Math.max(
+        1,
+        Math.ceil(total / pageSize)
+    );
 
     if (totalPages <= 1) {
         return null;
     }
 
     function buildUrl(nextPage: number) {
-        const params = new URLSearchParams(searchParams.toString());
+        const params = new URLSearchParams(
+            searchParams.toString()
+        );
 
         params.set("page", String(nextPage));
 
-        return `/workspace/blog?${params.toString()}`;
+        const query = params.toString();
+
+        return query
+            ? `/workspace/blog?${query}`
+            : "/workspace/blog";
     }
 
-    return (
-        <div className="flex items-center justify-between rounded-xl border bg-card p-4">
-            <div className="text-sm text-muted-foreground">
-                Showing page <strong>{page}</strong> of{" "}
-                <strong>{totalPages}</strong> ({total} posts)
-            </div>
+    const start = (page - 1) * pageSize + 1;
+    const end = Math.min(
+        page * pageSize,
+        total
+    );
 
-            <div className="flex items-center gap-2">
+    return (
+        <div className="flex flex-col gap-3 border-t border-[var(--workspace-border)] pt-4 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-[10px] text-[var(--workspace-text-muted)] sm:text-xs">
+                Showing{" "}
+                <span className="font-medium text-[var(--workspace-text)]">
+                    {start}–{end}
+                </span>{" "}
+                of{" "}
+                <span className="font-medium text-[var(--workspace-text)]">
+                    {total}
+                </span>{" "}
+                posts
+            </p>
+
+            <div className="flex items-center gap-1.5">
                 <Link
-                    href={buildUrl(Math.max(1, page - 1))}
-                    className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition ${page === 1
-                            ? "pointer-events-none opacity-50"
-                            : "hover:bg-accent"
-                        }`}
+                    href={buildUrl(
+                        Math.max(1, page - 1)
+                    )}
+                    aria-disabled={page === 1}
+                    className={
+                        page === 1
+                            ? "pointer-events-none opacity-40"
+                            : undefined
+                    }
                 >
-                    <ChevronLeft className="h-4 w-4" />
-                    Previous
+                    <WorkspaceButton
+                        variant="secondary"
+                        size="sm"
+                        disabled={page === 1}
+                    >
+                        <ChevronLeft className="h-3.5 w-3.5" />
+                        Previous
+                    </WorkspaceButton>
                 </Link>
 
+                <div className="flex h-8 items-center rounded-lg border border-[var(--workspace-border)] bg-[var(--workspace-surface)] px-3 text-[10px] font-medium text-[var(--workspace-text-muted)]">
+                    {page} / {totalPages}
+                </div>
+
                 <Link
-                    href={buildUrl(Math.min(totalPages, page + 1))}
-                    className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition ${page === totalPages
-                            ? "pointer-events-none opacity-50"
-                            : "hover:bg-accent"
-                        }`}
+                    href={buildUrl(
+                        Math.min(
+                            totalPages,
+                            page + 1
+                        )
+                    )}
+                    aria-disabled={
+                        page === totalPages
+                    }
+                    className={
+                        page === totalPages
+                            ? "pointer-events-none opacity-40"
+                            : undefined
+                    }
                 >
-                    Next
-                    <ChevronRight className="h-4 w-4" />
+                    <WorkspaceButton
+                        variant="secondary"
+                        size="sm"
+                        disabled={
+                            page === totalPages
+                        }
+                    >
+                        Next
+                        <ChevronRight className="h-3.5 w-3.5" />
+                    </WorkspaceButton>
                 </Link>
             </div>
         </div>

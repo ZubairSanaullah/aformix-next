@@ -1,13 +1,13 @@
 "use client";
 
 import {
-    LineChart,
+    CartesianGrid,
     Line,
+    LineChart,
+    ResponsiveContainer,
+    Tooltip,
     XAxis,
     YAxis,
-    CartesianGrid,
-    Tooltip,
-    ResponsiveContainer,
 } from "recharts";
 
 const data = [
@@ -49,13 +49,23 @@ function CustomTooltip({
     }
 
     return (
-        <div className="rounded-xl border border-border bg-card px-4 py-3 shadow-lg">
-            <p className="text-sm font-medium">
+        <div
+            className="
+                rounded-lg
+                border
+                border-[var(--workspace-border)]
+                bg-[var(--workspace-surface)]
+                px-3
+                py-2
+                shadow-[0_8px_30px_rgba(15,23,42,0.08)]
+            "
+        >
+            <p className="text-[10px] font-semibold text-[var(--workspace-text)]">
                 {label}
             </p>
 
-            <p className="mt-1 text-sm text-muted-foreground">
-                {payload[0].value} Projects
+            <p className="mt-1 text-[11px] text-[var(--workspace-text-muted)]">
+                {payload[0].value} projects
             </p>
         </div>
     );
@@ -63,36 +73,48 @@ function CustomTooltip({
 
 export default function ProjectGrowthChart() {
     return (
-        <div className="h-64 w-full">
+        <div className="h-[280px] w-full">
             <ResponsiveContainer width="100%" height="100%">
                 <LineChart
                     data={data}
                     margin={{
                         top: 10,
                         right: 10,
-                        left: -10,
+                        left: -20,
                         bottom: 0,
                     }}
                 >
                     <CartesianGrid
-                        strokeDasharray="4 4"
                         vertical={false}
+                        stroke="var(--workspace-border)"
+                        strokeDasharray="3 3"
                     />
 
                     <XAxis
                         dataKey="month"
                         axisLine={false}
                         tickLine={false}
+                        tick={{
+                            fill: "var(--workspace-text-subtle)",
+                            fontSize: 10,
+                        }}
+                        dy={8}
                     />
 
                     <YAxis
                         axisLine={false}
                         tickLine={false}
+                        tick={{
+                            fill: "var(--workspace-text-subtle)",
+                            fontSize: 10,
+                        }}
+                        width={35}
                     />
 
                     <Tooltip
                         content={<CustomTooltip />}
                         cursor={{
+                            stroke: "var(--workspace-border)",
                             strokeDasharray: "4 4",
                         }}
                     />
@@ -100,15 +122,21 @@ export default function ProjectGrowthChart() {
                     <Line
                         type="monotone"
                         dataKey="projects"
-                        stroke="var(--color-primary)"
-                        strokeWidth={3}
+                        stroke="var(--workspace-primary)"
+                        strokeWidth={2.5}
                         dot={{
-                            r: 4,
+                            r: 3,
+                            fill: "var(--workspace-surface)",
+                            stroke: "var(--workspace-primary)",
+                            strokeWidth: 2,
                         }}
                         activeDot={{
-                            r: 6,
+                            r: 5,
+                            fill: "var(--workspace-primary)",
+                            stroke: "var(--workspace-surface)",
+                            strokeWidth: 2,
                         }}
-                        animationDuration={1000}
+                        animationDuration={700}
                     />
                 </LineChart>
             </ResponsiveContainer>

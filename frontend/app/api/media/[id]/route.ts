@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 
 export async function DELETE(
@@ -34,6 +35,19 @@ export async function DELETE(
     }
 }
 
+const updateSchema = z.object({
+    action: z.literal("update").optional(),
+    alt: z
+        .string()
+        .max(300, "Alt text must be 300 characters or fewer")
+        .nullable()
+        .optional(),
+    folderId: z
+        .string()
+        .min(1, "folderId cannot be empty")
+        .optional(),
+});
+
 export async function PATCH(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
@@ -42,9 +56,51 @@ export async function PATCH(
         const { id } = await params;
         const body = await request.json().catch(() => ({}));
 
-        if (body.action !== "restore") {
+        /*
+         * Restore branch — unchanged from existing behavior.
+         */
+        if (body.action === "restore") {
+            const existing = await prisma.media.findUnique({
+                where: { id },
+            });
+
+            if (!existing || !existing.deletedAt) {
+                return NextResponse.json(
+                    { error: "Media not found in trash" },
+                    { status: 404 }
+                );
+            }
+
+            const restored = await prisma.media.update({
+                where: { id },
+                data: { deletedAt: null },
+            });
+
+            return NextResponse.json(restored);
+        }
+
+        /*
+         * Metadata update branch — alt text and/or folder.
+         * Covers action: "update" or an omitted action with
+         * update fields present.
+         */
+        const parsed = updateSchema.safeParse(body);
+
+        if (!parsed.success) {
             return NextResponse.json(
-                { error: "Unsupported action" },
+                {
+                    error: "Invalid request",
+                    details: parsed.error.flatten().fieldErrors,
+                },
+                { status: 400 }
+            );
+        }
+
+        const { alt, folderId } = parsed.data;
+
+        if (alt === undefined && folderId === undefined) {
+            return NextResponse.json(
+                { error: "No fields to update" },
                 { status: 400 }
             );
         }
@@ -53,23 +109,40 @@ export async function PATCH(
             where: { id },
         });
 
-        if (!existing || !existing.deletedAt) {
+        if (!existing || existing.deletedAt) {
             return NextResponse.json(
-                { error: "Media not found in trash" },
+                { error: "Media not found" },
                 { status: 404 }
             );
         }
 
-        const restored = await prisma.media.update({
+        if (folderId !== undefined) {
+            const targetFolder = await prisma.folder.findUnique({
+                where: { id: folderId },
+            });
+
+            if (!targetFolder) {
+                return NextResponse.json(
+                    { error: "Target folder not found" },
+                    { status: 404 }
+                );
+            }
+        }
+
+        const updated = await prisma.media.update({
             where: { id },
-            data: { deletedAt: null },
+            data: {
+                ...(alt !== undefined && { alt: alt || null }),
+                ...(folderId !== undefined && { folderId }),
+            },
+            include: { folder: true },
         });
 
-        return NextResponse.json(restored);
+        return NextResponse.json(updated);
     } catch (error) {
-        console.error("[MEDIA_RESTORE]", error);
+        console.error("[MEDIA_UPDATE]", error);
         return NextResponse.json(
-            { error: "Failed to restore media" },
+            { error: "Failed to update media" },
             { status: 500 }
         );
     }

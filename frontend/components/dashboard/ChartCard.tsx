@@ -1,3 +1,5 @@
+import WorkspaceCard from "@/components/workspace/ui/WorkspaceCard";
+
 interface ChartCardProps {
     title: string;
     description?: string;
@@ -10,22 +12,27 @@ export default function ChartCard({
     children,
 }: ChartCardProps) {
     return (
-        <div className="rounded-2xl border border-border bg-card p-6">
-            <div className="mb-6">
-                <h3 className="text-lg font-semibold">
-                    {title}
-                </h3>
+        <WorkspaceCard
+            padding="lg"
+            className="overflow-hidden"
+        >
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                    <h3 className="text-sm font-semibold tracking-tight text-[var(--workspace-text)]">
+                        {title}
+                    </h3>
 
-                {description && (
-                    <p className="mt-1 text-sm text-muted-foreground">
-                        {description}
-                    </p>
-                )}
+                    {description && (
+                        <p className="mt-1 text-xs text-[var(--workspace-text-muted)]">
+                            {description}
+                        </p>
+                    )}
+                </div>
             </div>
 
-            <div>
+            <div className="mt-6">
                 {children}
             </div>
-        </div>
+        </WorkspaceCard>
     );
 }

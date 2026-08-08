@@ -2,9 +2,25 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Search } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
-export default function PostsFilters() {
+import WorkspaceFilterBar from "@/components/workspace/ui/WorkspaceFilterBar";
+import WorkspaceSearch from "@/components/workspace/ui/WorkspaceSearch";
+
+interface FilterOption {
+    id: string;
+    name: string;
+}
+
+interface PostsFiltersProps {
+    categories?: FilterOption[];
+    tags?: FilterOption[];
+}
+
+export default function PostsFilters({
+    categories = [],
+    tags = [],
+}: PostsFiltersProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -12,12 +28,18 @@ export default function PostsFilters() {
         searchParams.get("search") ?? ""
     );
 
+    useEffect(() => {
+        setSearch(searchParams.get("search") ?? "");
+    }, [searchParams]);
+
     function updateParam(
         key: string,
         value: string,
         replace = false
     ) {
-        const params = new URLSearchParams(searchParams.toString());
+        const params = new URLSearchParams(
+            searchParams.toString()
+        );
 
         if (value) {
             params.set(key, value);
@@ -27,7 +49,11 @@ export default function PostsFilters() {
 
         params.delete("page");
 
-        const url = `/workspace/blog?${params.toString()}`;
+        const query = params.toString();
+
+        const url = query
+            ? `/workspace/blog?${query}`
+            : "/workspace/blog";
 
         if (replace) {
             router.replace(url);
@@ -36,54 +62,169 @@ export default function PostsFilters() {
         }
     }
 
+    function resetFilters() {
+        setSearch("");
+        router.push("/workspace/blog");
+    }
+
     useEffect(() => {
+        const currentSearch =
+            searchParams.get("search") ?? "";
+
+        if (search === currentSearch) {
+            return;
+        }
+
         const timeout = setTimeout(() => {
-            if (search !== (searchParams.get("search") ?? "")) {
-                updateParam("search", search, true);
-            }
+            updateParam("search", search, true);
         }, 400);
 
         return () => clearTimeout(timeout);
     }, [search]);
 
+    const hasFilters =
+        Boolean(search) ||
+        Boolean(searchParams.get("status")) ||
+        Boolean(searchParams.get("category")) ||
+        Boolean(searchParams.get("tag")) ||
+        Boolean(searchParams.get("sort"));
+
     return (
-        <div className="flex flex-col gap-4 rounded-xl border bg-card p-4 lg:flex-row lg:items-center">
-            {/* Search */}
-            <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <WorkspaceFilterBar
+            showReset={hasFilters}
+            onReset={resetFilters}
+        >
+            <WorkspaceSearch
+                value={search}
+                onChange={setSearch}
+                placeholder="Search posts..."
+                className="sm:w-72"
+            />
 
-                <input
-                    value={search}
-                    placeholder="Search posts..."
-                    className="w-full rounded-lg border bg-background py-2 pl-10 pr-3 text-sm outline-none focus:ring-2 focus:ring-primary"
-                    onChange={(e) => setSearch(e.target.value)}
-                />
-            </div>
-
-            {/* Status */}
-            <select
-                defaultValue={searchParams.get("status") ?? ""}
-                onChange={(e) => updateParam("status", e.target.value)}
-                className="rounded-lg border bg-background px-3 py-2 text-sm"
+            <FilterSelect
+                value={searchParams.get("status") ?? ""}
+                onChange={(value) =>
+                    updateParam("status", value)
+                }
+                ariaLabel="Filter by status"
             >
                 <option value="">All Status</option>
                 <option value="DRAFT">Draft</option>
                 <option value="PUBLISHED">Published</option>
                 <option value="ARCHIVED">Archived</option>
-            </select>
+            </FilterSelect>
 
-            {/* Sort */}
-            <select
-                defaultValue={searchParams.get("sort") ?? ""}
-                onChange={(e) => updateParam("sort", e.target.value)}
-                className="rounded-lg border bg-background px-3 py-2 text-sm"
+            <FilterSelect
+                value={searchParams.get("category") ?? ""}
+                onChange={(value) =>
+                    updateParam("category", value)
+                }
+                ariaLabel="Filter by category"
+            >
+                <option value="">All Categories</option>
+
+                {categories.map((category) => (
+                    <option
+                        key={category.id}
+                        value={category.id}
+                    >
+                        {category.name}
+                    </option>
+                ))}
+            </FilterSelect>
+
+            <FilterSelect
+                value={searchParams.get("tag") ?? ""}
+                onChange={(value) =>
+                    updateParam("tag", value)
+                }
+                ariaLabel="Filter by tag"
+            >
+                <option value="">All Tags</option>
+
+                {tags.map((tag) => (
+                    <option key={tag.id} value={tag.id}>
+                        {tag.name}
+                    </option>
+                ))}
+            </FilterSelect>
+
+            <FilterSelect
+                value={searchParams.get("sort") ?? ""}
+                onChange={(value) =>
+                    updateParam("sort", value)
+                }
+                ariaLabel="Sort posts"
             >
                 <option value="">Newest</option>
                 <option value="oldest">Oldest</option>
-                <option value="updated">Recently Updated</option>
+                <option value="updated">
+                    Recently Updated
+                </option>
                 <option value="views">Most Viewed</option>
-                <option value="published">Published Date</option>
+                <option value="published">
+                    Published Date
+                </option>
+            </FilterSelect>
+        </WorkspaceFilterBar>
+    );
+}
+
+interface FilterSelectProps {
+    value: string;
+    onChange: (value: string) => void;
+    ariaLabel: string;
+    children: React.ReactNode;
+}
+
+function FilterSelect({
+    value,
+    onChange,
+    ariaLabel,
+    children,
+}: FilterSelectProps) {
+    return (
+        <div className="relative">
+            <select
+                value={value}
+                onChange={(event) =>
+                    onChange(event.target.value)
+                }
+                aria-label={ariaLabel}
+                className="
+                    h-9
+                    min-w-[132px]
+                    appearance-none
+                    rounded-lg
+                    border
+                    border-[var(--workspace-border)]
+                    bg-[var(--workspace-surface)]
+                    px-3
+                    pr-8
+                    text-xs
+                    text-[var(--workspace-text)]
+                    outline-none
+                    transition-all
+                    focus:border-[var(--workspace-primary)]
+                    focus:ring-2
+                    focus:ring-[var(--workspace-primary)]/10
+                "
+            >
+                {children}
             </select>
+
+            <ChevronDown
+                className="
+                    pointer-events-none
+                    absolute
+                    right-2.5
+                    top-1/2
+                    h-3.5
+                    w-3.5
+                    -translate-y-1/2
+                    text-[var(--workspace-text-subtle)]
+                "
+            />
         </div>
     );
 }

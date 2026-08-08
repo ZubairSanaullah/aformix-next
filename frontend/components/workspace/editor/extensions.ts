@@ -39,7 +39,7 @@ export const editorExtensions = [
 
     Image.configure({
         inline: false,
-        allowBase64: true,
+        allowBase64: false,
     }),
 
     Placeholder.configure({

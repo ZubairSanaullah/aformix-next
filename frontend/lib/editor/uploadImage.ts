@@ -1,24 +1,48 @@
-import { supabase } from "@/lib/supabase";
+export interface UploadedMedia {
+    id: string;
+    filename: string;
+    originalName: string;
+    url: string;
+    mimeType: string;
+    type: "IMAGE" | "VIDEO" | "AUDIO" | "DOCUMENT" | "OTHER";
+    size: number;
+    width?: number | null;
+    height?: number | null;
+    folderId?: string | null;
+    alt?: string | null;
+    createdAt: string;
+    updatedAt: string;
+}
 
-export async function uploadImage(file: File): Promise<string> {
-    const fileExt = file.name.split(".").pop();
-    const fileName = `${crypto.randomUUID()}.${fileExt}`;
+export async function uploadImage(
+    file: File,
+    folderId?: string
+): Promise<UploadedMedia> {
+    const formData = new FormData();
 
-    const { error } = await supabase.storage
-        .from("media")
-        .upload(fileName, file, {
-            cacheControl: "3600",
-            upsert: false,
-        });
+    formData.append("file", file);
 
-    if (error) {
-        console.error("Image upload failed:", error);
-        throw new Error("Failed to upload image");
+    if (folderId) {
+        formData.append("folderId", folderId);
     }
 
-    const { data } = supabase.storage
-        .from("media")
-        .getPublicUrl(fileName);
+    const response = await fetch(
+        "/api/media/upload",
+        {
+            method: "POST",
+            body: formData,
+        }
+    );
 
-    return data.publicUrl;
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(
+            data.message ||
+            data.error ||
+            "Failed to upload image."
+        );
+    }
+
+    return data;
 }

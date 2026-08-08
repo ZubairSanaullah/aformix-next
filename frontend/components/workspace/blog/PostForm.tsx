@@ -1,26 +1,39 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { useCallback } from "react";
-import type { ReactNode } from "react";
+import {
+    zodResolver,
+} from "@hookform/resolvers/zod";
 
-import { useAutosave } from "@/hooks/useAutosave";
+import {
+    Controller,
+    SubmitHandler,
+    useForm,
+} from "react-hook-form";
+
+import { useCallback } from "react";
+
 import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/Textarea";
+
 import Editor from "@/components/workspace/editor/Editor";
 import EditorStatusBar from "@/components/workspace/blog/EditorStatusBar";
-import { calculateWordCount } from "@/lib/blog/word-count";
-import { calculateReadingTime } from "@/lib/blog/reading-time";
+import FeaturedImagePanel from "@/components/workspace/blog/FeaturedImagePanel";
+
+import WorkspaceCard from "@/components/workspace/ui/WorkspaceCard";
+import WorkspaceButton from "@/components/workspace/ui/WorkspaceButton";
+
+import { useAutosave } from "@/hooks/useAutosave";
 import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
 import { useNavigationGuard } from "@/hooks/useNavigationGuard";
-import FeaturedImagePanel from "@/components/workspace/blog/FeaturedImagePanel";
+
+import { calculateWordCount } from "@/lib/blog/word-count";
+import { calculateReadingTime } from "@/lib/blog/reading-time";
 
 import {
     postSchema,
     type PostInput,
 } from "@/lib/validations/post";
-
+import { Save } from "lucide-react";
 
 interface Category {
     id: string;
@@ -45,9 +58,14 @@ interface PostFormProps {
 
     onSubmit: SubmitHandler<PostInput>;
 
-    children?: (values: PostInput) => React.ReactNode;
+    children?: (
+        values: PostInput
+    ) => React.ReactNode;
 
-    renderWrapper?: (formElement: React.ReactNode, values: PostInput) => React.ReactNode;
+    renderWrapper?: (
+        formElement: React.ReactNode,
+        values: PostInput
+    ) => React.ReactNode;
 }
 
 const EMPTY_VALUES: PostInput = {
@@ -71,7 +89,6 @@ export default function PostForm({
     children,
     renderWrapper,
 }: PostFormProps) {
-
     const {
         register,
         control,
@@ -91,13 +108,11 @@ export default function PostForm({
 
     const values = watch();
 
-    const wordCount = calculateWordCount(
-        values.content
-    );
+    const wordCount =
+        calculateWordCount(values.content);
 
-    const readingTime = calculateReadingTime(
-        values.content
-    );
+    const readingTime =
+        calculateReadingTime(values.content);
 
     const autosave = useCallback(
         async (data: PostInput) => {
@@ -108,14 +123,17 @@ export default function PostForm({
                 {
                     method: "PATCH",
                     headers: {
-                        "Content-Type": "application/json",
+                        "Content-Type":
+                            "application/json",
                     },
                     body: JSON.stringify(data),
                 }
             );
 
             if (!response.ok) {
-                throw new Error("Autosave failed");
+                throw new Error(
+                    "Autosave failed"
+                );
             }
         },
         [postId]
@@ -126,235 +144,335 @@ export default function PostForm({
         timeAgo,
         isDirty,
     } = useAutosave({
-        enabled: mode === "edit" && !!postId,
+        enabled:
+            mode === "edit" &&
+            !!postId,
         values,
         onSave: autosave,
     });
 
     useUnsavedChanges(isDirty);
-
     useNavigationGuard(isDirty);
 
     const formElement = (
         <form
+            id={mode === "create" ? "create-post-form" : undefined}
             onSubmit={handleSubmit(onSubmit)}
-            className="space-y-6 rounded-xl border bg-card p-6"
+            className="space-y-5"
         >
-            {typeof children === "function"
-                ? children(values)
-                : children}
-            <div>
-                {mode === "edit" && (
-                    <EditorStatusBar
-                        status={autosaveStatus}
-                        timeAgo={timeAgo}
-                        wordCount={wordCount}
-                        readingTime={readingTime}
-                    />
-                )}
-            </div>
+            {children &&
+                typeof children ===
+                "function" &&
+                children(values)}
 
-            {/* Title */}
-
-            <div className="space-y-2">
-                <label className="text-sm font-medium">
-                    Title
-                </label>
-
-                <Input
-                    placeholder="Post title..."
-                    {...register("title")}
+            {/* Editor status */}
+            {mode === "edit" && (
+                <EditorStatusBar
+                    status={autosaveStatus}
+                    timeAgo={timeAgo}
+                    wordCount={wordCount}
+                    readingTime={readingTime}
                 />
+            )}
 
-                {errors.title && (
-                    <p className="text-sm text-red-500">
-                        {errors.title.message}
+            {/* Basic Information */}
+            <WorkspaceCard
+                padding="lg"
+                className="space-y-6"
+            >
+                <div>
+                    <h2 className="text-sm font-semibold text-[var(--workspace-text)]">
+                        Post Details
+                    </h2>
+
+                    <p className="mt-1 text-xs text-[var(--workspace-text-muted)]">
+                        Define the core information
+                        for this post.
                     </p>
-                )}
-            </div>
-
-            {/* Category */}
-
-            <div className="space-y-2">
-                <label className="text-sm font-medium">
-                    Category
-                </label>
-
-                <select
-                    {...register("categoryId")}
-                    className="w-full rounded-lg border bg-background px-3 py-2"
-                >
-                    <option value="">
-                        Select category
-                    </option>
-
-                    {categories.map(
-                        (category) => (
-                            <option
-                                key={category.id}
-                                value={category.id}
-                            >
-                                {category.name}
-                            </option>
-                        )
-                    )}
-                </select>
-
-                {errors.categoryId && (
-                    <p className="text-sm text-red-500">
-                        {
-                            errors.categoryId
-                                .message
-                        }
-                    </p>
-                )}
-            </div>
-
-            {/* Tags */}
-
-            <div className="space-y-3">
-                <label className="text-sm font-medium">
-                    Tags
-                </label>
-
-                <div className="grid grid-cols-2 gap-3 rounded-lg border p-4">
-                    {tags.map((tag) => (
-                        <label
-                            key={tag.id}
-                            className="flex items-center gap-2"
-                        >
-                            <input
-                                type="checkbox"
-                                value={tag.id}
-                                {...register(
-                                    "tagIds"
-                                )}
-                            />
-
-                            <span>
-                                {tag.name}
-                            </span>
-                        </label>
-                    ))}
                 </div>
-            </div>
 
-            {/* Excerpt */}
+                <div className="space-y-5">
+                    <div className="space-y-2">
+                        <label className="text-xs font-medium text-[var(--workspace-text)]">
+                            Title
+                        </label>
 
-            <div className="space-y-2">
-                <label className="text-sm font-medium">
-                    Excerpt
-                </label>
+                        <Input
+                            placeholder="Enter post title..."
+                            {...register("title")}
+                        />
 
-                <Textarea
-                    rows={3}
-                    {...register(
-                        "excerpt"
-                    )}
-                />
+                        {errors.title && (
+                            <p className="text-xs text-red-500">
+                                {
+                                    errors
+                                        .title
+                                        .message
+                                }
+                            </p>
+                        )}
+                    </div>
 
-                {errors.excerpt && (
-                    <p className="text-sm text-red-500">
-                        {
-                            errors.excerpt
-                                .message
-                        }
-                    </p>
-                )}
-            </div>
+                    <div className="grid gap-5 md:grid-cols-2">
+                        {/* Category */}
+                        <div className="space-y-2">
+                            <label className="text-xs font-medium text-[var(--workspace-text)]">
+                                Category
+                            </label>
 
-            {/* Content */}
+                            <select
+                                {...register(
+                                    "categoryId"
+                                )}
+                                className="h-10 w-full rounded-lg border border-[var(--workspace-border)] bg-[var(--workspace-surface)] px-3 text-sm text-[var(--workspace-text)] outline-none transition focus:border-[var(--workspace-primary)] focus:ring-2 focus:ring-[var(--workspace-primary)]/10"
+                            >
+                                <option value="">
+                                    Select category
+                                </option>
 
-            <div className="space-y-2">
-                <label className="text-sm font-medium">
-                    Content
-                </label>
+                                {categories.map(
+                                    (
+                                        category
+                                    ) => (
+                                        <option
+                                            key={
+                                                category.id
+                                            }
+                                            value={
+                                                category.id
+                                            }
+                                        >
+                                            {
+                                                category.name
+                                            }
+                                        </option>
+                                    )
+                                )}
+                            </select>
+
+                            {errors.categoryId && (
+                                <p className="text-xs text-red-500">
+                                    {
+                                        errors
+                                            .categoryId
+                                            .message
+                                    }
+                                </p>
+                            )}
+                        </div>
+
+                        {/* Tags */}
+                        <div className="space-y-2">
+                            <label className="text-xs font-medium text-[var(--workspace-text)]">
+                                Tags
+                            </label>
+
+                            <div className="flex min-h-10 flex-wrap items-center gap-2 rounded-lg border border-[var(--workspace-border)] bg-[var(--workspace-surface)] p-2.5">
+                                {tags.length >
+                                    0 ? (
+                                    tags.map(
+                                        (
+                                            tag
+                                        ) => (
+                                            <label
+                                                key={
+                                                    tag.id
+                                                }
+                                                className="inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-[var(--workspace-border)] px-2 py-1 text-[10px] text-[var(--workspace-text-muted)] transition hover:border-[var(--workspace-primary)]/30 hover:bg-[var(--workspace-primary-soft)]"
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    value={
+                                                        tag.id
+                                                    }
+                                                    {...register(
+                                                        "tagIds"
+                                                    )}
+                                                    className="h-3 w-3 accent-[var(--workspace-primary)]"
+                                                />
+
+                                                {
+                                                    tag.name
+                                                }
+                                            </label>
+                                        )
+                                    )
+                                ) : (
+                                    <span className="text-xs text-[var(--workspace-text-subtle)]">
+                                        No tags
+                                        available
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Excerpt */}
+                    <div className="space-y-2">
+                        <label className="text-xs font-medium text-[var(--workspace-text)]">
+                            Excerpt
+                        </label>
+
+                        <Textarea
+                            rows={3}
+                            placeholder="Write a short summary of the post..."
+                            {...register(
+                                "excerpt"
+                            )}
+                        />
+
+                        {errors.excerpt && (
+                            <p className="text-xs text-red-500">
+                                {
+                                    errors
+                                        .excerpt
+                                        .message
+                                }
+                            </p>
+                        )}
+                    </div>
+                </div>
+            </WorkspaceCard>
+
+            {/* Content Editor */}
+            <WorkspaceCard
+                padding="lg"
+                className="space-y-5"
+            >
+                <div className="flex items-start justify-between gap-4">
+                    <div>
+                        <h2 className="text-sm font-semibold text-[var(--workspace-text)]">
+                            Content
+                        </h2>
+
+                        <p className="mt-1 text-xs text-[var(--workspace-text-muted)]">
+                            Write and format your
+                            article content.
+                        </p>
+                    </div>
+
+                    <div className="hidden shrink-0 items-center gap-3 text-[10px] text-[var(--workspace-text-subtle)] sm:flex">
+                        <span>
+                            {wordCount} words
+                        </span>
+
+                        <span>
+                            {readingTime} min
+                            read
+                        </span>
+                    </div>
+                </div>
 
                 <Controller
                     name="content"
                     control={control}
                     render={({ field }) => (
-                        <>
+                        <div className="overflow-hidden rounded-xl border border-[var(--workspace-border)] bg-[var(--workspace-surface)]">
                             <Editor
                                 value={field.value}
-                                onChange={field.onChange}
+                                onChange={
+                                    field.onChange
+                                }
                             />
-
-                            {mode === "edit" && (
-                                <EditorStatusBar
-                                    status={autosaveStatus}
-                                    timeAgo={timeAgo}
-                                />
-                            )}
-                        </>
+                        </div>
                     )}
                 />
 
                 {errors.content && (
-                    <p className="text-sm text-red-500">
-                        {errors.content.message}
+                    <p className="text-xs text-red-500">
+                        {
+                            errors.content
+                                .message
+                        }
                     </p>
                 )}
-            </div>
+            </WorkspaceCard>
 
             {/* Featured Image */}
-
             <Controller
                 name="featuredImage"
                 control={control}
                 render={({ field }) => (
                     <FeaturedImagePanel
                         value={field.value}
-                        onChange={field.onChange}
+                        onChange={
+                            field.onChange
+                        }
                     />
                 )}
             />
 
-            {/* SEO Title */}
-
-            <div className="space-y-2">
-                <label className="text-sm font-medium">
-                    SEO Title
-                </label>
-
-                <Input
-                    {...register(
-                        "seoTitle"
-                    )}
-                />
-            </div>
-
-            {/* SEO Description */}
-
-            <div className="space-y-2">
-                <label className="text-sm font-medium">
-                    SEO Description
-                </label>
-
-                <Textarea
-                    rows={3}
-                    {...register(
-                        "seoDescription"
-                    )}
-                />
-            </div>
-
-            <button
-                type="submit"
-                disabled={isSubmitting}
-                className="rounded-lg bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
+            {/* SEO */}
+            <WorkspaceCard
+                padding="lg"
+                className="space-y-5"
             >
-                {isSubmitting
-                    ? "Saving..."
-                    : mode === "create"
-                        ? "Create Post"
-                        : "Update Post"}
-            </button>
+                <div>
+                    <h2 className="text-sm font-semibold text-[var(--workspace-text)]">
+                        Search Engine Optimization
+                    </h2>
+
+                    <p className="mt-1 text-xs text-[var(--workspace-text-muted)]">
+                        Optimize how this post appears
+                        in search engines.
+                    </p>
+                </div>
+
+                <div className="space-y-5">
+                    <div className="space-y-2">
+                        <label className="text-xs font-medium text-[var(--workspace-text)]">
+                            SEO Title
+                        </label>
+
+                        <Input
+                            placeholder="SEO optimized title..."
+                            {...register(
+                                "seoTitle"
+                            )}
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-xs font-medium text-[var(--workspace-text)]">
+                            SEO Description
+                        </label>
+
+                        <Textarea
+                            rows={4}
+                            placeholder="Write a concise search description..."
+                            {...register(
+                                "seoDescription"
+                            )}
+                        />
+                    </div>
+                </div>
+            </WorkspaceCard>
+
+            {/* Submit */}
+            <div className="flex items-center justify-end gap-3 border-t border-[var(--workspace-border)] pt-5">
+                <WorkspaceButton
+                    type="submit"
+                    size="sm"
+                    disabled={isSubmitting}
+                >
+                    <Save className="h-3.5 w-3.5" />
+
+                    {isSubmitting
+                        ? "Saving..."
+                        : mode ===
+                            "create"
+                            ? "Create Post"
+                            : "Update Post"}
+                </WorkspaceButton>
+            </div>
         </form>
     );
 
     if (renderWrapper) {
-        return renderWrapper(formElement, values);
+        return renderWrapper(
+            formElement,
+            values
+        );
     }
 
     return formElement;

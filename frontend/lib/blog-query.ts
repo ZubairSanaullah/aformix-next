@@ -4,12 +4,16 @@ interface BlogQueryOptions {
     search?: string;
     status?: string;
     sort?: string;
+    category?: string;
+    tag?: string;
 }
 
 export function buildBlogQuery({
     search,
     status,
     sort,
+    category,
+    tag,
 }: BlogQueryOptions) {
     const where: Prisma.PostWhereInput = {
         deletedAt: null,
@@ -19,19 +23,19 @@ export function buildBlogQuery({
         where.OR = [
             {
                 title: {
-                    contains: search,
+                    contains: search.trim(),
                     mode: "insensitive",
                 },
             },
             {
                 slug: {
-                    contains: search,
+                    contains: search.trim(),
                     mode: "insensitive",
                 },
             },
             {
                 seoTitle: {
-                    contains: search,
+                    contains: search.trim(),
                     mode: "insensitive",
                 },
             },
@@ -43,6 +47,18 @@ export function buildBlogQuery({
         Object.values(PostStatus).includes(status as PostStatus)
     ) {
         where.status = status as PostStatus;
+    }
+
+    if (category) {
+        where.categoryId = category;
+    }
+
+    if (tag) {
+        where.tags = {
+            some: {
+                id: tag,
+            },
+        };
     }
 
     let orderBy: Prisma.PostOrderByWithRelationInput = {

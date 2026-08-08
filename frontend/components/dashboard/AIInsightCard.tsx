@@ -1,5 +1,7 @@
 import { Sparkles } from "lucide-react";
 
+import WorkspaceCard from "@/components/workspace/ui/WorkspaceCard";
+
 interface AIInsightCardProps {
     title: string;
     description: string;
@@ -12,59 +14,40 @@ export default function AIInsightCard({
     insights,
 }: AIInsightCardProps) {
     return (
-        <div
-            className="
-        rounded-2xl
-        border
-        border-border
-        bg-card
-        p-6
-      "
+        <WorkspaceCard
+            padding="lg"
+            className="relative overflow-hidden"
         >
-            <div className="flex items-start gap-4">
-                <div
-                    className="
-            flex
-            h-10
-            w-10
-            shrink-0
-            items-center
-            justify-center
-            rounded-xl
-            bg-muted
-          "
-                >
-                    <Sparkles
-                        aria-hidden="true"
-                        className="h-5 w-5 text-primary"
-                    />
+            <div className="absolute right-0 top-0 h-32 w-32 translate-x-1/3 -translate-y-1/3 rounded-full bg-[var(--workspace-primary)]/5 blur-2xl" />
+
+            <div className="relative flex items-start gap-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--workspace-primary-soft)]">
+                    <Sparkles className="h-4 w-4 text-[var(--workspace-primary)]" />
                 </div>
 
-                <div>
-                    <h3 className="font-semibold">
+                <div className="min-w-0">
+                    <h3 className="text-sm font-semibold text-[var(--workspace-text)]">
                         {title}
                     </h3>
 
-                    <p className="mt-1 text-sm text-muted-foreground">
+                    <p className="mt-1 text-xs leading-5 text-[var(--workspace-text-muted)]">
                         {description}
                     </p>
                 </div>
             </div>
 
-            <ul className="mt-5 space-y-3">
+            <ul className="relative mt-5 space-y-3">
                 {insights.map((insight) => (
                     <li
                         key={insight}
-                        className="flex items-start gap-2 text-sm"
+                        className="flex items-start gap-2.5 text-xs leading-5 text-[var(--workspace-text)]"
                     >
-                        <span className="mt-1 h-1.5 w-1.5 rounded-full bg-primary" />
+                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--workspace-primary)]" />
 
-                        <span>
-                            {insight}
-                        </span>
+                        <span>{insight}</span>
                     </li>
                 ))}
             </ul>
-        </div>
+        </WorkspaceCard>
     );
 }

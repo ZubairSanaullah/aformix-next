@@ -29,6 +29,36 @@ export async function DELETE(
 
         const { id } = await params;
 
+        const post = await prisma.post.findFirst({
+            where: {
+                id,
+                deletedAt: {
+                    not: null,
+                },
+            },
+        });
+
+        if (!post) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Trashed post not found.",
+                },
+                { status: 404 }
+            );
+        }
+
+        if (session.user.role !== "ADMIN") {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Forbidden",
+                },
+                { status: 403 }
+            );
+        }
+
+
         await prisma.post.delete({
             where: {
                 id,

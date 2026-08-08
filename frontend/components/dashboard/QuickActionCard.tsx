@@ -1,4 +1,6 @@
-import { LucideIcon } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+
+import WorkspaceCard from "@/components/workspace/ui/WorkspaceCard";
 
 interface QuickActionCardProps {
     title: string;
@@ -13,40 +15,34 @@ export default function QuickActionCard({
 }: QuickActionCardProps) {
     return (
         <button
-            aria-label={title}
+            type="button"
             className="
-        group
-        rounded-2xl
-        border
-        border-border
-        bg-card
-        p-5
-        text-left
-        transition-all
-        duration-200
-        hover:-translate-y-1
-        hover:shadow-md
-    "
+                group
+                w-full
+                rounded-xl
+                border
+                border-[var(--workspace-border)]
+                bg-[var(--workspace-surface)]
+                p-4
+                text-left
+                transition-all
+                duration-200
+                hover:-translate-y-0.5
+                hover:border-[var(--workspace-primary)]/30
+                hover:shadow-[var(--workspace-shadow-md)]
+                active:scale-[0.99]
+                cursor-pointer
+            "
         >
-            <div
-                className="
-          flex
-          h-10
-          w-10
-          items-center
-          justify-center
-          rounded-xl
-          bg-muted
-        "
-            >
-                <Icon className="h-5 w-5 text-primary" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--workspace-primary-soft)] transition-transform duration-200 group-hover:scale-105">
+                <Icon className="h-4 w-4 text-[var(--workspace-primary)]" />
             </div>
 
-            <h3 className="mt-4 font-semibold">
+            <h3 className="mt-4 text-xs font-semibold text-[var(--workspace-text)]">
                 {title}
             </h3>
 
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="mt-1 text-[10px] leading-5 text-[var(--workspace-text-muted)]">
                 {description}
             </p>
         </button>

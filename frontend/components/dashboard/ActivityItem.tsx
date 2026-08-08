@@ -1,4 +1,4 @@
-import { LucideIcon } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 interface ActivityItemProps {
     title: string;
@@ -14,36 +14,22 @@ export default function ActivityItem({
     icon: Icon,
 }: ActivityItemProps) {
     return (
-        <div className="flex items-start gap-4">
-            <div
-                className="
-          flex
-          h-10
-          w-10
-          shrink-0
-          items-center
-          justify-center
-          rounded-full
-          bg-muted
-        "
-            >
-                <Icon
-                    aria-hidden="true"
-                    className="h-5 w-5 text-primary"
-                />
+        <div className="group flex items-start gap-3">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--workspace-background)] transition-colors group-hover:bg-[var(--workspace-primary-soft)]">
+                <Icon className="h-3.5 w-3.5 text-[var(--workspace-text-muted)] transition-colors group-hover:text-[var(--workspace-primary)]" />
             </div>
 
-            <div className="flex-1">
-                <p className="font-medium">
+            <div className="min-w-0 flex-1">
+                <p className="text-xs font-medium text-[var(--workspace-text)]">
                     {title}
                 </p>
 
-                <p className="mt-1 text-sm text-muted-foreground">
+                <p className="mt-1 text-[10px] leading-5 text-[var(--workspace-text-muted)]">
                     {description}
                 </p>
             </div>
 
-            <time className="text-xs text-muted-foreground">
+            <time className="shrink-0 text-[10px] text-[var(--workspace-text-subtle)]">
                 {time}
             </time>
         </div>

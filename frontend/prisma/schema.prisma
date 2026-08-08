@@ -66,6 +66,17 @@ model Tag {
   posts       Post[]   @relation("PostToTag")
 }
 
+model Folder {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  media Media[]
+
+  @@index([name])
+}
+
 model Media {
   id           String    @id @default(cuid())
   filename     String
@@ -76,7 +87,8 @@ model Media {
   size         Int
   width        Int?
   height       Int?
-  folder       String    @default("uploads")
+  folderId     String?
+  folder       Folder?   @relation(fields: [folderId], references: [id])
   alt          String?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
@@ -84,7 +96,7 @@ model Media {
 
   @@index([deletedAt])
   @@index([type])
-  @@index([folder])
+  @@index([folderId])
 }
 
 enum MediaType {

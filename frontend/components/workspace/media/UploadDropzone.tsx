@@ -35,6 +35,11 @@ interface UploadDropzoneProps {
     onUploadComplete?: (media: MediaItem) => void;
     accept?: string;
     maxSizeMb?: number;
+    /*
+     * When provided, uploaded files are placed directly into
+     * this folder instead of the default "uploads" folder.
+     */
+    folderId?: string;
 }
 
 const DEFAULT_ACCEPT = [
@@ -123,6 +128,7 @@ export function UploadDropzone({
     onUploadComplete,
     accept = DEFAULT_ACCEPT,
     maxSizeMb = 50,
+    folderId,
 }: UploadDropzoneProps) {
     const router = useRouter();
 
@@ -175,6 +181,13 @@ export function UploadDropzone({
                 "file",
                 uploadingFile.file
             );
+
+            if (folderId) {
+                formData.append(
+                    "folderId",
+                    folderId
+                );
+            }
 
             const xhr =
                 new XMLHttpRequest();
@@ -338,6 +351,7 @@ export function UploadDropzone({
             onUploadComplete,
             router,
             removeFile,
+            folderId,
         ]
     );
 

@@ -1,9 +1,11 @@
 "use client";
 
 import {
+  Bell,
   Menu,
   PanelLeftClose,
   PanelLeftOpen,
+  Search,
 } from "lucide-react";
 
 import LogoutButton from "@/components/auth/LogoutButton";
@@ -25,64 +27,186 @@ export default function Header({
   isSidebarCollapsed,
   user,
 }: HeaderProps) {
-  return (<header className="flex h-16 items-center justify-between border-b border-[var(--color-glass-border)] bg-[var(--color-card)] px-8"> <div className="flex items-center gap-3">
-    {/* Mobile Menu */} <button
-      type="button"
-      onClick={onMenuClick}
-      aria-label="Open navigation menu"
-      className="rounded-md p-2 transition hover:bg-[var(--color-surface)] lg:hidden"
-    > <Menu className="h-5 w-5" /> </button>
+  const initials =
+    user?.name
+      ?.split(" ")
+      .map((part) => part.charAt(0))
+      .join("")
+      .slice(0, 2)
+      .toUpperCase() || "U";
 
-    {/* Desktop Collapse */}
-    <button
-      type="button"
-      onClick={onToggleSidebar}
-      aria-label={
-        isSidebarCollapsed
-          ? "Expand sidebar"
-          : "Collapse sidebar"
-      }
-      className="hidden items-center justify-center rounded-md p-2 transition-all duration-200 hover:bg-[var(--color-surface)] hover:scale-105 active:scale-95 lg:flex"
+  return (
+    <header
+      className="
+                sticky
+                top-0
+                z-30
+                flex
+                h-[68px]
+                shrink-0
+                items-center
+                justify-between
+                border-b
+                border-[var(--workspace-border)]
+                bg-[var(--workspace-surface)]/95
+                px-4
+                backdrop-blur-xl
+                sm:px-6
+            "
     >
-      {isSidebarCollapsed ? (
-        <PanelLeftOpen className="h-5 w-5" />
-      ) : (
-        <PanelLeftClose className="h-5 w-5" />
-      )}
-    </button>
+      {/* Left */}
+      <div className="flex min-w-0 items-center gap-3">
+        {/* Mobile menu */}
+        <button
+          type="button"
+          onClick={onMenuClick}
+          aria-label="Open navigation"
+          className="
+                        rounded-lg
+                        p-2
+                        text-[var(--workspace-text-muted)]
+                        transition-colors
+                        hover:bg-[var(--workspace-background)]
+                        hover:text-[var(--workspace-text)]
+                        lg:hidden
+                    "
+        >
+          <Menu className="h-[18px] w-[18px]" />
+        </button>
 
-    <div>
-      <h1 className="text-xl font-semibold">
-        Dashboard
-      </h1>
+        {/* Desktop sidebar toggle */}
+        <button
+          type="button"
+          onClick={onToggleSidebar}
+          aria-label={
+            isSidebarCollapsed
+              ? "Expand sidebar"
+              : "Collapse sidebar"
+          }
+          className="
+                        hidden
+                        rounded-lg
+                        p-2
+                        text-[var(--workspace-text-muted)]
+                        transition-colors
+                        hover:bg-[var(--workspace-background)]
+                        hover:text-[var(--workspace-text)]
+                        lg:flex
+                    "
+        >
+          {isSidebarCollapsed ? (
+            <PanelLeftOpen className="h-[17px] w-[17px]" />
+          ) : (
+            <PanelLeftClose className="h-[17px] w-[17px]" />
+          )}
+        </button>
 
-      <p className="text-sm text-[var(--color-text-muted)]">
-        Welcome back 👋
-      </p>
-    </div>
-  </div>
+        <div className="hidden h-5 w-px bg-[var(--workspace-border)] sm:block" />
 
-    <div className="flex items-center gap-3">
-      <div className="hidden text-right sm:block">
-        <p className="text-sm font-medium">
-          {user?.name || "User"}
-        </p>
+        <div className="min-w-0">
+          <p className="truncate text-xs font-semibold text-[var(--workspace-text)]">
+            Workspace
+          </p>
 
-        <p className="text-xs text-[var(--color-text-muted)]">
-          {user?.email}
-        </p>
+          <p className="hidden text-[10px] text-[var(--workspace-text-subtle)] sm:block">
+            Aformix business workspace
+          </p>
+        </div>
       </div>
 
-      <button
-        type="button"
-        aria-label="User profile"
-        className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-primary)] font-semibold text-white transition-transform duration-200 hover:scale-105 active:scale-95"
-      >
-        {user?.name?.charAt(0).toUpperCase() || "U"}
-      </button>
+      {/* Right */}
+      <div className="flex items-center gap-1.5 sm:gap-2">
+        {/* Search */}
+        <button
+          type="button"
+          aria-label="Search workspace"
+          className="
+                        hidden
+                        items-center
+                        gap-2
+                        rounded-lg
+                        border
+                        border-[var(--workspace-border)]
+                        bg-[var(--workspace-background)]
+                        px-3
+                        py-1.5
+                        text-[10px]
+                        text-[var(--workspace-text-subtle)]
+                        transition-colors
+                        hover:border-[var(--workspace-primary)]/30
+                        hover:text-[var(--workspace-text-muted)]
+                        md:flex
+                    "
+        >
+          <Search className="h-3.5 w-3.5" />
 
-      <LogoutButton />
-    </div>
-  </header>
+          <span>Search</span>
+
+          <kbd className="ml-3 rounded border border-[var(--workspace-border)] bg-[var(--workspace-surface)] px-1.5 py-0.5 text-[9px]">
+            ⌘K
+          </kbd>
+        </button>
+
+        {/* Notifications */}
+        <button
+          type="button"
+          aria-label="Notifications"
+          className="
+                        relative
+                        rounded-lg
+                        p-2
+                        text-[var(--workspace-text-muted)]
+                        transition-colors
+                        hover:bg-[var(--workspace-background)]
+                        hover:text-[var(--workspace-text)]
+                    "
+        >
+          <Bell className="h-[16px] w-[16px]" />
+
+          <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-[var(--workspace-primary)] ring-2 ring-[var(--workspace-surface)]" />
+        </button>
+
+        <div className="mx-1 hidden h-6 w-px bg-[var(--workspace-border)] sm:block" />
+
+        {/* User */}
+        <div className="flex items-center gap-2">
+          <div className="hidden text-right sm:block">
+            <p className="text-[11px] font-semibold text-[var(--workspace-text)]">
+              {user?.name || "User"}
+            </p>
+
+            <p className="max-w-[160px] truncate text-[9px] text-[var(--workspace-text-subtle)]">
+              {user?.email}
+            </p>
+          </div>
+
+          <button
+            type="button"
+            aria-label="User profile"
+            className="
+                            flex
+                            h-8
+                            w-8
+                            items-center
+                            justify-center
+                            rounded-lg
+                            bg-[var(--workspace-primary)]
+                            text-[10px]
+                            font-bold
+                            text-white
+                            shadow-sm
+                            transition-transform
+                            duration-150
+                            hover:scale-[1.03]
+                            active:scale-95
+                        "
+          >
+            {initials}
+          </button>
+
+          <LogoutButton />
+        </div>
+      </div>
+    </header>
   );
 }

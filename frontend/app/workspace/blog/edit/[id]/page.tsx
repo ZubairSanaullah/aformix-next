@@ -14,45 +14,51 @@ export default async function EditPostPage({
 }: EditPostPageProps) {
     const { id } = await params;
 
-    const post = await prisma.post.findUnique({
-        where: {
-            id,
-        },
-        include: {
-            tags: {
-                select: {
-                    id: true,
-                    name: true,
+    const [
+        post,
+        categories,
+        tags,
+    ] = await Promise.all([
+        prisma.post.findUnique({
+            where: {
+                id,
+            },
+            include: {
+                tags: {
+                    select: {
+                        id: true,
+                        name: true,
+                    },
+                },
+                category: {
+                    select: {
+                        id: true,
+                        name: true,
+                    },
                 },
             },
-            category: {
-                select: {
-                    id: true,
-                    name: true,
-                },
+        }),
+
+        prisma.category.findMany({
+            orderBy: {
+                name: "asc",
             },
-        },
-    });
+            select: {
+                id: true,
+                name: true,
+            },
+        }),
 
-    const categories = await prisma.category.findMany({
-        orderBy: {
-            name: "asc",
-        },
-        select: {
-            id: true,
-            name: true,
-        },
-    });
-
-    const tags = await prisma.tag.findMany({
-        orderBy: {
-            name: "asc",
-        },
-        select: {
-            id: true,
-            name: true,
-        },
-    });
+        prisma.tag.findMany({
+            orderBy: {
+                name: "asc",
+            },
+            select: {
+                id: true,
+                name: true,
+            },
+        }),
+    ]);
 
     if (!post) {
         notFound();

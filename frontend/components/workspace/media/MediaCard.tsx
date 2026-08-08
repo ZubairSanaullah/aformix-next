@@ -6,6 +6,7 @@ import {
     FileText,
     FileVideo,
     Image as ImageIcon,
+    Info,
     Loader2,
     RotateCcw,
     Trash2,
@@ -20,6 +21,11 @@ export type MediaType =
     | "DOCUMENT"
     | "OTHER";
 
+export interface MediaFolderRef {
+    id: string;
+    name: string;
+}
+
 export interface MediaItem {
     id: string;
     filename: string;
@@ -30,7 +36,8 @@ export interface MediaItem {
     size: number;
     width?: number | null;
     height?: number | null;
-    folder?: string | null;
+    folderId?: string | null;
+    folder?: MediaFolderRef | null;
     alt?: string | null;
     createdAt: string;
     updatedAt: string;
@@ -47,10 +54,20 @@ interface MediaCardProps {
     onDeleteConfirm: () => void;
     onDeleteCancel: () => void;
     onRestore: () => void;
+    onDetailsClick?: () => void;
 
     selectionMode?: boolean;
     selected?: boolean;
     onSelect?: () => void;
+
+    /*
+     * Bulk multi-select mode. Independent from
+     * `selectionMode` (single-select for the picker /
+     * insert flow) — the two are never active together.
+     */
+    multiSelectMode?: boolean;
+    multiSelected?: boolean;
+    onToggleMultiSelect?: () => void;
 
 }
 
@@ -163,32 +180,53 @@ export default function MediaCard({
     onDeleteConfirm,
     onDeleteCancel,
     onRestore,
+    onDetailsClick,
     selected,
     onSelect,
     selectionMode,
+    multiSelectMode,
+    multiSelected,
+    onToggleMultiSelect,
 }: MediaCardProps) {
     return (<div className="space-y-1">
         <div
             onClick={() => {
-                if (selectionMode) {
+                if (multiSelectMode) {
+                    onToggleMultiSelect?.();
+                } else if (selectionMode) {
                     onSelect?.();
                 }
             }}
             className={cn(
                 "group relative overflow-hidden rounded-md border bg-muted/30 transition",
-                selectionMode &&
+                (selectionMode || multiSelectMode) &&
                 "cursor-pointer hover:ring-2 hover:ring-primary",
-                selected && "ring-2 ring-primary"
+                (selected || multiSelected) && "ring-2 ring-primary"
             )}
         > <div className="aspect-square"> <MediaPreview item={item} /> </div>
 
-            {selectionMode && selected && (
+            {multiSelectMode && (
+                <div
+                    className={cn(
+                        "absolute right-2 top-2 z-20 flex h-5 w-5 items-center justify-center rounded border-2 shadow",
+                        multiSelected
+                            ? "border-primary bg-primary text-primary-foreground"
+                            : "border-white bg-white/70"
+                    )}
+                >
+                    {multiSelected && (
+                        <Check className="h-3.5 w-3.5" />
+                    )}
+                </div>
+            )}
+
+            {!multiSelectMode && selectionMode && selected && (
                 <div className="absolute right-2 top-2 z-20 rounded-full bg-primary p-1 text-primary-foreground shadow">
                     <Check className="h-3.5 w-3.5" />
                 </div>
             )}
 
-            {!selectionMode && (
+            {!selectionMode && !multiSelectMode && (
                 <div
                     className={cn(
                         "absolute inset-0 flex items-center justify-center gap-2 bg-black/50 transition-opacity",
@@ -242,18 +280,48 @@ export default function MediaCard({
                             </div>
                         </div>
                     ) : (
-                        <button
-                            type="button"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                onDeleteClick();
-                            }}
-                            className="rounded-full bg-white/90 p-2 text-red-600 hover:bg-white"
-                        >
-                            <Trash2 className="h-4 w-4" />
-                        </button>
+                        <>
+                            {onDetailsClick && (
+                                <button
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        onDetailsClick();
+                                    }}
+                                    className="rounded-full bg-white/90 p-2 text-foreground hover:bg-white"
+                                    title="View details"
+                                >
+                                    <Info className="h-4 w-4" />
+                                </button>
+                            )}
+
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onDeleteClick();
+                                }}
+                                className="rounded-full bg-white/90 p-2 text-red-600 hover:bg-white"
+                            >
+                                <Trash2 className="h-4 w-4" />
+                            </button>
+                        </>
                     )}
                 </div>
+            )}
+
+            {selectionMode && !multiSelectMode && onDetailsClick && tab !== "trash" && (
+                <button
+                    type="button"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onDetailsClick();
+                    }}
+                    className="absolute left-2 top-2 z-20 rounded-full bg-white/90 p-1.5 text-foreground opacity-0 shadow transition-opacity group-hover:opacity-100 hover:bg-white"
+                    title="View details"
+                >
+                    <Info className="h-3.5 w-3.5" />
+                </button>
             )}
         </div>
 

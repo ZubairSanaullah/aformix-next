@@ -20,19 +20,9 @@ export default function WorkspaceLayoutClient({
   children,
   user,
 }: WorkspaceLayoutClientProps) {
-  /**
-   * Mobile drawer state.
-   */
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  /**
-   * Desktop collapsed state.
-   */
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
-  /**
-   * Restore sidebar preference.
-   */
   useEffect(() => {
     const savedState = localStorage.getItem(SIDEBAR_STORAGE_KEY);
 
@@ -41,23 +31,19 @@ export default function WorkspaceLayoutClient({
     }
   }, []);
 
-  /**
-   * Persist sidebar preference.
-   */
   useEffect(() => {
-    localStorage.setItem(SIDEBAR_STORAGE_KEY, String(isSidebarCollapsed));
+    localStorage.setItem(
+      SIDEBAR_STORAGE_KEY,
+      String(isSidebarCollapsed),
+    );
   }, [isSidebarCollapsed]);
 
-  /**
-   * Toggle desktop sidebar.
-   */
   const toggleSidebar = useCallback(() => {
     setIsSidebarCollapsed((previous) => !previous);
   }, []);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      // Ignore when typing in form fields
       const target = event.target as HTMLElement;
 
       if (
@@ -68,7 +54,10 @@ export default function WorkspaceLayoutClient({
         return;
       }
 
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "b") {
+      if (
+        (event.ctrlKey || event.metaKey) &&
+        event.key.toLowerCase() === "b"
+      ) {
         event.preventDefault();
         toggleSidebar();
       }
@@ -82,7 +71,7 @@ export default function WorkspaceLayoutClient({
   }, [toggleSidebar]);
 
   return (
-    <div className="flex min-h-screen bg-[var(--color-background)]">
+    <div className="flex min-h-screen min-w-0 flex-1 bg-[var(--workspace-background)]">
       <Sidebar
         isOpen={isSidebarOpen}
         isCollapsed={isSidebarCollapsed}
@@ -97,8 +86,35 @@ export default function WorkspaceLayoutClient({
           user={user}
         />
 
-        <main className="flex-1 overflow-x-hidden p-8">{children}</main>
+        <main
+          className="
+        relative
+        flex-1
+        overflow-x-hidden
+        bg-[var(--workspace-background)]
+        px-4
+        py-6
+        sm:px-6
+        lg:px-8
+    "
+        >
+          <div
+            className="
+            pointer-events-none
+            fixed
+            inset-x-0
+            top-0
+            z-0
+            h-64
+            bg-[radial-gradient(circle_at_50%_-20%,rgba(49,185,143,0.06),transparent_65%)]
+        "
+          />
+
+          <div className="relative z-10">
+            {children}
+          </div>
+        </main>
       </div>
     </div>
-  );
+  )
 }

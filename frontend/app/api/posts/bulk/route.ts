@@ -1,15 +1,43 @@
 import { NextResponse } from "next/server";
+import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { PostStatus } from "@prisma/client";
 
 export async function POST(request: Request) {
     try {
+        const session = await auth();
+
+        if (!session?.user?.id) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Unauthorized",
+                },
+                { status: 401 }
+            );
+        }
+
         const { ids, action } = await request.json();
 
         if (!Array.isArray(ids) || ids.length === 0) {
             return NextResponse.json(
-                { error: "No posts selected." },
+                {
+                    success: false,
+                    message: "No posts selected.",
+                },
                 { status: 400 }
+            );
+        }
+
+        const isAdmin = session.user.role === "ADMIN";
+
+        if (!isAdmin) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Forbidden",
+                },
+                { status: 403 }
             );
         }
 
@@ -92,27 +120,26 @@ export async function POST(request: Request) {
             default:
                 return NextResponse.json(
                     {
-                        error: "Invalid action.",
+                        success: false,
+                        message: "Invalid action.",
                     },
-                    {
-                        status: 400,
-                    }
+                    { status: 400 }
                 );
         }
 
         return NextResponse.json({
             success: true,
+            message: "Bulk action completed successfully.",
         });
     } catch (error) {
         console.error("[POST_BULK]", error);
 
         return NextResponse.json(
             {
-                error: "Bulk action failed.",
+                success: false,
+                message: "Bulk action failed.",
             },
-            {
-                status: 500,
-            }
+            { status: 500 }
         );
     }
 }

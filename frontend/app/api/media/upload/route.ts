@@ -40,6 +40,24 @@ export async function POST(request: Request) {
             );
         }
 
+        /*
+         * Optional folder ID.
+         *
+         * If the user is currently inside a folder,
+         * UploadDropzone sends that folderId.
+         *
+         * If no folderId is provided, the file will
+         * automatically go into the protected "uploads"
+         * folder.
+         */
+        const folderIdValue = formData.get("folderId");
+
+        const requestedFolderId =
+            typeof folderIdValue === "string" &&
+                folderIdValue.trim()
+                ? folderIdValue.trim()
+                : null;
+
         validateMedia(file);
 
         const extension =
@@ -55,10 +73,10 @@ export async function POST(request: Request) {
         /*
          * Determine the media type from the MIME type.
          *
-         * image/*       → IMAGE
-         * video/*       → VIDEO
-         * audio/*       → AUDIO
-         * application/pdf → DOCUMENT
+         * image/*         → IMAGE
+         * video/*         → VIDEO
+         * audio/*         → AUDIO
+         * documents       → DOCUMENT
          * everything else → OTHER
          */
         const type = getMediaType(file.type);
@@ -80,6 +98,9 @@ export async function POST(request: Request) {
             height = imageMetadata.height;
         }
 
+        /*
+         * Upload the physical file to Supabase Storage.
+         */
         const { error } = await supabaseAdmin.storage
             .from("media")
             .upload(filename, buffer, {
@@ -104,23 +125,102 @@ export async function POST(request: Request) {
             );
         }
 
+        /*
+         * Get the public URL for the uploaded file.
+         */
         const { data } =
             supabaseAdmin.storage
                 .from("media")
                 .getPublicUrl(filename);
 
+        const url = data.publicUrl;
+
+        /*
+         * Resolve the folder.
+         *
+         * If a folderId was supplied:
+         *   → verify that the folder exists.
+         *
+         * If no folderId was supplied:
+         *   → use/create the protected "uploads" folder.
+         */
+        let resolvedFolderId: string;
+
+        if (requestedFolderId) {
+            const folder = await prisma.folder.findUnique({
+                where: {
+                    id: requestedFolderId,
+                },
+            });
+
+            if (!folder) {
+                /*
+                 * The file has already been uploaded to
+                 * Supabase at this point, so remove it if
+                 * the requested folder doesn't exist.
+                 */
+                await supabaseAdmin.storage
+                    .from("media")
+                    .remove([filename]);
+
+                return NextResponse.json(
+                    {
+                        message:
+                            "Selected folder not found.",
+                    },
+                    {
+                        status: 400,
+                    }
+                );
+            }
+
+            resolvedFolderId = folder.id;
+        } else {
+            /*
+             * "uploads" is the default/protected folder.
+             *
+             * upsert makes this self-healing if the folder
+             * somehow doesn't exist.
+             */
+            const uploadsFolder =
+                await prisma.folder.upsert({
+                    where: {
+                        name: "uploads",
+                    },
+                    update: {},
+                    create: {
+                        name: "uploads",
+                    },
+                });
+
+            resolvedFolderId = uploadsFolder.id;
+        }
+
+        /*
+         * Create the Media database record.
+         *
+         * IMPORTANT:
+         * Media.folder is now a Prisma relation.
+         * We therefore use folderId instead of the old:
+         *
+         *     folder: "uploads"
+         */
         const media = await prisma.media.create({
             data: {
                 filename,
                 originalName: file.name,
-                url: data.publicUrl,
+                url,
                 mimeType: file.type,
                 type,
                 size: file.size,
                 width,
                 height,
-                folder: "uploads",
+                folderId: resolvedFolderId,
                 alt: null,
+            },
+
+            include: {
+                folder: true,
             },
         });
 
