@@ -19,6 +19,18 @@ export default async function BlogTrashPage() {
             status: true,
             readingTime: true,
             createdAt: true,
+            category: {
+                select: {
+                    id: true,
+                    name: true,
+                }
+            },
+            tags: {
+                select: {
+                    id: true,
+                    name: true,
+                }
+            }
         },
     });
 

@@ -7,13 +7,7 @@ import { htmlToText } from "./utils/htmlToText";
 import * as RevisionComponents from "./";
 import RevisionSummary from "./RevisionSummary";
 
-interface Revision {
-    title: string;
-    content: string;
-    seoTitle?: string | null;
-    seoDescription?: string | null;
-    createdAt: string;
-}
+import { Revision } from "./types";
 
 interface Props {
     leftRevision: Revision;

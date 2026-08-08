@@ -42,6 +42,18 @@ export default async function BlogPage({
                 status: true,
                 readingTime: true,
                 createdAt: true,
+                category: {
+                    select: {
+                        id: true,
+                        name: true,
+                    }
+                },
+                tags: {
+                    select: {
+                        id: true,
+                        name: true,
+                    }
+                }
             },
         }),
 

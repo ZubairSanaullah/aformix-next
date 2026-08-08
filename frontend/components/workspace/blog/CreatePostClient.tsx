@@ -88,14 +88,12 @@ export default function CreatePostClient({
         ]}
         actions={
           <WorkspaceButton
-            asChild
             variant="secondary"
             size="sm"
+            onClick={() => router.push("/workspace/blog")}
           >
-            <a href="/workspace/blog">
-              <ArrowLeft className="h-4 w-4" />
-              Back to Blog
-            </a>
+            <ArrowLeft className="h-4 w-4" />
+            Back to Blog
           </WorkspaceButton>
         }
       />
