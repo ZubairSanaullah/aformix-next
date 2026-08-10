@@ -21,12 +21,9 @@ export async function GET(
 
         const { id } = await params;
 
-        const post = await prisma.post.findFirst({
+        const post = await prisma.post.findUnique({
             where: {
                 id,
-                deletedAt: {
-                    not: null,
-                },
             },
         });
 
@@ -34,7 +31,7 @@ export async function GET(
             return NextResponse.json(
                 {
                     success: false,
-                    message: "Trashed post not found.",
+                    message: "Post not found.",
                 },
                 { status: 404 }
             );
@@ -47,16 +44,6 @@ export async function GET(
                     message: "Forbidden",
                 },
                 { status: 403 }
-            );
-        }
-
-        if (!post.deletedAt) {
-            return NextResponse.json(
-                {
-                    success: false,
-                    message: "Post is not in Trash.",
-                },
-                { status: 400 }
             );
         }
 

@@ -76,13 +76,13 @@ export default function RevisionDiffViewer({
     return (
         <div className="space-y-6">
             {/* Summary */}
-            <section className="rounded-2xl border bg-muted/30 p-6">
+            <section className="rounded-2xl border border-[var(--workspace-border)] bg-[var(--workspace-background)] p-6">
 
-                <h2 className="text-lg font-semibold">
+                <h2 className="text-lg font-semibold text-[var(--workspace-text)]">
                     Revision Comparison
                 </h2>
 
-                <div className="mt-6 space-y-3 text-sm">
+                <div className="mt-6 space-y-3 text-sm text-[var(--workspace-text)]">
 
                     <p>
                         {titleChanged ? "📝" : "✓"} Title {titleChanged ? "changed" : "unchanged"}
@@ -114,15 +114,15 @@ export default function RevisionDiffViewer({
                 newValue={newer.title}
             />
 
-            <section className="overflow-hidden rounded-2xl border">
+            <section className="overflow-hidden rounded-2xl border border-[var(--workspace-border)]">
 
-                <div className="border-b bg-muted/40 px-6 py-4">
-                    <h3 className="font-semibold">
+                <div className="border-b border-[var(--workspace-border)] bg-[var(--workspace-background)] px-6 py-4">
+                    <h3 className="font-semibold text-[var(--workspace-text)]">
                         Content
                     </h3>
                 </div>
 
-                <div className="p-6">
+                <div className="bg-[var(--workspace-surface)] p-6">
 
                     <RevisionComponents.ParagraphDiff
                         oldContent={htmlToText(

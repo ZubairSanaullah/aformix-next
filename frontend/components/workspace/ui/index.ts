@@ -5,19 +5,25 @@ export { default as WorkspaceSkeleton } from "./WorkspaceSkeleton";
 export { default as WorkspaceEmptyState } from "./WorkspaceEmptyState";
 export { default as WorkspaceAlert } from "./WorkspaceAlert";
 export { default as WorkspaceBadge } from "./WorkspaceBadge";
+
+export { default as WorkspaceTable } from "./WorkspaceTable";
 export { default as WorkspaceTableHeader } from "./WorkspaceTableHeader";
 export { default as WorkspaceTableHead } from "./WorkspaceTableHead";
 export { default as WorkspaceTableBody } from "./WorkspaceTableBody";
 export { default as WorkspaceTableRow } from "./WorkspaceTableRow";
 export { default as WorkspaceTableCell } from "./WorkspaceTableCell";
+
 export { default as WorkspaceFilters } from "./WorkspaceFilters";
 export { default as WorkspaceInput } from "./WorkspaceInput";
 export { default as WorkspaceTextarea } from "./WorkspaceTextarea";
 export { default as WorkspaceSelect } from "./WorkspaceSelect";
 export { default as WorkspaceFormField } from "./WorkspaceFormField";
+
 export { default as WorkspacePageHeader } from "./WorkspacePageHeader";
 export { default as WorkspaceBreadcrumb } from "./WorkspaceBreadcrumb";
 export { default as WorkspaceBreadcrumbs } from "./WorkspaceBreadcrumbs";
 export { default as WorkspacePageActions } from "./WorkspacePageActions";
 export { default as WorkspaceSearch } from "./WorkspaceSearch";
 export { default as WorkspaceFilterBar } from "./WorkspaceFilterBar";
+
+export { default as WorkspaceSectionHeader } from "./WorkspaceSectionHeader";

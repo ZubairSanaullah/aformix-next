@@ -5,6 +5,8 @@ import { useState, useTransition } from "react";
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
+import WorkspaceButton from "@/components/workspace/ui/WorkspaceButton";
+
 import {
     AlertDialog,
     AlertDialogAction,
@@ -17,13 +19,7 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-interface DeletePostButtonProps {
-    postId: string;
-}
-
-export default function DeletePostButton({
-    postId,
-}: DeletePostButtonProps) {
+export default function EmptyTrashButton() {
     const router = useRouter();
     const [open, setOpen] = useState(false);
     const [isPending, startTransition] = useTransition();
@@ -56,20 +52,19 @@ export default function DeletePostButton({
     return (
         <AlertDialog open={open} onOpenChange={setOpen}>
             <AlertDialogTrigger asChild>
-                <button
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg border text-red-500 transition-colors hover:bg-red-50 hover:text-red-600 cursor-pointer"
-                    title="Delete post"
-                >
-                    <Trash2 className="h-4 w-4" />
-                </button>
+                <WorkspaceButton variant="danger" size="md">
+                    <Trash2 className="h-3.5 w-3.5" />
+                    Empty Trash
+                </WorkspaceButton>
             </AlertDialogTrigger>
-            <AlertDialogContent className="rounded-2xl p-8 sm:max-w-md">
+
+            <AlertDialogContent className="rounded-xl border-[var(--workspace-border)] bg-[var(--workspace-surface)] p-8 sm:max-w-md">
                 <AlertDialogHeader>
-                    <AlertDialogTitle className="text-xl font-semibold">
+                    <AlertDialogTitle className="text-xl font-semibold text-[var(--workspace-text)]">
                         Empty Trash?
                     </AlertDialogTitle>
 
-                    <AlertDialogDescription className="mt-2 leading-relaxed">
+                    <AlertDialogDescription className="mt-2 leading-relaxed text-[var(--workspace-text-muted)]">
                         Are you sure you want to empty the trash?
                         This action cannot be undone and the posts will be
                         permanently removed from your workspace.
@@ -77,7 +72,7 @@ export default function DeletePostButton({
                 </AlertDialogHeader>
 
                 <AlertDialogFooter className="mt-6 gap-3">
-                    <AlertDialogCancel className="rounded-xl px-5 cursor-pointer">
+                    <AlertDialogCancel className="rounded-xl border-[var(--workspace-border)] bg-[var(--workspace-surface)] px-5 text-[var(--workspace-text)] hover:bg-[var(--workspace-background)] cursor-pointer">
                         Cancel
                     </AlertDialogCancel>
 

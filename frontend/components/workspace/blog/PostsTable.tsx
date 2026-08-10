@@ -15,7 +15,7 @@ import {
     WorkspaceTableHead,
     WorkspaceTableHeader,
     WorkspaceTableRow,
-} from "@/components/workspace/ui/WorkspaceTable";
+} from "@/components/workspace/ui";
 
 import WorkspaceBadge from "@/components/workspace/ui/WorkspaceBadge";
 import WorkspaceEmptyState from "@/components/workspace/ui/WorkspaceEmptyState";

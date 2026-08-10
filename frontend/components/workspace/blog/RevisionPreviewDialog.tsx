@@ -1,125 +1,95 @@
 "use client";
 
+import { Loader2, RotateCcw } from "lucide-react";
+
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogDescription,
-} from "@/components/ui/dialog";
-
-import { Button } from "@/components/ui/button";
-
-
-interface Revision {
-    id: string;
-    title: string;
-    content: string;
-    seoTitle: string | null;
-    seoDescription: string | null;
-    createdAt: string;
-}
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 
-interface RevisionPreviewDialogProps {
-    revision: Revision | null;
+interface RestoreRevisionDialogProps {
     open: boolean;
-    onClose: () => void;
-    onRestore: (revision: Revision) => void;
+    onOpenChange: (open: boolean) => void;
+    onConfirm: () => void;
+    isRestoring?: boolean;
 }
 
 
-export default function RevisionPreviewDialog({
-    revision,
+export default function RestoreRevisionDialog({
     open,
-    onClose,
-    onRestore,
-}: RevisionPreviewDialogProps) {
-
-    if (!revision) return null;
-
+    onOpenChange,
+    onConfirm,
+    isRestoring = false,
+}: RestoreRevisionDialogProps) {
 
     return (
-        <Dialog
+        <AlertDialog
             open={open}
-            onOpenChange={onClose}
+            onOpenChange={onOpenChange}
         >
 
-            <DialogContent className="max-w-3xl">
+            <AlertDialogContent className="rounded-xl border-[var(--workspace-border)] bg-[var(--workspace-surface)]">
 
-                <DialogHeader>
+                <AlertDialogHeader>
 
-                    <DialogTitle>
-                        Revision Preview
-                    </DialogTitle>
-
-                    <DialogDescription>
-                        Created on{" "}
-                        {new Date(
-                            revision.createdAt
-                        ).toLocaleString()}
-                    </DialogDescription>
-
-                </DialogHeader>
+                    <AlertDialogTitle className="text-[var(--workspace-text)]">
+                        Restore this revision?
+                    </AlertDialogTitle>
 
 
-                <div className="space-y-4">
+                    <AlertDialogDescription className="text-[var(--workspace-text-muted)]">
+                        This will replace the current
+                        post content with this older
+                        version. Your current version
+                        will be saved in revision history
+                        before restoring.
+                    </AlertDialogDescription>
 
-                    <div>
-                        <h3 className="font-semibold">
-                            Title
-                        </h3>
-
-                        <p>
-                            {revision.title}
-                        </p>
-                    </div>
+                </AlertDialogHeader>
 
 
-                    <div>
-                        <h3 className="font-semibold">
-                            SEO Title
-                        </h3>
+                <AlertDialogFooter>
 
-                        <p>
-                            {revision.seoTitle || "None"}
-                        </p>
-                    </div>
-
-
-                    <div>
-                        <h3 className="font-semibold">
-                            Content Preview
-                        </h3>
-
-                        <div
-                            className="
-                                max-h-64
-                                overflow-auto
-                                rounded-lg
-                                border
-                                p-4
-                            "
-                            dangerouslySetInnerHTML={{
-                                __html:
-                                    revision.content,
-                            }}
-                        />
-                    </div>
-
-
-                    <Button
-                        onClick={() =>
-                            onRestore(revision)
-                        }
+                    <AlertDialogCancel
+                        disabled={isRestoring}
+                        className="rounded-lg border-[var(--workspace-border)] bg-[var(--workspace-surface)] text-[var(--workspace-text)] hover:bg-[var(--workspace-background)]"
                     >
-                        Restore This Version
-                    </Button>
+                        Cancel
+                    </AlertDialogCancel>
 
-                </div>
 
-            </DialogContent>
+                    <AlertDialogAction
+                        onClick={(event) => {
+                            event.preventDefault();
+                            onConfirm();
+                        }}
+                        disabled={isRestoring}
+                        className="rounded-lg bg-[var(--workspace-primary)] hover:bg-[var(--workspace-primary-hover)]"
+                    >
+                        {isRestoring ? (
+                            <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Restoring...
+                            </>
+                        ) : (
+                            <>
+                                <RotateCcw className="mr-2 h-4 w-4" />
+                                Restore Version
+                            </>
+                        )}
+                    </AlertDialogAction>
 
-        </Dialog>
+                </AlertDialogFooter>
+
+            </AlertDialogContent>
+
+        </AlertDialog>
     );
 }

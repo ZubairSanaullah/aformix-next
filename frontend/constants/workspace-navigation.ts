@@ -16,7 +16,6 @@ import {
   Trash2,
   FileUp
 } from "lucide-react";
-import { title } from "process";
 
 export const workspaceNavigation = [
   {
@@ -73,8 +72,8 @@ export const workspaceNavigation = [
         icon: Tags,
       },
       {
-        title: 'Media',
-        href: '/workspace/media',
+        title: "Media",
+        href: "/workspace/media",
         icon: FileUp,
       },
       {

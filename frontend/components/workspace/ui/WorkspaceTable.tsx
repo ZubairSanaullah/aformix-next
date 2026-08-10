@@ -15,7 +15,7 @@ interface WorkspaceTableRowProps {
     className?: string;
 }
 
-export function WorkspaceTable({
+export default function WorkspaceTable({
     children,
     className,
 }: WorkspaceTableProps) {

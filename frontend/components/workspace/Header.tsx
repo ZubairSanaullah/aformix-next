@@ -3,12 +3,16 @@
 import {
   Bell,
   Menu,
+  Moon,
+  Monitor,
   PanelLeftClose,
   PanelLeftOpen,
   Search,
+  Sun,
 } from "lucide-react";
 
 import LogoutButton from "@/components/auth/LogoutButton";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface HeaderProps {
   onMenuClick?: () => void;
@@ -27,6 +31,20 @@ export default function Header({
   isSidebarCollapsed,
   user,
 }: HeaderProps) {
+  const { theme, setTheme } = useTheme();
+
+  const toggleTheme = () => {
+    if (theme === "light") setTheme("dark");
+    else if (theme === "dark") setTheme("light");
+    else {
+      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      setTheme(isDark ? "light" : "dark");
+    }
+  };
+
+  const ThemeIcon =
+    theme === "light" ? Sun : theme === "dark" ? Moon : Monitor;
+
   const initials =
     user?.name
       ?.split(" ")
@@ -164,6 +182,30 @@ export default function Header({
           <Bell className="h-[16px] w-[16px]" />
 
           <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-[var(--workspace-primary)] ring-2 ring-[var(--workspace-surface)]" />
+        </button>
+
+        {/* Theme toggle */}
+        <button
+          type="button"
+          onClick={toggleTheme}
+          aria-label="Toggle theme"
+          title={
+            theme === "light"
+              ? "Switch to dark mode"
+              : theme === "dark"
+                ? "Switch to light mode"
+                : "Toggle theme"
+          }
+          className="
+                        rounded-lg
+                        p-2
+                        text-[var(--workspace-text-muted)]
+                        transition-colors
+                        hover:bg-[var(--workspace-background)]
+                        hover:text-[var(--workspace-text)]
+                    "
+        >
+          <ThemeIcon className="h-[16px] w-[16px]" />
         </button>
 
         <div className="mx-1 hidden h-6 w-px bg-[var(--workspace-border)] sm:block" />

@@ -35,7 +35,7 @@ import {
 import Badge from "@/components/ui/Badge";
 import Divider from "@/components/ui/Divider";
 import Skeleton from "@/components/ui/Skeleton";
-import { Button } from "@/components/ui/button";
+import WorkspaceButton from "@/components/workspace/ui/WorkspaceButton";
 import RevisionDiffDrawer from "./RevisionDiffDrawer";
 import type { Revision } from "./types";
 
@@ -245,12 +245,12 @@ export default function RevisionPreviewDrawer({
 
                 <SheetContent
                     side="right"
-                    className="w-full overflow-y-auto bg-background sm:max-w-3xl"
+                    className="w-full overflow-y-auto border-l border-[var(--workspace-border)] bg-[var(--workspace-surface)] sm:max-w-3xl"
                 >
 
                     <SheetHeader>
 
-                        <SheetTitle className="flex items-center gap-2">
+                        <SheetTitle className="flex items-center gap-2 text-[var(--workspace-text)]">
 
                             <FileText className="h-5 w-5" />
 
@@ -259,7 +259,7 @@ export default function RevisionPreviewDrawer({
                         </SheetTitle>
 
 
-                        <SheetDescription>
+                        <SheetDescription className="text-[var(--workspace-text-muted)]">
 
                             Preview a previous version before restoring it.
 
@@ -268,7 +268,7 @@ export default function RevisionPreviewDrawer({
                     </SheetHeader>
 
 
-                    <Divider className="my-6" />
+                    <Divider className="my-6 border-[var(--workspace-border)]" />
 
 
                     {loading && (
@@ -295,12 +295,12 @@ export default function RevisionPreviewDrawer({
 
                                 <div>
 
-                                    <h2 className="text-2xl font-bold">
+                                    <h2 className="text-2xl font-bold text-[var(--workspace-text)]">
                                         {revision.title}
                                     </h2>
 
 
-                                    <p className="text-sm text-muted-foreground">
+                                    <p className="text-sm text-[var(--workspace-text-muted)]">
                                         {revision.slug}
                                     </p>
 
@@ -323,7 +323,7 @@ export default function RevisionPreviewDrawer({
 
 
 
-                            <div className="flex flex-wrap gap-6 text-sm text-muted-foreground">
+                            <div className="flex flex-wrap gap-6 text-sm text-[var(--workspace-text-muted)]">
 
                                 <div className="flex items-center gap-2">
 
@@ -358,7 +358,7 @@ export default function RevisionPreviewDrawer({
 
                             {revision.excerpt && (
 
-                                <div className="rounded-xl border p-4 text-sm">
+                                <div className="rounded-xl border border-[var(--workspace-border)] bg-[var(--workspace-background)] p-4 text-sm text-[var(--workspace-text)]">
 
                                     {revision.excerpt}
 
@@ -368,17 +368,17 @@ export default function RevisionPreviewDrawer({
 
 
 
-                            <Divider />
+                            <Divider className="border-[var(--workspace-border)]" />
 
 
                             <div>
 
-                                <h3 className="mb-3 text-lg font-semibold">
+                                <h3 className="mb-3 text-lg font-semibold text-[var(--workspace-text)]">
                                     Content
                                 </h3>
 
 
-                                <div className="rounded-xl border p-4">
+                                <div className="rounded-xl border border-[var(--workspace-border)] bg-[var(--workspace-background)] p-4">
 
                                     <Editor
                                         value={revision.content}
@@ -393,37 +393,38 @@ export default function RevisionPreviewDrawer({
 
 
 
-                            <Divider />
+                            <Divider className="border-[var(--workspace-border)]" />
 
 
 
                             <div className="flex justify-end gap-3">
 
-                                <Button
+                                <WorkspaceButton
                                     type="button"
-                                    variant="outline"
+                                    variant="secondary"
                                     onClick={() =>
                                         setDiffOpen(true)
                                     }
                                     disabled={!currentPost}
                                 >
                                     Compare Changes
-                                </Button>
+                                </WorkspaceButton>
 
 
-                                <Button
+                                <WorkspaceButton
                                     type="button"
+                                    variant="primary"
                                     onClick={() =>
                                         setConfirmOpen(true)
                                     }
                                     disabled={restoring}
                                 >
 
-                                    <RotateCcw className="mr-2 h-4 w-4" />
+                                    <RotateCcw className="h-4 w-4" />
 
                                     Restore Revision
 
-                                </Button>
+                                </WorkspaceButton>
 
                             </div>
 
@@ -443,16 +444,16 @@ export default function RevisionPreviewDrawer({
                 onOpenChange={setConfirmOpen}
             >
 
-                <AlertDialogContent>
+                <AlertDialogContent className="rounded-xl border-[var(--workspace-border)] bg-[var(--workspace-surface)]">
 
                     <AlertDialogHeader>
 
-                        <AlertDialogTitle>
+                        <AlertDialogTitle className="text-[var(--workspace-text)]">
                             Restore this revision?
                         </AlertDialogTitle>
 
 
-                        <AlertDialogDescription>
+                        <AlertDialogDescription className="text-[var(--workspace-text-muted)]">
 
                             Your current post will be saved
                             as a new revision before this
@@ -466,7 +467,7 @@ export default function RevisionPreviewDrawer({
 
                     <AlertDialogFooter>
 
-                        <AlertDialogCancel>
+                        <AlertDialogCancel className="rounded-lg border-[var(--workspace-border)] bg-[var(--workspace-surface)] text-[var(--workspace-text)] hover:bg-[var(--workspace-background)]">
                             Cancel
                         </AlertDialogCancel>
 
@@ -480,6 +481,7 @@ export default function RevisionPreviewDrawer({
 
                             }}
                             disabled={restoring}
+                            className="rounded-lg bg-[var(--workspace-primary)] hover:bg-[var(--workspace-primary-hover)]"
                         >
 
                             {restoring ? (

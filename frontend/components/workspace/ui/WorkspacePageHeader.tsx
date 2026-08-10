@@ -1,13 +1,14 @@
 import WorkspaceBreadcrumbs from "./WorkspaceBreadcrumbs";
 
 interface WorkspacePageHeaderProps {
-    title: string;
+    title?: string;
     description?: string;
     breadcrumbs?: {
         label: string;
         href?: string;
     }[];
     actions?: React.ReactNode;
+    children?: React.ReactNode;
 }
 
 export default function WorkspacePageHeader({
@@ -15,6 +16,7 @@ export default function WorkspacePageHeader({
     description,
     breadcrumbs,
     actions,
+    children,
 }: WorkspacePageHeaderProps) {
     return (
         <header className="space-y-4">
@@ -24,9 +26,11 @@ export default function WorkspacePageHeader({
 
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div className="min-w-0">
-                    <h1 className="text-xl font-semibold tracking-tight text-[var(--workspace-text)] sm:text-2xl">
-                        {title}
-                    </h1>
+                    {title && (
+                        <h1 className="text-xl font-semibold tracking-tight text-[var(--workspace-text)] sm:text-2xl">
+                            {title}
+                        </h1>
+                    )}
 
                     {description && (
                         <p className="mt-1.5 max-w-2xl text-xs leading-5 text-[var(--workspace-text-muted)] sm:text-sm">
@@ -35,9 +39,10 @@ export default function WorkspacePageHeader({
                     )}
                 </div>
 
-                {actions && (
+                {(actions || children) && (
                     <div className="flex shrink-0 items-center gap-2">
                         {actions}
+                        {children}
                     </div>
                 )}
             </div>

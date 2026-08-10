@@ -1,7 +1,12 @@
 import Link from "next/link";
+import { Trash2, Plus } from "lucide-react";
 
 import { prisma } from "@/lib/prisma";
 import { buildBlogQuery } from "@/lib/blog-query";
+
+import WorkspacePageHeader from "@/components/workspace/ui/WorkspacePageHeader";
+import WorkspacePageActions from "@/components/workspace/ui/WorkspacePageActions";
+import WorkspaceButton from "@/components/workspace/ui/WorkspaceButton";
 
 import PostsTable from "@/components/workspace/blog/PostsTable";
 import PostsFilters from "@/components/workspace/blog/PostsFilters";
@@ -30,7 +35,7 @@ export default async function BlogPage({
         sort: params.sort,
     });
 
-    const [posts, total] = await Promise.all([
+    const [posts, total, categories, tags] = await Promise.all([
         prisma.post.findMany({
             where,
             orderBy,
@@ -46,52 +51,75 @@ export default async function BlogPage({
                     select: {
                         id: true,
                         name: true,
-                    }
+                    },
                 },
                 tags: {
                     select: {
                         id: true,
                         name: true,
-                    }
-                }
+                    },
+                },
             },
         }),
 
         prisma.post.count({
             where,
         }),
+
+        prisma.category.findMany({
+            select: {
+                id: true,
+                name: true,
+            },
+            orderBy: {
+                name: "asc",
+            },
+        }),
+
+        prisma.tag.findMany({
+            select: {
+                id: true,
+                name: true,
+            },
+            orderBy: {
+                name: "asc",
+            },
+        }),
     ]);
 
     return (
-        <div className="space-y-8">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">
-                        Blog CMS
-                    </h1>
+        <div className="space-y-6">
+            <WorkspacePageHeader
+                title="Blog"
+                description="Manage blog posts, drafts, categories, and published content."
+                breadcrumbs={[
+                    { label: "Workspace", href: "/workspace" },
+                    { label: "Blog" },
+                ]}
+                actions={
+                    <WorkspacePageActions>
+                        <Link href="/workspace/blog/trash">
+                            <WorkspaceButton variant="secondary" size="md">
+                                <Trash2 className="h-3.5 w-3.5" />
+                                Trash
+                            </WorkspaceButton>
+                        </Link>
 
-                    <p className="mt-2 text-muted-foreground">
-                        Manage blog posts, drafts, categories, and published content.
-                    </p>
-                </div>
+                        <Link href="/workspace/blog/create">
+                            <WorkspaceButton variant="primary" size="md">
+                                <Plus className="h-3.5 w-3.5" />
+                                New Post
+                            </WorkspaceButton>
+                        </Link>
+                    </WorkspacePageActions>
+                }
+            />
 
-                <Link
-                    href="/workspace/blog/create"
-                    className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90"
-                >
-                    + New Post
-                </Link>
-            </div>
-
-            <PostsFilters />
+            <PostsFilters categories={categories} tags={tags} />
 
             <PostsTable posts={posts} />
 
-            <Pagination
-                page={page}
-                pageSize={pageSize}
-                total={total}
-            />
+            <Pagination page={page} pageSize={pageSize} total={total} />
         </div>
     );
 }

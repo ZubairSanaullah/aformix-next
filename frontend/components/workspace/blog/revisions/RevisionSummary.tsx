@@ -30,9 +30,9 @@ export default function RevisionSummary({
 
     return (
 
-        <section className="rounded-2xl border bg-muted/30 p-6">
+        <section className="rounded-2xl border border-[var(--workspace-border)] bg-[var(--workspace-background)] p-6">
 
-            <h2 className="mb-5 text-lg font-semibold">
+            <h2 className="mb-5 text-lg font-semibold text-[var(--workspace-text)]">
                 Changes Overview
             </h2>
 
@@ -42,14 +42,14 @@ export default function RevisionSummary({
                     icon={<Plus className="h-4 w-4" />}
                     label="Words Added"
                     value={comparison.wordsAdded}
-                    color="text-green-600"
+                    colorVar="var(--workspace-success)"
                 />
 
                 <SummaryItem
                     icon={<Minus className="h-4 w-4" />}
                     label="Words Removed"
                     value={comparison.wordsRemoved}
-                    color="text-red-600"
+                    colorVar="var(--workspace-danger)"
                 />
 
                 <SummaryItem
@@ -96,19 +96,19 @@ function SummaryItem({
     icon,
     label,
     value,
-    color,
+    colorVar,
 }: {
     icon: React.ReactNode;
     label: string;
     value: React.ReactNode;
-    color?: string;
+    colorVar?: string;
 }) {
 
     return (
 
-        <div className="rounded-xl border bg-background p-4">
+        <div className="rounded-xl border border-[var(--workspace-border)] bg-[var(--workspace-surface)] p-4">
 
-            <div className="mb-2 flex items-center gap-2 text-muted-foreground">
+            <div className="mb-2 flex items-center gap-2 text-[var(--workspace-text-muted)]">
 
                 {icon}
 
@@ -118,7 +118,10 @@ function SummaryItem({
 
             </div>
 
-            <div className={`text-xl font-bold ${color ?? ""}`}>
+            <div
+                className="text-xl font-bold"
+                style={{ color: colorVar ?? "var(--workspace-text)" }}
+            >
                 {value}
             </div>
 

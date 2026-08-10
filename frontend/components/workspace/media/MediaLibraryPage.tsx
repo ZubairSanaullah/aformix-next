@@ -4,23 +4,26 @@ import {
     ChevronLeft,
     ChevronRight,
     RefreshCw,
-    Search,
-    X,
+    CheckSquare,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import Input from "@/components/ui/Input";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useCallback, useEffect, useState } from "react";
 import MediaGrid from "@/components/workspace/media/MediaGrid";
 import type { MediaItem } from "@/components/workspace/media/MediaCard";
 import { UploadDropzone } from "@/components/workspace/media/UploadDropzone";
-import { Button } from "@/components/ui/button";
 import MediaDetailsDrawer from "@/components/workspace/media/MediaDetailsDrawer";
 import FolderSidebar, {
     type FolderItem,
 } from "@/components/workspace/media/FolderSidebar";
 import { toast } from "sonner";
+
+import WorkspacePageHeader from "@/components/workspace/ui/WorkspacePageHeader";
+import WorkspacePageActions from "@/components/workspace/ui/WorkspacePageActions";
+import WorkspaceButton from "@/components/workspace/ui/WorkspaceButton";
+import WorkspaceCard from "@/components/workspace/ui/WorkspaceCard";
+import WorkspaceSearch from "@/components/workspace/ui/WorkspaceSearch";
 
 type Tab = "active" | "trash";
 
@@ -809,61 +812,55 @@ export default function MediaLibraryPage({
                 refreshSignal={folderRefreshSignal}
             />
 
-            <div className="min-w-0 flex-1 space-y-8">
-                {/* Header */}
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h1 className="text-2xl font-semibold tracking-tight">
-                            Media Library
-                        </h1>
+            <div className="min-w-0 flex-1 space-y-6">
+                <WorkspacePageHeader
+                    title="Media Library"
+                    description="Upload and manage files used across the Workspace."
+                    breadcrumbs={[
+                        { label: "Workspace", href: "/workspace" },
+                        { label: "Media Library" },
+                    ]}
+                    actions={
+                        <WorkspacePageActions>
+                            {tab === "active" && (
+                                <WorkspaceButton
+                                    variant={bulkMode ? "primary" : "secondary"}
+                                    size="md"
+                                    onClick={() => {
+                                        setBulkMode((v) => !v);
+                                        setBulkSelectedIds(new Set());
+                                    }}
+                                >
+                                    <CheckSquare className="h-3.5 w-3.5" />
+                                    {bulkMode ? "Done" : "Select multiple"}
+                                </WorkspaceButton>
+                            )}
 
-                        <p className="text-sm text-muted-foreground">
-                            Upload and manage files used across the Workspace.
-                        </p>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                        {tab === "active" && (
-                            <Button
-                                variant={bulkMode ? "default" : "outline"}
-                                size="sm"
-                                onClick={() => {
-                                    setBulkMode((v) => !v);
-                                    setBulkSelectedIds(new Set());
-                                }}
+                            <WorkspaceButton
+                                variant="secondary"
+                                size="md"
+                                onClick={() =>
+                                    fetchMedia(
+                                        tab,
+                                        debouncedSearch,
+                                        page,
+                                        mediaFilter,
+                                        selectedFolderId
+                                    )
+                                }
+                                disabled={isLoading}
                             >
-                                {bulkMode ? "Done" : "Select multiple"}
-                            </Button>
-                        )}
-
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() =>
-                                fetchMedia(
-                                    tab,
-                                    debouncedSearch,
-                                    page,
-                                    mediaFilter,
-                                    selectedFolderId
-                                )
-                            }
-                            disabled={
-                                isLoading
-                            }
-                        >
-                            <RefreshCw
-                                className={cn(
-                                    "mr-2 h-4 w-4",
-                                    isLoading &&
-                                    "animate-spin"
-                                )}
-                            />
-
-                            Refresh
-                        </Button>
-                    </div>
-                </div>
+                                <RefreshCw
+                                    className={cn(
+                                        "h-3.5 w-3.5",
+                                        isLoading && "animate-spin"
+                                    )}
+                                />
+                                Refresh
+                            </WorkspaceButton>
+                        </WorkspacePageActions>
+                    }
+                />
 
                 {/* Upload */}
                 {tab ===
@@ -877,7 +874,7 @@ export default function MediaLibraryPage({
                     )}
 
                 {/* Tabs */}
-                <div className="flex items-center justify-between gap-4 border-b">
+                <div className="flex items-center justify-between gap-4 border-b border-[var(--workspace-border)]">
                     <div className="flex items-center gap-1">
                         <button
                             type="button"
@@ -887,11 +884,11 @@ export default function MediaLibraryPage({
                                 )
                             }
                             className={cn(
-                                "border-b-2 px-3 py-2 text-sm font-medium transition-colors",
+                                "border-b-2 px-3 py-2 text-xs font-semibold transition-colors",
                                 tab ===
                                     "active"
-                                    ? "border-primary text-foreground"
-                                    : "border-transparent text-muted-foreground hover:text-foreground"
+                                    ? "border-[var(--workspace-primary)] text-[var(--workspace-text)]"
+                                    : "border-transparent text-[var(--workspace-text-muted)] hover:text-[var(--workspace-text)]"
                             )}
                         >
                             Active
@@ -905,11 +902,11 @@ export default function MediaLibraryPage({
                                 )
                             }
                             className={cn(
-                                "border-b-2 px-3 py-2 text-sm font-medium transition-colors",
+                                "border-b-2 px-3 py-2 text-xs font-semibold transition-colors",
                                 tab ===
                                     "trash"
-                                    ? "border-primary text-foreground"
-                                    : "border-transparent text-muted-foreground hover:text-foreground"
+                                    ? "border-[var(--workspace-primary)] text-[var(--workspace-text)]"
+                                    : "border-transparent text-[var(--workspace-text-muted)] hover:text-[var(--workspace-text)]"
                             )}
                         >
                             Trash
@@ -919,8 +916,8 @@ export default function MediaLibraryPage({
 
                 {/* Bulk action bar */}
                 {bulkMode && (
-                    <div className="flex items-center justify-between rounded-lg border bg-muted/30 p-3">
-                        <span className="text-sm font-medium">
+                    <WorkspaceCard padding="sm" className="flex items-center justify-between">
+                        <span className="text-xs font-semibold text-[var(--workspace-text)]">
                             {bulkSelectedIds.size} selected
                         </span>
 
@@ -930,7 +927,7 @@ export default function MediaLibraryPage({
                                 onChange={(e) =>
                                     setBulkMoveTargetId(e.target.value)
                                 }
-                                className="h-9 rounded-md border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+                                className="h-9 rounded-lg border border-[var(--workspace-border)] bg-[var(--workspace-surface)] px-3 text-xs text-[var(--workspace-text)] outline-none transition-all focus:border-[var(--workspace-primary)] focus:ring-2 focus:ring-[var(--workspace-primary)]/10"
                                 disabled={isBulkMoving}
                             >
                                 <option value="">Move to folder...</option>
@@ -942,8 +939,9 @@ export default function MediaLibraryPage({
                                 ))}
                             </select>
 
-                            <Button
+                            <WorkspaceButton
                                 size="sm"
+                                variant="primary"
                                 onClick={handleBulkMove}
                                 disabled={
                                     !bulkMoveTargetId ||
@@ -952,78 +950,54 @@ export default function MediaLibraryPage({
                                 }
                             >
                                 {isBulkMoving ? "Moving..." : "Move"}
-                            </Button>
+                            </WorkspaceButton>
                         </div>
-                    </div>
+                    </WorkspaceCard>
                 )}
 
                 {!bulkMode && selectedMedia && (
-                    <div className="flex items-center justify-between rounded-lg border bg-muted/30 p-3">
+                    <WorkspaceCard padding="sm" className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                             <img
                                 src={selectedMedia.url}
                                 alt={selectedMedia.alt ?? selectedMedia.originalName}
-                                className="h-12 w-12 rounded object-cover"
+                                className="h-12 w-12 rounded-lg object-cover"
                             />
 
                             <div>
-                                <p className="text-sm font-medium">
+                                <p className="text-xs font-semibold text-[var(--workspace-text)]">
                                     {selectedMedia.originalName}
                                 </p>
 
-                                <p className="text-xs text-muted-foreground">
+                                <p className="text-[10px] text-[var(--workspace-text-muted)]">
                                     Selected image
                                 </p>
                             </div>
                         </div>
 
 
-                        <Button
+                        <WorkspaceButton
                             size="sm"
+                            variant="primary"
                             onClick={() => {
                                 onSelect?.(selectedMedia);
                             }}
                         >
                             Insert Image
-                        </Button>
-                    </div>
+                        </WorkspaceButton>
+                    </WorkspaceCard>
                 )}
 
                 {/* Search + Type Filter */}
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="relative w-full sm:w-72">
-                        <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                    <WorkspaceSearch
+                        value={searchInput}
+                        onChange={setSearchInput}
+                        placeholder="Search by filename or alt text..."
+                        className="sm:w-72"
+                    />
 
-                        <Input
-                            value={
-                                searchInput
-                            }
-                            onChange={(e) =>
-                                setSearchInput(
-                                    e.target
-                                        .value
-                                )
-                            }
-                            placeholder="Search by filename or alt text..."
-                            className="h-9 pl-8 pr-8 text-sm"
-                        />
-
-                        {searchInput && (
-                            <button
-                                type="button"
-                                onClick={() =>
-                                    setSearchInput(
-                                        ""
-                                    )
-                                }
-                                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                            >
-                                <X className="h-3.5 w-3.5" />
-                            </button>
-                        )}
-                    </div>
-
-                    <div className="flex flex-wrap items-center gap-1 rounded-lg border bg-muted/30 p-1">
+                    <div className="flex flex-wrap items-center gap-1 rounded-lg border border-[var(--workspace-border)] bg-[var(--workspace-background)] p-1">
                         {MEDIA_FILTERS.map(
                             (filter) => (
                                 <button
@@ -1037,11 +1011,11 @@ export default function MediaLibraryPage({
                                         )
                                     }
                                     className={cn(
-                                        "rounded-md px-3 py-1.5 text-xs font-medium transition-colors",
+                                        "rounded-md px-3 py-1.5 text-[11px] font-medium transition-colors",
                                         mediaFilter ===
                                             filter.value
-                                            ? "bg-background text-foreground shadow-sm"
-                                            : "text-muted-foreground hover:text-foreground"
+                                            ? "bg-[var(--workspace-surface)] text-[var(--workspace-text)] shadow-sm"
+                                            : "text-[var(--workspace-text-muted)] hover:text-[var(--workspace-text)]"
                                     )}
                                 >
                                     {
@@ -1056,7 +1030,7 @@ export default function MediaLibraryPage({
                 {/* Media */}
                 <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                        <h2 className="text-sm font-medium text-muted-foreground">
+                        <h2 className="text-xs font-semibold text-[var(--workspace-text-muted)]">
                             {isLoading
                                 ? "Loading..."
                                 : `${pagination?.total ??
@@ -1072,7 +1046,7 @@ export default function MediaLibraryPage({
                         {pagination &&
                             pagination.totalPages >
                             1 && (
-                                <span className="text-xs text-muted-foreground">
+                                <span className="text-[10px] text-[var(--workspace-text-muted)]">
                                     Page{" "}
                                     {
                                         pagination.page
@@ -1114,9 +1088,9 @@ export default function MediaLibraryPage({
                     {pagination &&
                         pagination.totalPages >
                         1 && (
-                            <div className="flex items-center justify-center gap-2 pt-4">
-                                <Button
-                                    variant="outline"
+                            <div className="flex items-center justify-center gap-1.5 pt-4">
+                                <WorkspaceButton
+                                    variant="secondary"
                                     size="sm"
                                     onClick={
                                         goToPreviousPage
@@ -1126,18 +1100,18 @@ export default function MediaLibraryPage({
                                         isLoading
                                     }
                                 >
-                                    <ChevronLeft className="mr-1 h-4 w-4" />
+                                    <ChevronLeft className="h-3.5 w-3.5" />
                                     Previous
-                                </Button>
+                                </WorkspaceButton>
 
-                                <div className="flex h-8 min-w-8 items-center justify-center rounded-md border px-3 text-sm font-medium">
+                                <div className="flex h-8 items-center rounded-lg border border-[var(--workspace-border)] bg-[var(--workspace-surface)] px-3 text-[10px] font-medium text-[var(--workspace-text-muted)]">
                                     {
                                         pagination.page
                                     }
                                 </div>
 
-                                <Button
-                                    variant="outline"
+                                <WorkspaceButton
+                                    variant="secondary"
                                     size="sm"
                                     onClick={
                                         goToNextPage
@@ -1148,8 +1122,8 @@ export default function MediaLibraryPage({
                                     }
                                 >
                                     Next
-                                    <ChevronRight className="ml-1 h-4 w-4" />
-                                </Button>
+                                    <ChevronRight className="h-3.5 w-3.5" />
+                                </WorkspaceButton>
                             </div>
                         )}
                 </div>

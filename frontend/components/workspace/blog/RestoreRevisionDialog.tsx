@@ -1,5 +1,7 @@
 "use client";
 
+import { Loader2, RotateCcw } from "lucide-react";
+
 import {
     AlertDialog,
     AlertDialogAction,
@@ -16,6 +18,7 @@ interface RestoreRevisionDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     onConfirm: () => void;
+    isRestoring?: boolean;
 }
 
 
@@ -23,6 +26,7 @@ export default function RestoreRevisionDialog({
     open,
     onOpenChange,
     onConfirm,
+    isRestoring = false,
 }: RestoreRevisionDialogProps) {
 
     return (
@@ -31,16 +35,16 @@ export default function RestoreRevisionDialog({
             onOpenChange={onOpenChange}
         >
 
-            <AlertDialogContent>
+            <AlertDialogContent className="rounded-xl border-[var(--workspace-border)] bg-[var(--workspace-surface)]">
 
                 <AlertDialogHeader>
 
-                    <AlertDialogTitle>
+                    <AlertDialogTitle className="text-[var(--workspace-text)]">
                         Restore this revision?
                     </AlertDialogTitle>
 
 
-                    <AlertDialogDescription>
+                    <AlertDialogDescription className="text-[var(--workspace-text-muted)]">
                         This will replace the current
                         post content with this older
                         version. Your current version
@@ -53,15 +57,33 @@ export default function RestoreRevisionDialog({
 
                 <AlertDialogFooter>
 
-                    <AlertDialogCancel>
+                    <AlertDialogCancel
+                        disabled={isRestoring}
+                        className="rounded-lg border-[var(--workspace-border)] bg-[var(--workspace-surface)] text-[var(--workspace-text)] hover:bg-[var(--workspace-background)]"
+                    >
                         Cancel
                     </AlertDialogCancel>
 
 
                     <AlertDialogAction
-                        onClick={onConfirm}
+                        onClick={(event) => {
+                            event.preventDefault();
+                            onConfirm();
+                        }}
+                        disabled={isRestoring}
+                        className="rounded-lg bg-[var(--workspace-primary)] hover:bg-[var(--workspace-primary-hover)]"
                     >
-                        Restore Version
+                        {isRestoring ? (
+                            <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Restoring...
+                            </>
+                        ) : (
+                            <>
+                                <RotateCcw className="mr-2 h-4 w-4" />
+                                Restore Version
+                            </>
+                        )}
                     </AlertDialogAction>
 
                 </AlertDialogFooter>

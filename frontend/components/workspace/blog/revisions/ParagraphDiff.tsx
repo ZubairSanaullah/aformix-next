@@ -44,10 +44,10 @@ export default function ParagraphDiff({
                     <div
                         id={`paragraph-${index + 1}`}
                         key={index}
-                        className="rounded-xl border"
+                        className="rounded-xl border border-[var(--workspace-border)] bg-[var(--workspace-surface)]"
                     >
 
-                        <div className="border-b bg-muted/40 px-4 py-2 text-xs font-semibold uppercase tracking-wide">
+                        <div className="border-b border-[var(--workspace-border)] bg-[var(--workspace-background)] px-4 py-2 text-xs font-semibold uppercase tracking-wide text-[var(--workspace-text-muted)]">
 
                             Paragraph {index + 1}
 
@@ -55,16 +55,16 @@ export default function ParagraphDiff({
 
                         <div className="grid grid-cols-2">
 
-                            <div className="border-r p-4">
+                            <div className="border-r border-[var(--workspace-border)] p-4">
 
-                                <p className="mb-2 text-xs text-muted-foreground">
+                                <p className="mb-2 text-xs text-[var(--workspace-text-subtle)]">
                                     Older
                                 </p>
 
-                                <div className="whitespace-pre-wrap text-sm">
+                                <div className="whitespace-pre-wrap text-sm text-[var(--workspace-text)]">
 
                                     {oldParagraph || (
-                                        <span className="italic text-muted-foreground">
+                                        <span className="italic text-[var(--workspace-text-subtle)]">
                                             Empty
                                         </span>
                                     )}
@@ -75,7 +75,7 @@ export default function ParagraphDiff({
 
                             <div className="p-4">
 
-                                <p className="mb-2 text-xs text-muted-foreground">
+                                <p className="mb-2 text-xs text-[var(--workspace-text-subtle)]">
                                     Newer
                                 </p>
 
@@ -88,7 +88,7 @@ export default function ParagraphDiff({
 
                                 ) : (
 
-                                    <span className="text-sm italic text-muted-foreground">
+                                    <span className="text-sm italic text-[var(--workspace-text-subtle)]">
                                         No changes
                                     </span>
 
