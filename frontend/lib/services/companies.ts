@@ -204,3 +204,51 @@ export async function updateCRMCompany(
         },
     });
 }
+
+export async function deleteCRMCompany(id: string) {
+    const company = await prisma.company.findUnique({
+        where: {
+            id,
+        },
+        select: {
+            id: true,
+            _count: {
+                select: {
+                    contacts: true,
+                    leads: true,
+                    deals: true,
+                },
+            },
+        },
+    });
+
+    if (!company) {
+        return {
+            success: false as const,
+            reason: "NOT_FOUND" as const,
+        };
+    }
+
+    const hasRelationships =
+        company._count.contacts > 0 ||
+        company._count.leads > 0 ||
+        company._count.deals > 0;
+
+    if (hasRelationships) {
+        return {
+            success: false as const,
+            reason: "HAS_RELATIONSHIPS" as const,
+            counts: company._count,
+        };
+    }
+
+    await prisma.company.delete({
+        where: {
+            id,
+        },
+    });
+
+    return {
+        success: true as const,
+    };
+}

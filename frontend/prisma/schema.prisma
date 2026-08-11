@@ -25,6 +25,7 @@ model User {
   notes         Note[]
   posts         Post[]
   postRevisions PostRevision[]
+  tasks         Task[]
 }
 
 model Category {
@@ -150,6 +151,7 @@ model Contact {
   deals       Deal[]
   leads       Lead[]
   notes       Note[]
+  tasks       Task[]
 
   @@index([companyId])
   @@index([ownerId])
@@ -178,6 +180,7 @@ model Company {
   deals       Deal[]
   leads       Lead[]
   notes       Note[]
+  tasks       Task[]
 
   @@index([ownerId])
   @@index([status])
@@ -202,6 +205,7 @@ model Lead {
   contact     Contact?    @relation(fields: [contactId], references: [id])
   owner       User        @relation(fields: [ownerId], references: [id])
   notes       Note[]
+  tasks       Task[]
 
   @@index([contactId])
   @@index([companyId])
@@ -231,6 +235,7 @@ model Deal {
   pipeline    Pipeline      @relation(fields: [pipelineId], references: [id])
   stage       PipelineStage @relation(fields: [stageId], references: [id])
   notes       Note[]
+  tasks       Task[]
 
   @@index([contactId])
   @@index([companyId])
@@ -321,6 +326,40 @@ model Note {
   @@index([userId])
 }
 
+model Task {
+  id          String       @id @default(cuid())
+  title       String
+  description String?
+  status      TaskStatus   @default(TODO)
+  priority    TaskPriority @default(MEDIUM)
+  dueAt       DateTime?
+  completedAt DateTime?
+
+  ownerId   String
+  contactId String?
+  companyId String?
+  leadId    String?
+  dealId    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  owner   User     @relation(fields: [ownerId], references: [id])
+  contact Contact? @relation(fields: [contactId], references: [id])
+  company Company? @relation(fields: [companyId], references: [id])
+  lead    Lead?    @relation(fields: [leadId], references: [id])
+  deal    Deal?    @relation(fields: [dealId], references: [id])
+
+  @@index([ownerId])
+  @@index([status])
+  @@index([priority])
+  @@index([dueAt])
+  @@index([contactId])
+  @@index([companyId])
+  @@index([leadId])
+  @@index([dealId])
+}
+
 enum MediaType {
   IMAGE
   VIDEO
@@ -379,4 +418,18 @@ enum ActivityType {
   FOLLOW_UP
   NOTE
   OTHER
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
 }

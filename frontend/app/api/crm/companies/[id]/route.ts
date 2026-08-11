@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import {
+    deleteCRMCompany,
+    updateCRMCompany,
+} from "@/lib/services/companies";
+import { companySchema } from "@/lib/validations/company";
 
 interface RouteContext {
     params: Promise<{
@@ -215,6 +220,105 @@ export async function PATCH(
             {
                 error:
                     "Failed to update company",
+            },
+            { status: 500 }
+        );
+    }
+}
+
+export async function DELETE(
+    _request: Request,
+    { params }: RouteContext
+) {
+    try {
+        const session = await auth();
+
+        if (!session?.user?.id) {
+            return NextResponse.json(
+                { error: "Unauthorized" },
+                { status: 401 }
+            );
+        }
+
+        const { id } = await params;
+
+        const existingCompany =
+            await prisma.company.findUnique({
+                where: {
+                    id,
+                },
+                select: {
+                    id: true,
+                    ownerId: true,
+                },
+            });
+
+        if (!existingCompany) {
+            return NextResponse.json(
+                {
+                    error: "Company not found",
+                },
+                { status: 404 }
+            );
+        }
+
+        if (
+            existingCompany.ownerId !==
+            session.user.id
+        ) {
+            return NextResponse.json(
+                {
+                    error: "Forbidden",
+                },
+                { status: 403 }
+            );
+        }
+
+        const result =
+            await deleteCRMCompany(id);
+
+        if (!result.success) {
+            if (
+                result.reason ===
+                "NOT_FOUND"
+            ) {
+                return NextResponse.json(
+                    {
+                        error:
+                            "Company not found",
+                    },
+                    { status: 404 }
+                );
+            }
+
+            if (
+                result.reason ===
+                "HAS_RELATIONSHIPS"
+            ) {
+                return NextResponse.json(
+                    {
+                        error:
+                            "This company cannot be deleted because it has related CRM records.",
+                        counts: result.counts,
+                    },
+                    { status: 409 }
+                );
+            }
+        }
+
+        return NextResponse.json({
+            success: true,
+        });
+    } catch (error) {
+        console.error(
+            "DELETE /api/crm/companies/[id] error:",
+            error
+        );
+
+        return NextResponse.json(
+            {
+                error:
+                    "Failed to delete company",
             },
             { status: 500 }
         );

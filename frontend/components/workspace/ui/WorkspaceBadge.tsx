@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 
 type WorkspaceBadgeVariant =
     | "default"
+    | "neutral"
     | "success"
     | "warning"
     | "danger"
@@ -41,6 +42,9 @@ export default function WorkspaceBadge({
 
                     "bg-[var(--workspace-primary-soft)] text-[var(--workspace-primary)]":
                         variant === "primary",
+
+                    "bg-slate-100 text-slate-600":
+                        variant === "neutral",
                 },
                 className
             )}
@@ -51,6 +55,9 @@ export default function WorkspaceBadge({
                     {
                         "bg-slate-400":
                             variant === "default",
+
+                        "bg-slate-400":
+                            variant === "neutral",
 
                         "bg-green-500":
                             variant === "success",

@@ -3,6 +3,7 @@ export { default as CompanyFilters } from "./CompanyFilters";
 export { default as AddCompanyInlineForm } from "./AddCompanyInlineForm";
 export { default as CompanyStatusBadge } from "./CompanyStatusBadge";
 export { default as CompaniesPageClient } from "./CompaniesPageClient";
+export { default as CompanyDeleteButton } from "./CompanyDeleteButton";
 
 export type {
     CRMCompany,

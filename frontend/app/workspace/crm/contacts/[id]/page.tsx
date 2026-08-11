@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { ElementType, ReactNode } from "react";
 import {
     ArrowLeft,
     Building2,
@@ -63,9 +64,9 @@ function InfoItem({
     label,
     value,
 }: {
-    icon: typeof Mail;
+    icon: ElementType;
     label: string;
-    value: React.ReactNode;
+    value: ReactNode;
 }) {
     return (
         <div className="flex gap-3">

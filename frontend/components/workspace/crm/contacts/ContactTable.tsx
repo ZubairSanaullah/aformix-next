@@ -20,7 +20,7 @@ interface Contact {
     phone: string | null;
     jobTitle: string | null;
     status: "ACTIVE" | "INACTIVE" | "ARCHIVED";
-    company: {
+    company?: {
         id: string;
         name: string;
     } | null;
@@ -31,7 +31,7 @@ interface ContactTableProps {
 }
 
 export default function ContactTable({
-    contacts,
+    contacts = [],
 }: ContactTableProps) {
     if (contacts.length === 0) {
         return (

@@ -5,14 +5,18 @@ import WorkspaceButton from "./WorkspaceButton";
 interface WorkspaceFilterBarProps {
     children: React.ReactNode;
     onReset?: () => void;
+    onClear?: () => void;
     showReset?: boolean;
 }
 
 export default function WorkspaceFilterBar({
     children,
     onReset,
+    onClear,
     showReset = false,
 }: WorkspaceFilterBarProps) {
+    const handleReset = onReset ?? onClear;
+
     return (
         <div className="flex flex-col gap-3 rounded-xl border border-[var(--workspace-border)] bg-[var(--workspace-surface)] p-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex min-w-0 flex-wrap items-center gap-2">
@@ -25,11 +29,11 @@ export default function WorkspaceFilterBar({
                 </div>
             </div>
 
-            {showReset && onReset && (
+            {showReset && handleReset && (
                 <WorkspaceButton
                     variant="ghost"
                     size="sm"
-                    onClick={onReset}
+                    onClick={handleReset}
                 >
                     Reset
                 </WorkspaceButton>

@@ -4,8 +4,10 @@ import CRMPipelineOverview from "@/components/workspace/crm/CRMPipelineOverview"
 import CRMRecentActivity from "@/components/workspace/crm/CRMRecentActivity";
 import CRMRecentLeads from "@/components/workspace/crm/CRMRecentLeads";
 import CRMUpcomingActivities from "@/components/workspace/crm/CRMUpcomingActivities";
+import { getCRMOverviewMetrics } from "@/lib/services/crm";
 
-export default function CRMPage() {
+export default async function CRMPage() {
+    const metrics = await getCRMOverviewMetrics();
     return (
         <div className="space-y-6">
             <CRMNavigation />
@@ -57,7 +59,7 @@ export default function CRMPage() {
                 </div>
             </header>
 
-            <CRMMetricCards />
+            <CRMMetricCards metrics={metrics} />
 
             <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
                 <CRMPipelineOverview />

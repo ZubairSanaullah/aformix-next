@@ -14,18 +14,27 @@ interface ContactFiltersProps {
         id: string;
         name: string;
     }[];
+    search?: string;
+    status?: "ACTIVE" | "INACTIVE" | "ARCHIVED" | "";
+    companyId?: string;
 }
 
 export default function ContactFilters({
     companies,
+    search: searchProp,
+    status: statusProp,
+    companyId: companyIdProp,
 }: ContactFiltersProps) {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
 
-    const search = searchParams.get("search") ?? "";
-    const status = searchParams.get("status") ?? "";
-    const companyId = searchParams.get("companyId") ?? "";
+    const search =
+        searchParams.get("search") ?? searchProp ?? "";
+    const status =
+        searchParams.get("status") ?? statusProp ?? "";
+    const companyId =
+        searchParams.get("companyId") ?? companyIdProp ?? "";
 
     const updateFilter = (
         key: string,

@@ -21,7 +21,10 @@ import {
     WorkspacePageActions,
 } from "@/components/workspace/ui";
 
-import CompanyStatusBadge from "@/components/workspace/crm/companies/CompanyStatusBadge";
+import {
+    CompanyStatusBadge,
+    CompanyDeleteButton,
+} from "@/components/workspace/crm/companies";
 
 interface CompanyPageProps {
     params: Promise<{
@@ -138,6 +141,11 @@ export default async function CompanyDetailPage({
                     >
                         Edit Company
                     </Link>
+
+                    <CompanyDeleteButton
+                        companyId={company.id}
+                        companyName={company.name}
+                    />
                 </WorkspacePageActions>
             </div>
 

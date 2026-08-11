@@ -25,7 +25,7 @@ interface Contact {
     email: string | null;
     phone: string | null;
     jobTitle: string | null;
-    status: string;
+    status: "ACTIVE" | "INACTIVE" | "ARCHIVED";
     company?: {
         id: string;
         name: string;
