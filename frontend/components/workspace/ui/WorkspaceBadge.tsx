@@ -26,7 +26,7 @@ export default function WorkspaceBadge({
                 "inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-[10px] font-semibold leading-none",
                 {
                     "bg-slate-100 text-slate-600":
-                        variant === "default",
+                        variant === "default" || variant === "neutral",
 
                     "bg-green-50 text-green-700":
                         variant === "success",
@@ -42,9 +42,6 @@ export default function WorkspaceBadge({
 
                     "bg-[var(--workspace-primary-soft)] text-[var(--workspace-primary)]":
                         variant === "primary",
-
-                    "bg-slate-100 text-slate-600":
-                        variant === "neutral",
                 },
                 className
             )}
@@ -54,10 +51,7 @@ export default function WorkspaceBadge({
                     "h-1.5 w-1.5 rounded-full",
                     {
                         "bg-slate-400":
-                            variant === "default",
-
-                        "bg-slate-400":
-                            variant === "neutral",
+                            variant === "default" || variant === "neutral",
 
                         "bg-green-500":
                             variant === "success",

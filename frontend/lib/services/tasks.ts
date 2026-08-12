@@ -65,6 +65,7 @@ export async function getTasks(
         ownerId,
         status,
         priority,
+        due,
         search,
         contactId,
         companyId,

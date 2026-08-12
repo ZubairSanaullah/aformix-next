@@ -1,6 +1,6 @@
 export {
     getCRMCompanies,
-    getCRMCompany,
+    getCRMCompanyById as getCRMCompany,
 } from "./companies";
 
 export type {
