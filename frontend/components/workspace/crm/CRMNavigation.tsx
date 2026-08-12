@@ -24,18 +24,38 @@ const crmNavigation = [
         title: "Deals",
         href: "/workspace/crm/deals",
     },
+    {
+        title: "Pipelines",
+        href: "/workspace/crm/deals/pipelines",
+    },
+    {
+        title: "Activities",
+        href: "/workspace/crm/activities",
+    },
 ];
 
 export default function CRMNavigation() {
     const pathname = usePathname();
 
-    const isActive = (href: string) => {
-        if (href === "/workspace/crm") {
-            return pathname === href;
-        }
+    const activeHref = crmNavigation.reduce<string | null>(
+        (best, item) => {
+            const matches =
+                item.href === "/workspace/crm"
+                    ? pathname === item.href
+                    : pathname.startsWith(item.href);
 
-        return pathname.startsWith(href);
-    };
+            if (!matches) {
+                return best;
+            }
+
+            if (!best || item.href.length > best.length) {
+                return item.href;
+            }
+
+            return best;
+        },
+        null
+    );
 
     return (
         <nav
@@ -52,7 +72,7 @@ export default function CRMNavigation() {
       "
         >
             {crmNavigation.map((item) => {
-                const active = isActive(item.href);
+                const active = item.href === activeHref;
 
                 return (
                     <Link

@@ -36,6 +36,7 @@ interface ContactData {
     | "LINKEDIN"
     | "INSTAGRAM"
     | "FACEBOOK"
+    | "TWITTER"
     | "REFERRAL"
     | "EMAIL"
     | "COLD_OUTREACH"
@@ -55,6 +56,7 @@ const sourceOptions = [
     { value: "LINKEDIN", label: "LinkedIn" },
     { value: "INSTAGRAM", label: "Instagram" },
     { value: "FACEBOOK", label: "Facebook" },
+    { value: "TWITTER", label: "X / Twitter" },
     { value: "REFERRAL", label: "Referral" },
     { value: "EMAIL", label: "Email" },
     { value: "COLD_OUTREACH", label: "Cold Outreach" },

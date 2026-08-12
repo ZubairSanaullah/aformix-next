@@ -32,15 +32,22 @@ interface DealFilterPipeline {
     }[];
 }
 
+interface DealFilterLead {
+    id: string;
+    title: string;
+}
+
 interface DealFiltersProps {
     companies: DealFilterCompany[];
     contacts: DealFilterContact[];
+    leads: DealFilterLead[];
     pipelines: DealFilterPipeline[];
 }
 
 export default function DealFilters({
     companies,
     contacts,
+    leads,
     pipelines,
 }: DealFiltersProps) {
     const router = useRouter();
@@ -60,6 +67,15 @@ export default function DealFilters({
 
     const contactId =
         searchParams.get("contactId") ?? "";
+
+    const leadId =
+        searchParams.get("leadId") ?? "";
+
+    const minValue =
+        searchParams.get("minValue") ?? "";
+
+    const maxValue =
+        searchParams.get("maxValue") ?? "";
 
     const updateFilter = (
         key: string,
@@ -96,7 +112,10 @@ export default function DealFilters({
         pipelineId ||
         stageId ||
         companyId ||
-        contactId
+        contactId ||
+        leadId ||
+        minValue ||
+        maxValue
     );
 
     const activePipeline = pipelines.find(
@@ -240,6 +259,62 @@ export default function DealFilters({
                     );
                 })}
             </WorkspaceSelect>
+
+            {/* Lead */}
+
+            <WorkspaceSelect
+                value={leadId}
+                onChange={(event) =>
+                    updateFilter(
+                        "leadId",
+                        event.target.value
+                    )
+                }
+                aria-label="Filter deals by originating lead"
+            >
+                <option value="">
+                    All leads
+                </option>
+
+                {leads.map((lead) => (
+                    <option
+                        key={lead.id}
+                        value={lead.id}
+                    >
+                        {lead.title}
+                    </option>
+                ))}
+            </WorkspaceSelect>
+
+            {/* Value range */}
+
+            <WorkspaceInput
+                type="number"
+                min="0"
+                value={minValue}
+                onChange={(event) =>
+                    updateFilter(
+                        "minValue",
+                        event.target.value
+                    )
+                }
+                placeholder="Min value"
+                aria-label="Filter deals by minimum value"
+            />
+
+            <WorkspaceInput
+                type="number"
+                min="0"
+                value={maxValue}
+                onChange={(event) =>
+                    updateFilter(
+                        "maxValue",
+                        event.target.value
+                    )
+                }
+                placeholder="Max value"
+                aria-label="Filter deals by maximum value"
+            />
         </WorkspaceFilterBar>
     );
 }

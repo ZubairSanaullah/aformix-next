@@ -24,6 +24,8 @@ import {
 
 import DealStageBadge from "@/components/workspace/crm/deals/DealStageBadge";
 import DeleteDealButton from "@/components/workspace/crm/deals/DeleteDealButton";
+import RelatedActivities from "@/components/workspace/crm/activities/RelatedActivities";
+import RelatedNotes from "@/components/workspace/crm/notes/RelatedNotes";
 
 interface DealPageProps {
     params: Promise<{
@@ -718,150 +720,17 @@ export default async function DealDetailPage({
 
             {/* Activities */}
 
-            <WorkspaceCard>
-                <WorkspaceCardHeader
-                    title={`Activities (${deal.activities
-                        ?.length ??
-                        0
-                        })`}
-                    description="Calls, emails, meetings and follow-ups related to this deal."
-                />
-
-                <div className="divide-y divide-[var(--workspace-border)]">
-                    {!deal.activities?.length ? (
-                        <div className="flex flex-col items-center justify-center px-6 py-12 text-center">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-[var(--workspace-border)] bg-[var(--workspace-surface)]">
-                                <CalendarDays className="h-5 w-5 text-[var(--workspace-text-subtle)]" />
-                            </div>
-
-                            <h3 className="mt-4 text-sm font-semibold text-[var(--workspace-text)]">
-                                No activities yet
-                            </h3>
-
-                            <p className="mt-1 max-w-sm text-xs leading-5 text-[var(--workspace-text-muted)]">
-                                Activities related to this deal will appear here.
-                            </p>
-                        </div>
-                    ) : (
-                        deal.activities.map(
-                            (
-                                activity: any
-                            ) => (
-                                <div
-                                    key={
-                                        activity.id
-                                    }
-                                    className="flex items-start justify-between gap-4 px-5 py-4"
-                                >
-                                    <div className="min-w-0">
-                                        <p className="text-sm font-medium text-[var(--workspace-text)]">
-                                            {getActivityTitle(
-                                                activity
-                                            )}
-                                        </p>
-
-                                        {activity.type && (
-                                            <p className="mt-0.5 text-xs text-[var(--workspace-text-muted)]">
-                                                {
-                                                    activity.type
-                                                }
-                                            </p>
-                                        )}
-
-                                        {activity.description && (
-                                            <p className="mt-2 text-xs leading-5 text-[var(--workspace-text-muted)]">
-                                                {
-                                                    activity.description
-                                                }
-                                            </p>
-                                        )}
-                                    </div>
-
-                                    <div className="shrink-0 text-right">
-                                        {activity.dueAt ? (
-                                            <p className="text-xs text-[var(--workspace-text-muted)]">
-                                                {formatDate(
-                                                    activity.dueAt
-                                                )}
-                                            </p>
-                                        ) : activity.createdAt ? (
-                                            <p className="text-xs text-[var(--workspace-text-muted)]">
-                                                {formatDate(
-                                                    activity.createdAt
-                                                )}
-                                            </p>
-                                        ) : (
-                                            <p className="text-xs text-[var(--workspace-text-subtle)]">
-                                                No date
-                                            </p>
-                                        )}
-
-                                        {activity.completedAt && (
-                                            <p className="mt-1 text-[11px] text-[var(--workspace-primary)]">
-                                                Completed
-                                            </p>
-                                        )}
-                                    </div>
-                                </div>
-                            )
-                        )
-                    )}
-                </div>
-            </WorkspaceCard>
+            <RelatedActivities
+                activities={deal.activities ?? []}
+                defaultRelation={{ dealId: deal.id }}
+            />
 
             {/* Notes */}
 
-            <WorkspaceCard>
-                <WorkspaceCardHeader
-                    title={`Notes (${deal.notes?.length ??
-                        0
-                        })`}
-                    description="Notes associated with this deal."
-                />
-
-                <div className="divide-y divide-[var(--workspace-border)]">
-                    {!deal.notes?.length ? (
-                        <div className="flex flex-col items-center justify-center px-6 py-12 text-center">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-[var(--workspace-border)] bg-[var(--workspace-surface)]">
-                                <Mail className="h-5 w-5 text-[var(--workspace-text-subtle)]" />
-                            </div>
-
-                            <h3 className="mt-4 text-sm font-semibold text-[var(--workspace-text)]">
-                                No notes yet
-                            </h3>
-
-                            <p className="mt-1 max-w-sm text-xs leading-5 text-[var(--workspace-text-muted)]">
-                                Notes associated with this deal will appear here.
-                            </p>
-                        </div>
-                    ) : (
-                        deal.notes.map(
-                            (note: any) => (
-                                <div
-                                    key={
-                                        note.id
-                                    }
-                                    className="px-5 py-4"
-                                >
-                                    <p className="whitespace-pre-wrap text-sm leading-6 text-[var(--workspace-text-muted)]">
-                                        {
-                                            note.content
-                                        }
-                                    </p>
-
-                                    {note.createdAt && (
-                                        <p className="mt-2 text-[11px] text-[var(--workspace-text-subtle)]">
-                                            {formatDate(
-                                                note.createdAt
-                                            )}
-                                        </p>
-                                    )}
-                                </div>
-                            )
-                        )
-                    )}
-                </div>
-            </WorkspaceCard>
+            <RelatedNotes
+                notes={deal.notes ?? []}
+                defaultRelation={{ dealId: deal.id }}
+            />
         </div>
     );
 }

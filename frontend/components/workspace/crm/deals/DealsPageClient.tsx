@@ -90,6 +90,7 @@ export default function DealsPageClient({
                     <DealFilters
                         companies={companies}
                         contacts={contacts}
+                        leads={leads}
                         pipelines={pipelines}
                     />
 

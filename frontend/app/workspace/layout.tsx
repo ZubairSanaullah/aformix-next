@@ -1,19 +1,25 @@
 import { ReactNode } from "react";
+import { redirect } from "next/navigation";
 import { auth } from "@/auth";
+
 import WorkspaceLayoutClient from "./WorkspaceLayoutClient";
 
 interface WorkspaceLayoutProps {
-  children: ReactNode;
+    children: ReactNode;
 }
 
 export default async function WorkspaceLayout({
-  children,
+    children,
 }: WorkspaceLayoutProps) {
-  const session = await auth();
+    const session = await auth();
 
-  return (
-    <WorkspaceLayoutClient user={session?.user}>
-      {children}
-    </WorkspaceLayoutClient>
-  );
+    if (!session?.user) {
+        redirect("/login");
+    }
+
+    return (
+        <WorkspaceLayoutClient user={session.user}>
+            {children}
+        </WorkspaceLayoutClient>
+    );
 }

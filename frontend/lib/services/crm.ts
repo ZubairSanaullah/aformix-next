@@ -86,9 +86,6 @@ export async function getCRMOverviewMetrics() {
     };
 }
 
-/* -------------------------------------------------------------------------- */
-/*                                   LEADS                                    */
-/* -------------------------------------------------------------------------- */
 
 export async function getCRMLeads(
     filters: CRMLeadFilters = {}
@@ -506,18 +503,16 @@ export async function deleteCRMLead(id: string) {
     });
 }
 
-
-// -------------------------------------------
-// DEALS SERVICES
-// -------------------------------------------
-
 interface GetCRMDealsParams {
     search?: string;
     pipelineId?: string;
     stageId?: string;
     companyId?: string;
     contactId?: string;
+    leadId?: string;
     ownerId?: string;
+    minValue?: number;
+    maxValue?: number;
 }
 
 export async function getCRMDeals(params: GetCRMDealsParams = {}) {
@@ -527,7 +522,10 @@ export async function getCRMDeals(params: GetCRMDealsParams = {}) {
         stageId,
         companyId,
         contactId,
+        leadId,
         ownerId,
+        minValue,
+        maxValue,
     } = params;
 
     return prisma.deal.findMany({
@@ -542,7 +540,14 @@ export async function getCRMDeals(params: GetCRMDealsParams = {}) {
             ...(stageId && { stageId }),
             ...(companyId && { companyId }),
             ...(contactId && { contactId }),
+            ...(leadId && { leadId }),
             ...(ownerId && { ownerId }),
+            ...((minValue !== undefined || maxValue !== undefined) && {
+                value: {
+                    ...(minValue !== undefined && { gte: minValue }),
+                    ...(maxValue !== undefined && { lte: maxValue }),
+                },
+            }),
         },
         include: {
             contact: {
@@ -579,6 +584,12 @@ export async function getCRMDeals(params: GetCRMDealsParams = {}) {
                     color: true,
                 },
             },
+            lead: {
+                select: {
+                    id: true,
+                    title: true,
+                },
+            },
             _count: {
                 select: {
                     activities: true,
@@ -599,6 +610,7 @@ export async function getCRMPipelinesForFilter() {
                 select: {
                     id: true,
                     name: true,
+                    color: true,
                 },
                 orderBy: { order: "asc" },
             },

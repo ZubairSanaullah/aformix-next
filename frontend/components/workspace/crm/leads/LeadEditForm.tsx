@@ -29,6 +29,7 @@ interface LeadEditFormProps {
         | "LINKEDIN"
         | "INSTAGRAM"
         | "FACEBOOK"
+        | "TWITTER"
         | "REFERRAL"
         | "EMAIL"
         | "COLD_OUTREACH"
@@ -65,6 +66,7 @@ type LeadSource =
     | "LINKEDIN"
     | "INSTAGRAM"
     | "FACEBOOK"
+    | "TWITTER"
     | "REFERRAL"
     | "EMAIL"
     | "COLD_OUTREACH"
@@ -116,6 +118,10 @@ const sourceOptions: {
         {
             value: "FACEBOOK",
             label: "Facebook",
+        },
+        {
+            value: "TWITTER",
+            label: "X / Twitter",
         },
         {
             value: "REFERRAL",

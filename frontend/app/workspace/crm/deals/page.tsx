@@ -20,7 +20,10 @@ interface DealsPageProps {
         stageId?: string;
         companyId?: string;
         contactId?: string;
+        leadId?: string;
         ownerId?: string;
+        minValue?: string;
+        maxValue?: string;
     }>;
 }
 
@@ -34,7 +37,10 @@ export default async function DealsPage({
     const stageId = params.stageId ?? "";
     const companyId = params.companyId ?? "";
     const contactId = params.contactId ?? "";
+    const leadId = params.leadId ?? "";
     const ownerId = params.ownerId ?? "";
+    const minValue = params.minValue ?? "";
+    const maxValue = params.maxValue ?? "";
 
     const [
         deals,
@@ -53,8 +59,14 @@ export default async function DealsPage({
                 companyId || undefined,
             contactId:
                 contactId || undefined,
+            leadId:
+                leadId || undefined,
             ownerId:
                 ownerId || undefined,
+            minValue:
+                minValue ? Number(minValue) : undefined,
+            maxValue:
+                maxValue ? Number(maxValue) : undefined,
         }),
 
         getCRMCompaniesForFilter(),

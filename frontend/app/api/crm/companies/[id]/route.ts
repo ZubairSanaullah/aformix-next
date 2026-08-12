@@ -74,6 +74,11 @@ export async function GET(
                     },
                 },
 
+                // FIXED: `stage` on Deal is a relation ({ id, name, color }),
+                // not a scalar column. Selecting it as `stage: true` either
+                // throws at the Prisma level or (if it somehow passes)
+                // serializes as an object, which the frontend was rendering
+                // as `deal.stage || "Deal"` -> "[object Object]".
                 deals: {
                     orderBy: {
                         createdAt: "desc",
@@ -81,7 +86,13 @@ export async function GET(
                     select: {
                         id: true,
                         title: true,
-                        stage: true,
+                        stage: {
+                            select: {
+                                id: true,
+                                name: true,
+                                color: true,
+                            },
+                        },
                         value: true,
                         createdAt: true,
                     },

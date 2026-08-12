@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
     Building2,
     Target,
@@ -267,435 +268,481 @@ export default function DealForm({
                 }
             />
 
-            <form
-                onSubmit={handleSubmit}
-                className="space-y-6 p-6"
-            >
-                {/* Deal Information */}
-                <div className="space-y-4">
-                    <div>
-                        <h3 className="text-sm font-semibold text-[var(--workspace-text)]">
-                            Deal Information
-                        </h3>
+            {pipelines.length === 0 ? (
+                <div className="flex flex-col items-center justify-center px-6 py-12 text-center">
+                    <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--workspace-primary-soft)] text-[var(--workspace-primary)]">
+                        <Building2 className="h-5 w-5" />
+                    </span>
 
-                        <p className="mt-1 text-xs text-[var(--workspace-text-subtle)]">
-                            Basic information about
-                            this deal.
-                        </p>
-                    </div>
+                    <h3 className="mt-4 text-sm font-semibold text-[var(--workspace-text)]">
+                        No pipeline set up yet
+                    </h3>
 
-                    <div className="grid gap-5 md:grid-cols-2">
-                        {/* Title */}
-                        <div className="md:col-span-2">
-                            <label
-                                htmlFor="deal-title"
-                                className="mb-1.5 block text-xs font-medium text-[var(--workspace-text)]"
-                            >
-                                Deal Title
-                                <span className="ml-1 text-red-500">
-                                    *
-                                </span>
-                            </label>
+                    <p className="mt-1 max-w-sm text-xs leading-5 text-[var(--workspace-text-muted)]">
+                        You need at least one pipeline with a stage
+                        before you can create a deal.
+                    </p>
 
-                            <input
-                                id="deal-title"
-                                type="text"
-                                value={form.title ?? ""}
-                                onChange={(event) =>
-                                    updateField(
-                                        "title",
-                                        event.target.value
-                                    )
-                                }
-                                placeholder="e.g. Website redesign project"
-                                className="w-full rounded-lg border border-[var(--workspace-border)] bg-[var(--workspace-surface)] px-3 py-2.5 text-sm text-[var(--workspace-text)] outline-none transition-colors placeholder:text-[var(--workspace-text-subtle)] focus:border-[var(--workspace-primary)]"
-                            />
+                    <Link
+                        href="/workspace/crm/deals/pipelines"
+                        className="mt-4 inline-flex items-center gap-2 rounded-lg bg-[var(--workspace-primary)] px-3 py-2 text-xs font-medium text-white transition-opacity hover:opacity-90"
+                    >
+                        Set Up Pipeline
+                    </Link>
 
-                            {errors.title && (
-                                <p className="mt-1.5 text-xs text-red-500">
-                                    {errors.title}
-                                </p>
-                            )}
-                        </div>
-
-                        {/* Pipeline */}
-                        <div>
-                            <label
-                                htmlFor="deal-pipeline"
-                                className="mb-1.5 block text-xs font-medium text-[var(--workspace-text)]"
-                            >
-                                Pipeline
-                                <span className="ml-1 text-red-500">
-                                    *
-                                </span>
-                            </label>
-
-                            <select
-                                id="deal-pipeline"
-                                value={
-                                    form.pipelineId ?? ""
-                                }
-                                onChange={(event) =>
-                                    handlePipelineChange(
-                                        event.target.value
-                                    )
-                                }
-                                className="w-full rounded-lg border border-[var(--workspace-border)] bg-[var(--workspace-surface)] px-3 py-2.5 text-sm text-[var(--workspace-text)] outline-none focus:border-[var(--workspace-primary)]"
-                            >
-                                {pipelines.map(
-                                    (pipeline) => (
-                                        <option
-                                            key={
-                                                pipeline.id
-                                            }
-                                            value={
-                                                pipeline.id
-                                            }
-                                        >
-                                            {
-                                                pipeline.name
-                                            }
-                                        </option>
-                                    )
-                                )}
-                            </select>
-
-                            {errors.pipelineId && (
-                                <p className="mt-1.5 text-xs text-red-500">
-                                    {errors.pipelineId}
-                                </p>
-                            )}
-                        </div>
-
-                        {/* Stage */}
-                        <div>
-                            <label
-                                htmlFor="deal-stage"
-                                className="mb-1.5 block text-xs font-medium text-[var(--workspace-text)]"
-                            >
-                                Stage
-                                <span className="ml-1 text-red-500">
-                                    *
-                                </span>
-                            </label>
-
-                            <select
-                                id="deal-stage"
-                                value={
-                                    form.stageId ?? ""
-                                }
-                                onChange={(event) =>
-                                    updateField(
-                                        "stageId",
-                                        event.target.value
-                                    )
-                                }
-                                className="w-full rounded-lg border border-[var(--workspace-border)] bg-[var(--workspace-surface)] px-3 py-2.5 text-sm text-[var(--workspace-text)] outline-none focus:border-[var(--workspace-primary)]"
-                            >
-                                {activePipeline?.stages.map(
-                                    (stage) => (
-                                        <option
-                                            key={
-                                                stage.id
-                                            }
-                                            value={
-                                                stage.id
-                                            }
-                                        >
-                                            {
-                                                stage.name
-                                            }
-                                        </option>
-                                    )
-                                )}
-                            </select>
-
-                            {errors.stageId && (
-                                <p className="mt-1.5 text-xs text-red-500">
-                                    {errors.stageId}
-                                </p>
-                            )}
-                        </div>
-
-                        {/* Value */}
-                        <div>
-                            <label
-                                htmlFor="deal-value"
-                                className="mb-1.5 block text-xs font-medium text-[var(--workspace-text)]"
-                            >
-                                Deal Value
-                            </label>
-
-                            <input
-                                id="deal-value"
-                                type="number"
-                                min="0"
-                                step="0.01"
-                                value={
-                                    form.value ??
-                                    ""
-                                }
-                                onChange={(event) => {
-                                    const value =
-                                        event.target
-                                            .value;
-
-                                    updateField(
-                                        "value",
-                                        value === ""
-                                            ? undefined
-                                            : Number(
-                                                value
-                                            )
-                                    );
-                                }}
-                                placeholder="0.00"
-                                className="w-full rounded-lg border border-[var(--workspace-border)] bg-[var(--workspace-surface)] px-3 py-2.5 text-sm text-[var(--workspace-text)] outline-none transition-colors placeholder:text-[var(--workspace-text-subtle)] focus:border-[var(--workspace-primary)]"
-                            />
-
-                            {errors.value && (
-                                <p className="mt-1.5 text-xs text-red-500">
-                                    {errors.value}
-                                </p>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Description */}
-                    <div>
-                        <label
-                            htmlFor="deal-description"
-                            className="mb-1.5 block text-xs font-medium text-[var(--workspace-text)]"
-                        >
-                            Description
-                        </label>
-
-                        <textarea
-                            id="deal-description"
-                            rows={4}
-                            value={
-                                form.description ??
-                                ""
-                            }
-                            onChange={(event) =>
-                                updateField(
-                                    "description",
-                                    event.target.value
-                                )
-                            }
-                            placeholder="Add notes or additional information about this deal..."
-                            className="w-full resize-none rounded-lg border border-[var(--workspace-border)] bg-[var(--workspace-surface)] px-3 py-2.5 text-sm leading-6 text-[var(--workspace-text)] outline-none transition-colors placeholder:text-[var(--workspace-text-subtle)] focus:border-[var(--workspace-primary)]"
-                        />
-
-                        {errors.description && (
-                            <p className="mt-1.5 text-xs text-red-500">
-                                {errors.description}
-                            </p>
-                        )}
-                    </div>
-                </div>
-
-                {/* Relationships */}
-                <div className="space-y-4 border-t border-[var(--workspace-border)] pt-6">
-                    <div>
-                        <h3 className="text-sm font-semibold text-[var(--workspace-text)]">
-                            Relationships
-                        </h3>
-
-                        <p className="mt-1 text-xs text-[var(--workspace-text-subtle)]">
-                            Optionally associate
-                            this deal with a
-                            contact, company, or
-                            originating lead.
-                        </p>
-                    </div>
-
-                    <div className="grid gap-5 md:grid-cols-2">
-                        {/* Lead */}
-                        <div className="md:col-span-2">
-                            <label
-                                htmlFor="deal-lead"
-                                className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-[var(--workspace-text)]"
-                            >
-                                <Target className="h-3.5 w-3.5 text-[var(--workspace-text-muted)]" />
-                                Originating Lead
-                            </label>
-
-                            <select
-                                id="deal-lead"
-                                value={
-                                    form.leadId ??
-                                    ""
-                                }
-                                onChange={(event) =>
-                                    updateField(
-                                        "leadId",
-                                        event.target
-                                            .value
-                                    )
-                                }
-                                className="w-full rounded-lg border border-[var(--workspace-border)] bg-[var(--workspace-surface)] px-3 py-2.5 text-sm text-[var(--workspace-text)] outline-none focus:border-[var(--workspace-primary)]"
-                            >
-                                <option value="">
-                                    No lead
-                                </option>
-
-                                {leads.map(
-                                    (lead) => (
-                                        <option
-                                            key={
-                                                lead.id
-                                            }
-                                            value={
-                                                lead.id
-                                            }
-                                        >
-                                            {
-                                                lead.title
-                                            }
-                                        </option>
-                                    )
-                                )}
-                            </select>
-                        </div>
-
-                        {/* Contact */}
-                        <div>
-                            <label
-                                htmlFor="deal-contact"
-                                className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-[var(--workspace-text)]"
-                            >
-                                <User className="h-3.5 w-3.5 text-[var(--workspace-text-muted)]" />
-                                Contact
-                            </label>
-
-                            <select
-                                id="deal-contact"
-                                value={
-                                    form.contactId ??
-                                    ""
-                                }
-                                onChange={(event) =>
-                                    updateField(
-                                        "contactId",
-                                        event.target
-                                            .value
-                                    )
-                                }
-                                className="w-full rounded-lg border border-[var(--workspace-border)] bg-[var(--workspace-surface)] px-3 py-2.5 text-sm text-[var(--workspace-text)] outline-none focus:border-[var(--workspace-primary)]"
-                            >
-                                <option value="">
-                                    No contact
-                                </option>
-
-                                {contacts.map(
-                                    (contact) => {
-                                        const name =
-                                            [
-                                                contact.firstName,
-                                                contact.lastName,
-                                            ]
-                                                .filter(
-                                                    Boolean
-                                                )
-                                                .join(" ");
-
-                                        return (
-                                            <option
-                                                key={
-                                                    contact.id
-                                                }
-                                                value={
-                                                    contact.id
-                                                }
-                                            >
-                                                {name ||
-                                                    contact.email ||
-                                                    "Unnamed Contact"}
-                                            </option>
-                                        );
-                                    }
-                                )}
-                            </select>
-                        </div>
-
-                        {/* Company */}
-                        <div>
-                            <label
-                                htmlFor="deal-company"
-                                className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-[var(--workspace-text)]"
-                            >
-                                <Building2 className="h-3.5 w-3.5 text-[var(--workspace-text-muted)]" />
-                                Company
-                            </label>
-
-                            <select
-                                id="deal-company"
-                                value={
-                                    form.companyId ??
-                                    ""
-                                }
-                                onChange={(event) =>
-                                    updateField(
-                                        "companyId",
-                                        event.target
-                                            .value
-                                    )
-                                }
-                                className="w-full rounded-lg border border-[var(--workspace-border)] bg-[var(--workspace-surface)] px-3 py-2.5 text-sm text-[var(--workspace-text)] outline-none focus:border-[var(--workspace-primary)]"
-                            >
-                                <option value="">
-                                    No company
-                                </option>
-
-                                {companies.map(
-                                    (company) => (
-                                        <option
-                                            key={
-                                                company.id
-                                            }
-                                            value={
-                                                company.id
-                                            }
-                                        >
-                                            {
-                                                company.name
-                                            }
-                                        </option>
-                                    )
-                                )}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                {submitError && (
-                    <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-700">
-                        {submitError}
-                    </div>
-                )}
-
-                {/* Actions */}
-                <div className="flex flex-col-reverse gap-2 border-t border-[var(--workspace-border)] pt-5 sm:flex-row sm:justify-end">
-                    <WorkspaceButton
+                    <button
                         type="button"
-                        variant="secondary"
                         onClick={onCancel}
-                        disabled={isSubmitting}
+                        className="mt-3 text-xs text-[var(--workspace-text-muted)] hover:text-[var(--workspace-text)]"
                     >
                         Cancel
-                    </WorkspaceButton>
-
-                    <WorkspaceButton
-                        type="submit"
-                        disabled={isSubmitting}
-                    >
-                        {isSubmitting
-                            ? "Creating..."
-                            : "Create Deal"}
-                    </WorkspaceButton>
+                    </button>
                 </div>
-            </form>
+            ) : (
+                <form
+                    onSubmit={handleSubmit}
+                    className="space-y-6 p-6"
+                >
+                    {/* Deal Information */}
+                    <div className="space-y-4">
+                        <div>
+                            <h3 className="text-sm font-semibold text-[var(--workspace-text)]">
+                                Deal Information
+                            </h3>
+
+                            <p className="mt-1 text-xs text-[var(--workspace-text-subtle)]">
+                                Basic information about
+                                this deal.
+                            </p>
+                        </div>
+
+                        <div className="grid gap-5 md:grid-cols-2">
+                            {/* Title */}
+                            <div className="md:col-span-2">
+                                <label
+                                    htmlFor="deal-title"
+                                    className="mb-1.5 block text-xs font-medium text-[var(--workspace-text)]"
+                                >
+                                    Deal Title
+                                    <span className="ml-1 text-red-500">
+                                        *
+                                    </span>
+                                </label>
+
+                                <input
+                                    id="deal-title"
+                                    type="text"
+                                    value={form.title ?? ""}
+                                    onChange={(event) =>
+                                        updateField(
+                                            "title",
+                                            event.target.value
+                                        )
+                                    }
+                                    placeholder="e.g. Website redesign project"
+                                    className="w-full rounded-lg border border-[var(--workspace-border)] bg-[var(--workspace-surface)] px-3 py-2.5 text-sm text-[var(--workspace-text)] outline-none transition-colors placeholder:text-[var(--workspace-text-subtle)] focus:border-[var(--workspace-primary)]"
+                                />
+
+                                {errors.title && (
+                                    <p className="mt-1.5 text-xs text-red-500">
+                                        {errors.title}
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Pipeline */}
+                            <div>
+                                <label
+                                    htmlFor="deal-pipeline"
+                                    className="mb-1.5 block text-xs font-medium text-[var(--workspace-text)]"
+                                >
+                                    Pipeline
+                                    <span className="ml-1 text-red-500">
+                                        *
+                                    </span>
+                                </label>
+
+                                <select
+                                    id="deal-pipeline"
+                                    value={
+                                        form.pipelineId ?? ""
+                                    }
+                                    onChange={(event) =>
+                                        handlePipelineChange(
+                                            event.target.value
+                                        )
+                                    }
+                                    className="w-full rounded-lg border border-[var(--workspace-border)] bg-[var(--workspace-surface)] px-3 py-2.5 text-sm text-[var(--workspace-text)] outline-none focus:border-[var(--workspace-primary)]"
+                                >
+                                    {pipelines.map(
+                                        (pipeline) => (
+                                            <option
+                                                key={
+                                                    pipeline.id
+                                                }
+                                                value={
+                                                    pipeline.id
+                                                }
+                                            >
+                                                {
+                                                    pipeline.name
+                                                }
+                                            </option>
+                                        )
+                                    )}
+                                </select>
+
+                                {errors.pipelineId && (
+                                    <p className="mt-1.5 text-xs text-red-500">
+                                        {errors.pipelineId}
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Stage */}
+                            <div>
+                                <label
+                                    htmlFor="deal-stage"
+                                    className="mb-1.5 block text-xs font-medium text-[var(--workspace-text)]"
+                                >
+                                    Stage
+                                    <span className="ml-1 text-red-500">
+                                        *
+                                    </span>
+                                </label>
+
+                                <select
+                                    id="deal-stage"
+                                    value={
+                                        form.stageId ?? ""
+                                    }
+                                    onChange={(event) =>
+                                        updateField(
+                                            "stageId",
+                                            event.target.value
+                                        )
+                                    }
+                                    className="w-full rounded-lg border border-[var(--workspace-border)] bg-[var(--workspace-surface)] px-3 py-2.5 text-sm text-[var(--workspace-text)] outline-none focus:border-[var(--workspace-primary)]"
+                                >
+                                    {activePipeline?.stages.map(
+                                        (stage) => (
+                                            <option
+                                                key={
+                                                    stage.id
+                                                }
+                                                value={
+                                                    stage.id
+                                                }
+                                            >
+                                                {
+                                                    stage.name
+                                                }
+                                            </option>
+                                        )
+                                    )}
+                                </select>
+
+                                {activePipeline &&
+                                    activePipeline.stages.length === 0 && (
+                                        <p className="mt-1.5 text-xs text-amber-600">
+                                            This pipeline has no stages yet.{" "}
+                                            <Link
+                                                href="/workspace/crm/deals/pipelines"
+                                                className="underline"
+                                            >
+                                                Add one first
+                                            </Link>
+                                            .
+                                        </p>
+                                    )}
+
+                                {errors.stageId && (
+                                    <p className="mt-1.5 text-xs text-red-500">
+                                        {errors.stageId}
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Value */}
+                            <div>
+                                <label
+                                    htmlFor="deal-value"
+                                    className="mb-1.5 block text-xs font-medium text-[var(--workspace-text)]"
+                                >
+                                    Deal Value
+                                </label>
+
+                                <input
+                                    id="deal-value"
+                                    type="number"
+                                    min="0"
+                                    step="0.01"
+                                    value={
+                                        form.value ??
+                                        ""
+                                    }
+                                    onChange={(event) => {
+                                        const value =
+                                            event.target
+                                                .value;
+
+                                        updateField(
+                                            "value",
+                                            value === ""
+                                                ? undefined
+                                                : Number(
+                                                    value
+                                                )
+                                        );
+                                    }}
+                                    placeholder="0.00"
+                                    className="w-full rounded-lg border border-[var(--workspace-border)] bg-[var(--workspace-surface)] px-3 py-2.5 text-sm text-[var(--workspace-text)] outline-none transition-colors placeholder:text-[var(--workspace-text-subtle)] focus:border-[var(--workspace-primary)]"
+                                />
+
+                                {errors.value && (
+                                    <p className="mt-1.5 text-xs text-red-500">
+                                        {errors.value}
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Description */}
+                        <div>
+                            <label
+                                htmlFor="deal-description"
+                                className="mb-1.5 block text-xs font-medium text-[var(--workspace-text)]"
+                            >
+                                Description
+                            </label>
+
+                            <textarea
+                                id="deal-description"
+                                rows={4}
+                                value={
+                                    form.description ??
+                                    ""
+                                }
+                                onChange={(event) =>
+                                    updateField(
+                                        "description",
+                                        event.target.value
+                                    )
+                                }
+                                placeholder="Add notes or additional information about this deal..."
+                                className="w-full resize-none rounded-lg border border-[var(--workspace-border)] bg-[var(--workspace-surface)] px-3 py-2.5 text-sm leading-6 text-[var(--workspace-text)] outline-none transition-colors placeholder:text-[var(--workspace-text-subtle)] focus:border-[var(--workspace-primary)]"
+                            />
+
+                            {errors.description && (
+                                <p className="mt-1.5 text-xs text-red-500">
+                                    {errors.description}
+                                </p>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Relationships */}
+                    <div className="space-y-4 border-t border-[var(--workspace-border)] pt-6">
+                        <div>
+                            <h3 className="text-sm font-semibold text-[var(--workspace-text)]">
+                                Relationships
+                            </h3>
+
+                            <p className="mt-1 text-xs text-[var(--workspace-text-subtle)]">
+                                Optionally associate
+                                this deal with a
+                                contact, company, or
+                                originating lead.
+                            </p>
+                        </div>
+
+                        <div className="grid gap-5 md:grid-cols-2">
+                            {/* Lead */}
+                            <div className="md:col-span-2">
+                                <label
+                                    htmlFor="deal-lead"
+                                    className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-[var(--workspace-text)]"
+                                >
+                                    <Target className="h-3.5 w-3.5 text-[var(--workspace-text-muted)]" />
+                                    Originating Lead
+                                </label>
+
+                                <select
+                                    id="deal-lead"
+                                    value={
+                                        form.leadId ??
+                                        ""
+                                    }
+                                    onChange={(event) =>
+                                        updateField(
+                                            "leadId",
+                                            event.target
+                                                .value
+                                        )
+                                    }
+                                    className="w-full rounded-lg border border-[var(--workspace-border)] bg-[var(--workspace-surface)] px-3 py-2.5 text-sm text-[var(--workspace-text)] outline-none focus:border-[var(--workspace-primary)]"
+                                >
+                                    <option value="">
+                                        No lead
+                                    </option>
+
+                                    {leads.map(
+                                        (lead) => (
+                                            <option
+                                                key={
+                                                    lead.id
+                                                }
+                                                value={
+                                                    lead.id
+                                                }
+                                            >
+                                                {
+                                                    lead.title
+                                                }
+                                            </option>
+                                        )
+                                    )}
+                                </select>
+                            </div>
+
+                            {/* Contact */}
+                            <div>
+                                <label
+                                    htmlFor="deal-contact"
+                                    className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-[var(--workspace-text)]"
+                                >
+                                    <User className="h-3.5 w-3.5 text-[var(--workspace-text-muted)]" />
+                                    Contact
+                                </label>
+
+                                <select
+                                    id="deal-contact"
+                                    value={
+                                        form.contactId ??
+                                        ""
+                                    }
+                                    onChange={(event) =>
+                                        updateField(
+                                            "contactId",
+                                            event.target
+                                                .value
+                                        )
+                                    }
+                                    className="w-full rounded-lg border border-[var(--workspace-border)] bg-[var(--workspace-surface)] px-3 py-2.5 text-sm text-[var(--workspace-text)] outline-none focus:border-[var(--workspace-primary)]"
+                                >
+                                    <option value="">
+                                        No contact
+                                    </option>
+
+                                    {contacts.map(
+                                        (contact) => {
+                                            const name =
+                                                [
+                                                    contact.firstName,
+                                                    contact.lastName,
+                                                ]
+                                                    .filter(
+                                                        Boolean
+                                                    )
+                                                    .join(" ");
+
+                                            return (
+                                                <option
+                                                    key={
+                                                        contact.id
+                                                    }
+                                                    value={
+                                                        contact.id
+                                                    }
+                                                >
+                                                    {name ||
+                                                        contact.email ||
+                                                        "Unnamed Contact"}
+                                                </option>
+                                            );
+                                        }
+                                    )}
+                                </select>
+                            </div>
+
+                            {/* Company */}
+                            <div>
+                                <label
+                                    htmlFor="deal-company"
+                                    className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-[var(--workspace-text)]"
+                                >
+                                    <Building2 className="h-3.5 w-3.5 text-[var(--workspace-text-muted)]" />
+                                    Company
+                                </label>
+
+                                <select
+                                    id="deal-company"
+                                    value={
+                                        form.companyId ??
+                                        ""
+                                    }
+                                    onChange={(event) =>
+                                        updateField(
+                                            "companyId",
+                                            event.target
+                                                .value
+                                        )
+                                    }
+                                    className="w-full rounded-lg border border-[var(--workspace-border)] bg-[var(--workspace-surface)] px-3 py-2.5 text-sm text-[var(--workspace-text)] outline-none focus:border-[var(--workspace-primary)]"
+                                >
+                                    <option value="">
+                                        No company
+                                    </option>
+
+                                    {companies.map(
+                                        (company) => (
+                                            <option
+                                                key={
+                                                    company.id
+                                                }
+                                                value={
+                                                    company.id
+                                                }
+                                            >
+                                                {
+                                                    company.name
+                                                }
+                                            </option>
+                                        )
+                                    )}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    {submitError && (
+                        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-700">
+                            {submitError}
+                        </div>
+                    )}
+
+                    {/* Actions */}
+                    <div className="flex flex-col-reverse gap-2 border-t border-[var(--workspace-border)] pt-5 sm:flex-row sm:justify-end">
+                        <WorkspaceButton
+                            type="button"
+                            variant="secondary"
+                            onClick={onCancel}
+                            disabled={isSubmitting}
+                        >
+                            Cancel
+                        </WorkspaceButton>
+
+                        <WorkspaceButton
+                            type="submit"
+                            disabled={isSubmitting}
+                        >
+                            {isSubmitting
+                                ? "Creating..."
+                                : "Create Deal"}
+                        </WorkspaceButton>
+                    </div>
+                </form>
+            )}
         </WorkspaceCard>
     );
 }
