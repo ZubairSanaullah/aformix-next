@@ -2,13 +2,14 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Pencil, Search } from "lucide-react";
+import { BarChart3, ChevronLeft, ChevronRight, Pencil, Search } from "lucide-react";
 
 import WorkspaceCard from "@/components/workspace/ui/WorkspaceCard";
 import WorkspaceButton from "@/components/workspace/ui/WorkspaceButton";
 import WorkspaceInput from "@/components/workspace/ui/WorkspaceInput";
 
 import SEORobotsBadges from "@/components/workspace/seo/shared/SEORobotsBadges";
+import { getScoreColorVar } from "@/components/workspace/seo/shared/seo-score-display";
 import DeleteSEOPageButton from "./DeleteSEOPageButton";
 import SEOPagesEmptyState from "./SEOPagesEmptyState";
 
@@ -28,12 +29,6 @@ interface SEOPagesTableProps {
 }
 
 const PAGE_SIZE = 10;
-
-function getScoreColorVar(score: number): string {
-    if (score >= 80) return "--workspace-success";
-    if (score >= 50) return "--workspace-warning";
-    return "--workspace-danger";
-}
 
 export default function SEOPagesTable({
     initialPages,
@@ -148,6 +143,16 @@ export default function SEOPagesTable({
                                             /100
                                         </span>
                                     </span>
+
+                                    <Link href={`/workspace/seo/pages/${item.id}/analysis`}>
+                                        <WorkspaceButton
+                                            variant="ghost"
+                                            size="sm"
+                                            aria-label={`View analysis for ${item.path}`}
+                                        >
+                                            <BarChart3 className="h-3.5 w-3.5" />
+                                        </WorkspaceButton>
+                                    </Link>
 
                                     <Link href={`/workspace/seo/pages/${item.id}/edit`}>
                                         <WorkspaceButton

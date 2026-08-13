@@ -9,24 +9,69 @@ datasource db {
 }
 
 model User {
-  id             String          @id @default(cuid())
-  name           String?
-  email          String          @unique
-  password       String
-  image          String?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  role           Role            @default(USER)
-  activities     Activity[]
-  companies      Company[]
-  contacts       Contact[]
-  deals          Deal[]
-  leads          Lead[]
-  notes          Note[]
-  posts          Post[]
-  postRevisions  PostRevision[]
-  tasks          Task[]
-  calendarEvents CalendarEvent[]
+  id                     String                  @id @default(cuid())
+  name                   String?
+  email                  String                  @unique
+  password               String
+  image                  String?
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
+  role                   Role                    @default(USER)
+  activities             Activity[]
+  companies              Company[]
+  contacts               Contact[]
+  deals                  Deal[]
+  leads                  Lead[]
+  notes                  Note[]
+  posts                  Post[]
+  postRevisions          PostRevision[]
+  tasks                  Task[]
+  calendarEvents         CalendarEvent[]
+  settings               UserSettings?
+  notificationPreference NotificationPreference?
+  projects               Project[]
+  portfolioProjects      PortfolioProject[]
+  knowledgeArticles      KnowledgeArticle[]
+}
+
+model UserSettings {
+  id     String @id @default(cuid())
+  userId String @unique
+
+  theme            ThemePreference @default(SYSTEM)
+  language         String          @default("en")
+  timezone         String          @default("Asia/Karachi")
+  dateFormat       String          @default("DD/MM/YYYY")
+  timeFormat       String          @default("12H")
+  sidebarCollapsed Boolean         @default(false)
+
+  emailNotifications    Boolean @default(true)
+  taskNotifications     Boolean @default(true)
+  crmNotifications      Boolean @default(true)
+  calendarNotifications Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model NotificationPreference {
+  id     String @id @default(cuid())
+  userId String @unique
+
+  emailNotifications  Boolean @default(true)
+  taskReminders       Boolean @default(true)
+  calendarReminders   Boolean @default(true)
+  crmNotifications    Boolean @default(true)
+  systemNotifications Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Category {
@@ -40,28 +85,29 @@ model Category {
 }
 
 model Post {
-  id             String         @id @default(cuid())
+  id             String     @id @default(cuid())
   title          String
-  slug           String         @unique
+  slug           String     @unique
   excerpt        String?
   content        String
   featuredImage  String?
-  status         PostStatus     @default(DRAFT)
+  status         PostStatus @default(DRAFT)
   seoTitle       String?
   seoDescription String?
   seoKeywords    String?
-  views          Int            @default(0)
-  readingTime    Int            @default(1)
+  views          Int        @default(0)
+  readingTime    Int        @default(1)
   publishedAt    DateTime?
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
   categoryId     String?
   authorId       String
   deletedAt      DateTime?
-  author         User           @relation(fields: [authorId], references: [id])
-  category       Category?      @relation(fields: [categoryId], references: [id])
-  revisions      PostRevision[]
-  tags           Tag[]          @relation("PostToTag")
+
+  author    User           @relation(fields: [authorId], references: [id])
+  category  Category?      @relation(fields: [categoryId], references: [id])
+  revisions PostRevision[]
+  tags      Tag[]          @relation("PostToTag")
 }
 
 model Tag {
@@ -99,7 +145,9 @@ model Media {
   updatedAt    DateTime  @updatedAt
   deletedAt    DateTime?
   folderId     String?
-  folder       Folder?   @relation(fields: [folderId], references: [id])
+
+  folder                Folder?                 @relation(fields: [folderId], references: [id])
+  portfolioProjectMedia PortfolioProjectMedia[]
 
   @@index([deletedAt])
   @@index([type])
@@ -122,8 +170,9 @@ model PostRevision {
   categoryId     String?
   authorId       String
   createdAt      DateTime   @default(now())
-  author         User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  post           Post       @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   @@index([postId])
   @@index([createdAt])
@@ -159,22 +208,23 @@ model SEOPage {
 }
 
 model Contact {
-  id             String          @id @default(cuid())
-  firstName      String
-  lastName       String?
-  email          String?
-  phone          String?
-  jobTitle       String?
-  website        String?
-  linkedinUrl    String?
-  description    String?
-  status         ContactStatus   @default(ACTIVE)
-  source         LeadSource?
-  companyId      String?
-  ownerId        String
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  deletedAt      DateTime?
+  id          String        @id @default(cuid())
+  firstName   String
+  lastName    String?
+  email       String?
+  phone       String?
+  jobTitle    String?
+  website     String?
+  linkedinUrl String?
+  description String?
+  status      ContactStatus @default(ACTIVE)
+  source      LeadSource?
+  companyId   String?
+  ownerId     String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  deletedAt   DateTime?
+
   activities     Activity[]
   company        Company?        @relation(fields: [companyId], references: [id])
   owner          User            @relation(fields: [ownerId], references: [id])
@@ -192,19 +242,20 @@ model Contact {
 }
 
 model Company {
-  id             String          @id @default(cuid())
-  name           String
-  website        String?
-  industry       String?
-  size           String?
-  phone          String?
-  email          String?
-  location       String?
-  description    String?
-  status         CompanyStatus   @default(ACTIVE)
-  ownerId        String
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  id          String        @id @default(cuid())
+  name        String
+  website     String?
+  industry    String?
+  size        String?
+  phone       String?
+  email       String?
+  location    String?
+  description String?
+  status      CompanyStatus @default(ACTIVE)
+  ownerId     String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
   activities     Activity[]
   owner          User            @relation(fields: [ownerId], references: [id])
   contacts       Contact[]
@@ -213,24 +264,63 @@ model Company {
   notes          Note[]
   tasks          Task[]
   calendarEvents CalendarEvent[]
+  projects       Project[]
 
   @@index([ownerId])
   @@index([status])
   @@index([name])
 }
 
+model Project {
+  id          String          @id @default(cuid())
+  name        String
+  slug        String          @unique
+  description String?
+  status      ProjectStatus   @default(PLANNING)
+  priority    ProjectPriority @default(MEDIUM)
+  progress    Int             @default(0)
+
+  startDate   DateTime?
+  dueDate     DateTime?
+  completedAt DateTime?
+
+  ownerId   String
+  companyId String?
+
+  tasks      Task[]
+  activities Activity[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  owner   User     @relation(fields: [ownerId], references: [id])
+  company Company? @relation(fields: [companyId], references: [id])
+
+  @@index([ownerId])
+  @@index([companyId])
+  @@index([status])
+  @@index([priority])
+  @@index([progress])
+  @@index([dueDate])
+  @@index([createdAt])
+  @@index([updatedAt])
+  @@index([deletedAt])
+}
+
 model Lead {
-  id             String          @id @default(cuid())
-  title          String
-  description    String?
-  status         LeadStatus      @default(NEW)
-  source         LeadSource?
-  value          Decimal?        @db.Decimal(12, 2)
-  contactId      String?
-  companyId      String?
-  ownerId        String
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  id          String      @id @default(cuid())
+  title       String
+  description String?
+  status      LeadStatus  @default(NEW)
+  source      LeadSource?
+  value       Decimal?    @db.Decimal(12, 2)
+  contactId   String?
+  companyId   String?
+  ownerId     String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
   activities     Activity[]
   deal           Deal[]
   company        Company?        @relation(fields: [companyId], references: [id])
@@ -247,20 +337,23 @@ model Lead {
 }
 
 model Deal {
-  id             String          @id @default(cuid())
-  title          String
-  description    String?
-  value          Decimal?        @db.Decimal(12, 2)
-  contactId      String?
-  companyId      String?
-  leadId         String?
-  pipelineId     String
-  stageId        String
-  ownerId        String
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  closedAt       DateTime?
-  activities     Activity[]
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  value       Decimal? @db.Decimal(12, 2)
+
+  contactId  String?
+  companyId  String?
+  leadId     String?
+  pipelineId String
+  stageId    String
+  ownerId    String
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  closedAt  DateTime?
+
+  calendarEvents CalendarEvent[]
   company        Company?        @relation(fields: [companyId], references: [id])
   contact        Contact?        @relation(fields: [contactId], references: [id])
   lead           Lead?           @relation(fields: [leadId], references: [id])
@@ -269,7 +362,7 @@ model Deal {
   stage          PipelineStage   @relation(fields: [stageId], references: [id])
   notes          Note[]
   tasks          Task[]
-  calendarEvents CalendarEvent[]
+  activities     Activity[]
 
   @@index([contactId])
   @@index([companyId])
@@ -301,8 +394,9 @@ model PipelineStage {
   pipelineId  String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  deals       Deal[]
-  pipeline    Pipeline @relation(fields: [pipelineId], references: [id], onDelete: Cascade)
+
+  deals    Deal[]
+  pipeline Pipeline @relation(fields: [pipelineId], references: [id], onDelete: Cascade)
 
   @@index([pipelineId])
   @@index([order])
@@ -313,25 +407,48 @@ model Activity {
   type        ActivityType
   title       String
   description String?
-  contactId   String?
-  companyId   String?
-  leadId      String?
-  dealId      String?
+
+  contactId String?
+  companyId String?
+  leadId    String?
+  dealId    String?
+  projectId String?
+
+  portfolioProjectId  String?
+  portfolioCategoryId String?
+
+  knowledgeArticleId  String?
+  knowledgeCategoryId String?
+
   userId      String
   dueAt       DateTime?
   completedAt DateTime?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  company     Company?     @relation(fields: [companyId], references: [id])
-  contact     Contact?     @relation(fields: [contactId], references: [id])
-  deal        Deal?        @relation(fields: [dealId], references: [id])
-  lead        Lead?        @relation(fields: [leadId], references: [id])
-  user        User         @relation(fields: [userId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  project Project? @relation(fields: [projectId], references: [id])
+  company Company? @relation(fields: [companyId], references: [id])
+  contact Contact? @relation(fields: [contactId], references: [id])
+  deal    Deal?    @relation(fields: [dealId], references: [id])
+  lead    Lead?    @relation(fields: [leadId], references: [id])
+
+  portfolioProject  PortfolioProject?  @relation(fields: [portfolioProjectId], references: [id], onDelete: Cascade)
+  portfolioCategory PortfolioCategory? @relation(fields: [portfolioCategoryId], references: [id], onDelete: Cascade)
+
+  knowledgeArticle  KnowledgeArticle?  @relation(fields: [knowledgeArticleId], references: [id], onDelete: Cascade)
+  knowledgeCategory KnowledgeCategory? @relation(fields: [knowledgeCategoryId], references: [id], onDelete: Cascade)
+
+  user User @relation(fields: [userId], references: [id])
 
   @@index([contactId])
   @@index([companyId])
   @@index([leadId])
   @@index([dealId])
+  @@index([projectId])
+  @@index([portfolioProjectId])
+  @@index([portfolioCategoryId])
+  @@index([knowledgeArticleId])
+  @@index([knowledgeCategoryId])
   @@index([userId])
   @@index([type])
   @@index([dueAt])
@@ -347,11 +464,12 @@ model Note {
   userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  company   Company? @relation(fields: [companyId], references: [id])
-  contact   Contact? @relation(fields: [contactId], references: [id])
-  deal      Deal?    @relation(fields: [dealId], references: [id])
-  lead      Lead?    @relation(fields: [leadId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
+
+  company Company? @relation(fields: [companyId], references: [id])
+  contact Contact? @relation(fields: [contactId], references: [id])
+  deal    Deal?    @relation(fields: [dealId], references: [id])
+  lead    Lead?    @relation(fields: [leadId], references: [id])
+  user    User     @relation(fields: [userId], references: [id])
 
   @@index([contactId])
   @@index([companyId])
@@ -374,10 +492,12 @@ model Task {
   companyId String?
   leadId    String?
   dealId    String?
+  projectId String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  project        Project?        @relation(fields: [projectId], references: [id])
   owner          User            @relation(fields: [ownerId], references: [id])
   contact        Contact?        @relation(fields: [contactId], references: [id])
   company        Company?        @relation(fields: [companyId], references: [id])
@@ -393,6 +513,7 @@ model Task {
   @@index([companyId])
   @@index([leadId])
   @@index([dealId])
+  @@index([projectId])
 }
 
 model CalendarEvent {
@@ -439,6 +560,175 @@ model CalendarEvent {
   @@index([taskId])
 }
 
+model PortfolioCategory {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  icon        String?
+  sortOrder   Int       @default(0)
+  deletedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  projects   PortfolioProject[]
+  activities Activity[]
+
+  @@index([name])
+  @@index([slug])
+  @@index([sortOrder])
+  @@index([deletedAt])
+}
+
+model PortfolioTechnology {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  projects PortfolioProject[] @relation("PortfolioProjectToTechnology")
+
+  @@index([name])
+  @@index([slug])
+  @@index([deletedAt])
+}
+
+model PortfolioProject {
+  id             String                     @id @default(cuid())
+  title          String
+  slug           String                     @unique
+  excerpt        String?
+  description    String?
+  content        String?
+  status         PortfolioProjectStatus     @default(DRAFT)
+  visibility     PortfolioProjectVisibility @default(INTERNAL)
+  featured       Boolean                    @default(false)
+  sortOrder      Int                        @default(0)
+  clientName     String?
+  clientIndustry String?
+  projectUrl     String?
+  repositoryUrl  String?
+  startDate      DateTime?
+  completionDate DateTime?
+  categoryId     String?
+  authorId       String
+  seoTitle       String?
+  seoDescription String?
+  seoKeywords    String?
+  canonicalUrl   String?
+  publishedAt    DateTime?
+  createdAt      DateTime                   @default(now())
+  updatedAt      DateTime                   @updatedAt
+  deletedAt      DateTime?
+
+  category     PortfolioCategory?      @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  author       User                    @relation(fields: [authorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  technologies PortfolioTechnology[]   @relation("PortfolioProjectToTechnology")
+  media        PortfolioProjectMedia[]
+  activities   Activity[]
+
+  @@index([categoryId])
+  @@index([authorId])
+  @@index([status])
+  @@index([visibility])
+  @@index([featured])
+  @@index([sortOrder])
+  @@index([publishedAt])
+  @@index([deletedAt])
+  @@index([createdAt])
+  @@index([updatedAt])
+  @@index([status, visibility])
+  @@index([deletedAt, updatedAt])
+  @@index([categoryId, sortOrder])
+  @@index([featured, publishedAt])
+}
+
+model PortfolioProjectMedia {
+  id        String   @id @default(cuid())
+  projectId String
+  mediaId   String
+  sortOrder Int      @default(0)
+  isPrimary Boolean  @default(false)
+  caption   String?
+  altText   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  project PortfolioProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  media   Media            @relation(fields: [mediaId], references: [id], onDelete: Restrict)
+
+  @@unique([projectId, mediaId])
+  @@index([projectId])
+  @@index([mediaId])
+  @@index([projectId, sortOrder])
+  @@index([isPrimary])
+}
+
+model KnowledgeCategory {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  icon        String?
+  sortOrder   Int       @default(0)
+  deletedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  articles   KnowledgeArticle[]
+  activities Activity[]
+
+  @@index([name])
+  @@index([sortOrder])
+  @@index([deletedAt])
+}
+
+model KnowledgeArticle {
+  id      String  @id @default(cuid())
+  title   String
+  slug    String  @unique
+  excerpt String?
+  content String
+
+  status     KnowledgeArticleStatus     @default(DRAFT)
+  visibility KnowledgeArticleVisibility @default(INTERNAL)
+  featured   Boolean                    @default(false)
+  sortOrder  Int                        @default(0)
+
+  categoryId String
+  authorId   String
+
+  publishedAt DateTime?
+  deletedAt   DateTime?
+
+  metaTitle       String?
+  metaDescription String?
+  canonicalUrl    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  activities Activity[]
+
+  category KnowledgeCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  author   User              @relation(fields: [authorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([categoryId])
+  @@index([authorId])
+  @@index([status])
+  @@index([visibility])
+  @@index([featured])
+  @@index([publishedAt])
+  @@index([deletedAt])
+  @@index([sortOrder])
+  @@index([status, visibility])
+  @@index([categoryId, sortOrder])
+  @@index([deletedAt, updatedAt])
+}
+
 enum MediaType {
   IMAGE
   VIDEO
@@ -451,6 +741,28 @@ enum PostStatus {
   DRAFT
   PUBLISHED
   ARCHIVED
+}
+
+enum KnowledgeArticleStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum KnowledgeArticleVisibility {
+  INTERNAL
+  PUBLIC
+}
+
+enum PortfolioProjectStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum PortfolioProjectVisibility {
+  INTERNAL
+  PUBLIC
 }
 
 enum Role {
@@ -498,6 +810,30 @@ enum ActivityType {
   FOLLOW_UP
   NOTE
   OTHER
+
+  KNOWLEDGE_ARTICLE_CREATED
+  KNOWLEDGE_ARTICLE_UPDATED
+  KNOWLEDGE_ARTICLE_PUBLISHED
+  KNOWLEDGE_ARTICLE_ARCHIVED
+  KNOWLEDGE_ARTICLE_RESTORED
+  KNOWLEDGE_ARTICLE_DELETED
+
+  KNOWLEDGE_CATEGORY_CREATED
+  KNOWLEDGE_CATEGORY_UPDATED
+  KNOWLEDGE_CATEGORY_DELETED
+
+  PORTFOLIO_PROJECT_CREATED
+  PORTFOLIO_PROJECT_UPDATED
+  PORTFOLIO_PROJECT_PUBLISHED
+  PORTFOLIO_PROJECT_ARCHIVED
+  PORTFOLIO_PROJECT_RESTORED
+  PORTFOLIO_PROJECT_DELETED
+
+  PORTFOLIO_CATEGORY_CREATED
+  PORTFOLIO_CATEGORY_UPDATED
+  PORTFOLIO_CATEGORY_ARCHIVED
+  PORTFOLIO_CATEGORY_RESTORED
+  PORTFOLIO_CATEGORY_DELETED
 }
 
 enum TaskStatus {
@@ -526,4 +862,25 @@ enum CalendarEventStatus {
   SCHEDULED
   COMPLETED
   CANCELLED
+}
+
+enum ThemePreference {
+  LIGHT
+  DARK
+  SYSTEM
+}
+
+enum ProjectStatus {
+  PLANNING
+  ACTIVE
+  ON_HOLD
+  COMPLETED
+  CANCELLED
+}
+
+enum ProjectPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
 }

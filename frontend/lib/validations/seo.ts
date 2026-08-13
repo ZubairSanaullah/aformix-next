@@ -93,7 +93,6 @@ const normalizeNullableString = (
 const optionalNullableString = z
     .string()
     .trim()
-    .optional()
     .nullable()
     .transform(normalizeNullableString);
 
@@ -141,7 +140,6 @@ const canonicalUrlSchema = z
         "Canonical URL must use HTTP or HTTPS"
     )
     .nullable()
-    .optional()
     .transform(normalizeNullableString);
 
 /* -------------------------------------------------------------------------- */
@@ -162,7 +160,6 @@ const seoTitleSchema = z
         `SEO title must be ${SEO_LIMITS.title.max} characters or fewer`
     )
     .nullable()
-    .optional()
     .transform(normalizeNullableString);
 
 /* -------------------------------------------------------------------------- */
@@ -182,7 +179,6 @@ const seoDescriptionSchema = z
         `SEO description must be ${SEO_LIMITS.description.max} characters or fewer`
     )
     .nullable()
-    .optional()
     .transform(normalizeNullableString);
 
 /* -------------------------------------------------------------------------- */
@@ -200,7 +196,6 @@ const ogTitleSchema = z
         `Open Graph title must be ${SEO_LIMITS.ogTitle.max} characters or fewer`
     )
     .nullable()
-    .optional()
     .transform(normalizeNullableString);
 
 /**
@@ -214,7 +209,6 @@ const ogDescriptionSchema = z
         `Open Graph description must be ${SEO_LIMITS.ogDescription.max} characters or fewer`
     )
     .nullable()
-    .optional()
     .transform(normalizeNullableString);
 
 /**
@@ -242,7 +236,6 @@ const ogImageSchema = z
         "Open Graph image must be an absolute HTTP/HTTPS URL or an application-relative path"
     )
     .nullable()
-    .optional()
     .transform(normalizeNullableString);
 
 /* -------------------------------------------------------------------------- */
@@ -271,7 +264,6 @@ const twitterHandleSchema = z
         "Twitter/X handle may only contain letters, numbers, underscores, and an optional @ prefix"
     )
     .nullable()
-    .optional()
     .transform(normalizeNullableString);
 
 /* -------------------------------------------------------------------------- */

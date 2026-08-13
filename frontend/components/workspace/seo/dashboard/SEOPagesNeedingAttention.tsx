@@ -46,7 +46,7 @@ export default function SEOPagesNeedingAttention({
                     {pages.map((page) => (
                         <li key={page.id} className="py-3 first:pt-0 last:pb-0">
                             <Link
-                                href={`/workspace/seo/pages/${page.id}/edit`}
+                                href={`/workspace/seo/pages/${page.id}/analysis`}
                                 className="-mx-2 flex items-center justify-between gap-3 rounded-lg px-2 py-1.5 transition-colors hover:bg-[var(--workspace-background)]"
                             >
                                 <div className="min-w-0">

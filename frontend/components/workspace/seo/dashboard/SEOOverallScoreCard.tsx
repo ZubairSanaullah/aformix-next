@@ -1,15 +1,10 @@
 import WorkspaceCard from "@/components/workspace/ui/WorkspaceCard";
 
-import SEOScoreRing from "./SEOScoreRing";
+import SEOScoreRing from "@/components/workspace/seo/shared/SEOScoreRing";
+import { getScoreLabel } from "@/components/workspace/seo/shared/seo-score-display";
 
 interface SEOOverallScoreCardProps {
     score: number;
-}
-
-function getScoreLabel(score: number): string {
-    if (score >= 80) return "Healthy";
-    if (score >= 50) return "Needs improvement";
-    return "Critical";
 }
 
 export default function SEOOverallScoreCard({

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { pipelineStageSchema } from "@/lib/validations/deal";
 import { createStage } from "@/lib/services/deal";
+import { requireAdmin } from "@/lib/auth/authorize";
 
 export async function POST(req: NextRequest) {
     const session = await auth();
@@ -9,6 +10,9 @@ export async function POST(req: NextRequest) {
     if (!session?.user) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const authError = requireAdmin(session);
+    if (authError) return authError;
 
     try {
         const body = await req.json();

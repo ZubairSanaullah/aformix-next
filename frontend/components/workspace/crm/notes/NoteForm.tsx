@@ -116,7 +116,8 @@ export default function NoteForm({
                 }),
             });
 
-            const data = await response.json();
+            const rawText = await response.text();
+            const data = rawText ? JSON.parse(rawText) : null;
 
             if (!response.ok) {
                 throw new Error(

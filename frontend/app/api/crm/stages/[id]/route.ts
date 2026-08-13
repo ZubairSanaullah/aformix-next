@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { pipelineStageUpdateSchema } from "@/lib/validations/deal";
 import { getStageById, updateStage, deleteStage } from "@/lib/services/deal";
+import { requireAdmin } from "@/lib/auth/authorize";
 
 interface RouteParams {
     params: Promise<{ id: string }>;
@@ -13,6 +14,9 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
     if (!session?.user) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const authError = requireAdmin(session);
+    if (authError) return authError;
 
     try {
         const { id } = await params;
@@ -49,6 +53,9 @@ export async function DELETE(_req: NextRequest, { params }: RouteParams) {
     if (!session?.user) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const authError = requireAdmin(session);
+    if (authError) return authError;
 
     try {
         const { id } = await params;

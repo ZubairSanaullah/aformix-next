@@ -27,12 +27,38 @@ export default function WorkspaceLayoutClient({
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
+    // 1) Instant paint from localStorage (avoids a layout flash before
+    //    the DB round trip resolves). 2) Reconcile against UserSettings,
+    //    which is authoritative for logged-in users — same pattern as
+    //    ThemeContext (13.7).
     useEffect(() => {
         const savedState = localStorage.getItem(SIDEBAR_STORAGE_KEY);
 
         if (savedState !== null) {
             setIsSidebarCollapsed(savedState === "true");
         }
+
+        let active = true;
+
+        fetch("/api/settings", { cache: "no-store" })
+            .then((response) => (response.ok ? response.json() : null))
+            .then((data) => {
+                if (!active) return;
+
+                const dbValue = data?.settings?.sidebarCollapsed;
+
+                if (typeof dbValue === "boolean") {
+                    setIsSidebarCollapsed(dbValue);
+                    localStorage.setItem(SIDEBAR_STORAGE_KEY, String(dbValue));
+                }
+            })
+            .catch((error) => {
+                console.error("Failed to load sidebar preference:", error);
+            });
+
+        return () => {
+            active = false;
+        };
     }, []);
 
     useEffect(() => {
@@ -43,7 +69,21 @@ export default function WorkspaceLayoutClient({
     }, [isSidebarCollapsed]);
 
     const toggleSidebar = useCallback(() => {
-        setIsSidebarCollapsed((previous) => !previous);
+        setIsSidebarCollapsed((previous) => {
+            const next = !previous;
+
+            // Persist to UserSettings so the Settings page toggle and the
+            // live sidebar stay backed by the same source of truth.
+            fetch("/api/settings", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ sidebarCollapsed: next }),
+            }).catch((error) => {
+                console.error("Failed to persist sidebar preference:", error);
+            });
+
+            return next;
+        });
     }, []);
 
     useEffect(() => {

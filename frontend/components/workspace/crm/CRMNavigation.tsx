@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import GlobalSearchBar from "@/components/workspace/crm/GlobalSearchBar";
+
 const crmNavigation = [
     {
         title: "Overview",
@@ -32,11 +34,19 @@ const crmNavigation = [
         title: "Activities",
         href: "/workspace/crm/activities",
     },
+    {
+        title: "Notes",
+        href: "/workspace/crm/notes",
+    },
 ];
 
 export default function CRMNavigation() {
     const pathname = usePathname();
 
+    // Pipelines lives under /workspace/crm/deals/pipelines, so a plain
+    // startsWith() would light up both "Deals" and "Pipelines" at once
+    // whenever the Pipelines page is active. Instead, find the single
+    // best (longest) matching href so only one tab is ever active.
     const activeHref = crmNavigation.reduce<string | null>(
         (best, item) => {
             const matches =
@@ -58,45 +68,48 @@ export default function CRMNavigation() {
     );
 
     return (
-        <nav
-            aria-label="CRM navigation"
-            className="
-        flex
-        items-center
-        gap-1
-        overflow-x-auto
-        border-b
-        border-[var(--workspace-border)]
-        pb-1
-        workspace-scrollbar
-      "
-        >
-            {crmNavigation.map((item) => {
-                const active = item.href === activeHref;
+        <div className="flex flex-col gap-3 border-b border-[var(--workspace-border)] pb-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+            <nav
+                aria-label="CRM navigation"
+                className="
+          flex
+          items-center
+          gap-1
+          overflow-x-auto
+          workspace-scrollbar
+        "
+            >
+                {crmNavigation.map((item) => {
+                    const active = item.href === activeHref;
 
-                return (
-                    <Link
-                        key={item.href}
-                        href={item.href}
-                        className={`
-              shrink-0
-              rounded-md
-              px-3
-              py-1.5
-              text-xs
-              font-medium
-              transition-colors
-              duration-150
-              ${active
-                                ? "bg-[var(--workspace-primary-soft)] text-[var(--workspace-primary)]"
-                                : "text-[var(--workspace-text-muted)] hover:bg-[var(--workspace-background)] hover:text-[var(--workspace-text)]"
-                            }
-            `}
-                    >
-                        {item.title}
-                    </Link>
-                );
-            })}
-        </nav>
+                    return (
+                        <Link
+                            key={item.href}
+                            href={item.href}
+                            className={`
+                shrink-0
+                rounded-md
+                px-3
+                py-1.5
+                text-xs
+                font-medium
+                transition-colors
+                duration-150
+                ${active
+                                    ? "bg-[var(--workspace-primary-soft)] text-[var(--workspace-primary)]"
+                                    : "text-[var(--workspace-text-muted)] hover:bg-[var(--workspace-background)] hover:text-[var(--workspace-text)]"
+                                }
+              `}
+                        >
+                            {item.title}
+                        </Link>
+                    );
+                })}
+            </nav>
+
+            <div className="shrink-0 sm:w-64">
+                <GlobalSearchBar />
+            </div>
+        </div>
     );
 }

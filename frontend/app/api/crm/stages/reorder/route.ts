@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/auth";
 import { reorderStages } from "@/lib/services/deal";
+import { requireAdmin } from "@/lib/auth/authorize";
 
 const reorderSchema = z.object({
     updates: z
@@ -20,6 +21,9 @@ export async function POST(req: NextRequest) {
     if (!session?.user) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const authError = requireAdmin(session);
+    if (authError) return authError;
 
     try {
         const body = await req.json();

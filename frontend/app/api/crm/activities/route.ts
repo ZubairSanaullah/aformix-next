@@ -1,17 +1,21 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+
 import { auth } from "@/auth";
+import { createActivity, getActivities } from "@/lib/services/activity";
 import { activitySchema } from "@/lib/validations/activity";
-import { getActivities, createActivity } from "@/lib/services/activity";
 
-export async function GET(req: NextRequest) {
-    const session = await auth();
-
-    if (!session?.user) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
+export async function GET(request: Request) {
     try {
-        const { searchParams } = new URL(req.url);
+        const session = await auth();
+
+        if (!session?.user?.id) {
+            return NextResponse.json(
+                { error: "Unauthorized" },
+                { status: 401 }
+            );
+        }
+
+        const { searchParams } = new URL(request.url);
 
         const activities = await getActivities({
             search: searchParams.get("search") || undefined,
@@ -20,17 +24,20 @@ export async function GET(req: NextRequest) {
             companyId: searchParams.get("companyId") || undefined,
             leadId: searchParams.get("leadId") || undefined,
             dealId: searchParams.get("dealId") || undefined,
-            userId: searchParams.get("userId") || undefined,
+            userId: searchParams.get("ownerId") || undefined,
             completed:
                 searchParams.get("completed") === "true"
                     ? true
                     : searchParams.get("completed") === "false"
                         ? false
                         : undefined,
-            overdue: searchParams.get("overdue") === "true" || undefined,
+            overdue:
+                searchParams.get("overdue") === "true"
+                    ? true
+                    : undefined,
         });
 
-        return NextResponse.json(activities);
+        return NextResponse.json({ activities });
     } catch (error) {
         console.error("GET /api/crm/activities error:", error);
         return NextResponse.json(
@@ -40,18 +47,18 @@ export async function GET(req: NextRequest) {
     }
 }
 
-export async function POST(req: NextRequest) {
-    const session = await auth();
-
-    if (!session?.user) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
+export async function POST(request: Request) {
     try {
-        const body = await req.json();
+        const session = await auth();
 
-        // Inject the authenticated user's ID before parsing so we can use
-        // activitySchema (with its .refine()) directly, avoiding internal unwrapping.
+        if (!session?.user?.id) {
+            return NextResponse.json(
+                { error: "Unauthorized" },
+                { status: 401 }
+            );
+        }
+
+        const body = await request.json();
         const parsed = activitySchema.safeParse({
             ...body,
             userId: session.user.id,
@@ -59,14 +66,17 @@ export async function POST(req: NextRequest) {
 
         if (!parsed.success) {
             return NextResponse.json(
-                { error: "Validation failed", issues: parsed.error.flatten() },
+                {
+                    error: "Validation failed",
+                    issues: parsed.error.flatten(),
+                },
                 { status: 400 }
             );
         }
 
         const activity = await createActivity(parsed.data);
 
-        return NextResponse.json(activity, { status: 201 });
+        return NextResponse.json({ activity }, { status: 201 });
     } catch (error) {
         console.error("POST /api/crm/activities error:", error);
         return NextResponse.json(

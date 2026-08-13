@@ -130,7 +130,7 @@ export default function DeleteSEOPageButton({
                             handleDelete();
                         }}
                         disabled={isDeleting}
-                        className="rounded-lg bg-[var(--workspace-danger)] text-white hover:bg-red-700 focus:ring-[var(--workspace-danger)] disabled:cursor-not-allowed disabled:opacity-50"
+                        className="rounded-lg bg-[var(--workspace-danger)] text-white transition-opacity hover:opacity-90 focus:ring-[var(--workspace-danger)] disabled:cursor-not-allowed disabled:opacity-50"
                     >
                         {isDeleting ? (
                             <>
