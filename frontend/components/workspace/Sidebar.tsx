@@ -11,12 +11,16 @@ interface SidebarProps {
   isOpen: boolean;
   isCollapsed: boolean;
   onClose: () => void;
+  user?: {
+    role?: string;
+  };
 }
 
 export default function Sidebar({
   isOpen,
   isCollapsed,
   onClose,
+  user,
 }: SidebarProps) {
   const pathname = usePathname();
 
@@ -186,17 +190,23 @@ export default function Sidebar({
 
         {/* Navigation */}
         <nav className="workspace-scrollbar flex-1 overflow-y-auto px-2.5 py-4">
-          <div className="space-y-6">
-            {workspaceNavigation.map((group) => (
-              <div key={group.title}>
-                {!isCollapsed && (
-                  <p className="mb-2 px-2.5 text-[9px] font-semibold uppercase tracking-[0.14em] text-[var(--workspace-text-subtle)]">
-                    {group.title}
-                  </p>
-                )}
+            {workspaceNavigation.map((group) => {
+              const visibleItems = group.items.filter(
+                (item) => !("adminOnly" in item && item.adminOnly) || user?.role === "ADMIN"
+              );
 
-                <ul className="space-y-0.5">
-                  {group.items.map((item) => {
+              if (visibleItems.length === 0) return null;
+
+              return (
+                <div key={group.title}>
+                  {!isCollapsed && (
+                    <p className="mb-2 px-2.5 text-[9px] font-semibold uppercase tracking-[0.14em] text-[var(--workspace-text-subtle)]">
+                      {group.title}
+                    </p>
+                  )}
+
+                  <ul className="space-y-0.5">
+                    {visibleItems.map((item) => {
                     const Icon = item.icon;
                     const isActive = isItemActive(
                       item.href
@@ -279,8 +289,8 @@ export default function Sidebar({
                   })}
                 </ul>
               </div>
-            ))}
-          </div>
+            );
+          })}
         </nav>
 
         {/* Footer */}

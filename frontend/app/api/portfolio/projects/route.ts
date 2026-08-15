@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
     try {
-        await requireAdmin();
+        const admin = await requireAdmin();
 
         let body: unknown;
 
@@ -85,7 +85,13 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const parsed = createPortfolioProjectSchema.safeParse(body);
+        // authorId is never trusted from the client — always the
+        // authenticated admin, regardless of what the request body
+        // contains.
+        const parsed = createPortfolioProjectSchema.safeParse({
+            ...(typeof body === "object" && body !== null ? body : {}),
+            authorId: admin.id,
+        });
 
         if (!parsed.success) {
             return NextResponse.json(
@@ -99,12 +105,7 @@ export async function POST(request: NextRequest) {
 
         const project = await createPortfolioProject(parsed.data);
 
-        return NextResponse.json(
-            {
-                project,
-            },
-            { status: 201 },
-        );
+        return NextResponse.json({ project }, { status: 201 });
     } catch (error) {
         return handleError(error);
     }

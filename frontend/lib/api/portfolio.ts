@@ -31,10 +31,10 @@ export interface PortfolioProjectListItem {
         name: string | null;
         email: string;
     };
-    publishedAt: string | null;
-    createdAt: string;
-    updatedAt: string;
-    deletedAt: string | null;
+    publishedAt: Date | string | null;
+    createdAt: Date | string;
+    updatedAt: Date | string;
+    deletedAt: Date | string | null;
 }
 
 export interface PaginationMeta {
@@ -63,13 +63,13 @@ export interface PortfolioStats {
         id: string;
         title: string;
         slug: string;
-        publishedAt: string | null;
+        publishedAt: Date | null;
     }>;
     recentUpdated: Array<{
         id: string;
         title: string;
         slug: string;
-        updatedAt: string;
+        updatedAt: Date;
     }>;
 }
 
@@ -178,11 +178,271 @@ export async function restorePortfolioProjectRequest(
     await parseOrThrow(response);
 }
 
-export async function deletePortfolioProjectRequest(
+export async function trashPortfolioProjectRequest(id: string): Promise<void> {
+    const response = await fetch(`/api/portfolio/projects/${id}/trash`, {
+        method: "POST",
+    });
+
+    await parseOrThrow(response);
+}
+
+export interface PortfolioCategoryItem {
+    id: string;
+    name: string;
+    slug: string;
+    description: string | null;
+    icon: string | null;
+    sortOrder: number;
+    deletedAt: Date | null;
+    createdAt: Date;
+    updatedAt: Date;
+    projectCount?: number;
+}
+
+export interface PortfolioCategoryListResponse {
+    categories: PortfolioCategoryItem[];
+    pagination: PaginationMeta;
+}
+
+export interface PortfolioCategoryListParams {
+    search?: string;
+    includeDeleted?: boolean;
+    page?: number;
+    limit?: number;
+    sortBy?: "name" | "sortOrder" | "createdAt" | "updatedAt";
+    sortOrder?: "asc" | "desc";
+}
+
+export interface PortfolioCategoryFormValues {
+    name: string;
+    slug: string;
+    description?: string | null;
+    icon?: string | null;
+    sortOrder?: number;
+}
+
+export async function fetchPortfolioCategories(
+    params: PortfolioCategoryListParams = {},
+): Promise<PortfolioCategoryListResponse> {
+    const searchParams = new URLSearchParams();
+
+    Object.entries(params).forEach(([key, value]) => {
+        if (value === undefined || value === null || value === "") return;
+        searchParams.set(key, String(value));
+    });
+
+    const query = searchParams.toString();
+
+    const response = await fetch(
+        `/api/portfolio/categories${query ? `?${query}` : ""}`,
+        { cache: "no-store" },
+    );
+
+    return parseOrThrow<PortfolioCategoryListResponse>(response);
+}
+
+export async function createPortfolioCategoryRequest(
+    values: PortfolioCategoryFormValues,
+): Promise<PortfolioCategoryItem> {
+    const response = await fetch("/api/portfolio/categories", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+    });
+
+    const data = await parseOrThrow<{ category: PortfolioCategoryItem }>(response);
+    return data.category;
+}
+
+export async function updatePortfolioCategoryRequest(
     id: string,
-): Promise<void> {
-    const response = await fetch(`/api/portfolio/projects/${id}`, {
+    values: Partial<PortfolioCategoryFormValues>,
+): Promise<PortfolioCategoryItem> {
+    const response = await fetch(`/api/portfolio/categories/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+    });
+
+    const data = await parseOrThrow<{ category: PortfolioCategoryItem }>(response);
+    return data.category;
+}
+
+export async function archivePortfolioCategoryRequest(id: string): Promise<void> {
+    const response = await fetch(`/api/portfolio/categories/${id}/archive`, {
+        method: "POST",
+    });
+
+    await parseOrThrow(response);
+}
+
+export async function restorePortfolioCategoryRequest(id: string): Promise<void> {
+    const response = await fetch(`/api/portfolio/categories/${id}/restore`, {
+        method: "POST",
+    });
+
+    await parseOrThrow(response);
+}
+
+export async function deletePortfolioCategoryRequest(id: string): Promise<void> {
+    const response = await fetch(`/api/portfolio/categories/${id}`, {
         method: "DELETE",
+    });
+
+    await parseOrThrow(response);
+}
+
+export interface PortfolioTechnologyItem {
+    id: string;
+    name: string;
+    slug: string;
+    description: string | null;
+}
+
+export interface PortfolioProjectDetail {
+    id: string;
+    title: string;
+    slug: string;
+    excerpt: string | null;
+    description: string | null;
+    content: string | null;
+    status: PortfolioProjectStatus;
+    visibility: PortfolioProjectVisibility;
+    featured: boolean;
+    sortOrder: number;
+    clientName: string | null;
+    clientIndustry: string | null;
+    projectUrl: string | null;
+    repositoryUrl: string | null;
+    startDate: string | null;
+    completionDate: string | null;
+    categoryId: string | null;
+    category: { id: string; name: string; slug: string } | null;
+    technologies: PortfolioTechnologyItem[];
+    seoTitle: string | null;
+    seoDescription: string | null;
+    seoKeywords: string | null;
+    canonicalUrl: string | null;
+    publishedAt: string | null;
+    media: Array<{
+        id: string;
+        mediaId: string;
+        sortOrder: number;
+        isPrimary: boolean;
+        caption: string | null;
+        altText: string | null;
+        media: { id: string; url: string; alt: string | null };
+    }>;
+}
+
+export interface PortfolioProjectFormPayload {
+    title: string;
+    slug: string;
+    excerpt?: string;
+    description?: string;
+    content?: string;
+    status: PortfolioProjectStatus;
+    visibility: PortfolioProjectVisibility;
+    featured: boolean;
+    clientName?: string;
+    clientIndustry?: string;
+    projectUrl?: string;
+    repositoryUrl?: string;
+    startDate?: string | null;
+    completionDate?: string | null;
+    categoryId?: string | null;
+    seoTitle?: string;
+    seoDescription?: string;
+    seoKeywords?: string;
+    canonicalUrl?: string;
+    publishedAt?: string | null;
+    technologyIds: string[];
+}
+
+export async function fetchPortfolioTechnologies(
+    search?: string,
+): Promise<PortfolioTechnologyItem[]> {
+    const query = search ? `?search=${encodeURIComponent(search)}` : "";
+    const response = await fetch(`/api/portfolio/technologies${query}`, {
+        cache: "no-store",
+    });
+
+    const data = await parseOrThrow<{ technologies: PortfolioTechnologyItem[] }>(
+        response,
+    );
+    return data.technologies;
+}
+
+export async function createPortfolioTechnologyRequest(input: {
+    name: string;
+    slug: string;
+}): Promise<PortfolioTechnologyItem> {
+    const response = await fetch("/api/portfolio/technologies", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(input),
+    });
+
+    const data = await parseOrThrow<{ technology: PortfolioTechnologyItem }>(
+        response,
+    );
+    return data.technology;
+}
+
+export async function fetchPortfolioProject(
+    id: string,
+): Promise<PortfolioProjectDetail> {
+    const response = await fetch(`/api/portfolio/projects/${id}`, {
+        cache: "no-store",
+    });
+
+    const data = await parseOrThrow<{ project: PortfolioProjectDetail }>(response);
+    return data.project;
+}
+
+export async function createPortfolioProjectRequest(
+    payload: PortfolioProjectFormPayload,
+): Promise<PortfolioProjectDetail> {
+    const response = await fetch("/api/portfolio/projects", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+    });
+
+    const data = await parseOrThrow<{ project: PortfolioProjectDetail }>(response);
+    return data.project;
+}
+
+export async function updatePortfolioProjectRequest(
+    id: string,
+    payload: Partial<PortfolioProjectFormPayload>,
+): Promise<PortfolioProjectDetail> {
+    const response = await fetch(`/api/portfolio/projects/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+    });
+
+    const data = await parseOrThrow<{ project: PortfolioProjectDetail }>(response);
+    return data.project;
+}
+
+export interface PortfolioProjectMediaPayloadItem {
+    mediaId: string;
+    sortOrder: number;
+    isPrimary: boolean;
+    caption?: string;
+    altText?: string;
+}
+
+export async function replacePortfolioProjectMediaRequest(
+    projectId: string,
+    items: PortfolioProjectMediaPayloadItem[],
+): Promise<void> {
+    const response = await fetch(`/api/portfolio/projects/${projectId}/media`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items }),
     });
 
     await parseOrThrow(response);

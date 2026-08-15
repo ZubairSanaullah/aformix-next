@@ -1,4 +1,4 @@
-import { Prisma, PortfolioProject, PortfolioProjectStatus, PortfolioProjectVisibility } from "@prisma/client";
+import { Prisma, PortfolioProject, PortfolioProjectStatus, PortfolioProjectVisibility, PortfolioCategory } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
 
@@ -6,6 +6,7 @@ import type {
     CreatePortfolioProjectInput,
     PortfolioProjectListQuery,
     UpdatePortfolioProjectInput,
+    PortfolioCategoryListQuery,
 } from "@/lib/validations/portfolio";
 
 export class PortfolioProjectServiceError extends Error {
@@ -18,8 +19,22 @@ export class PortfolioProjectServiceError extends Error {
     }
 }
 
+export type PortfolioProjectListItemDb = Prisma.PortfolioProjectGetPayload<{
+    include: {
+        category: true;
+        technologies: true;
+        author: {
+            select: {
+                id: true;
+                name: true;
+                email: true;
+            };
+        };
+    };
+}>;
+
 export interface PortfolioProjectListResult {
-    items: PortfolioProject[];
+    items: PortfolioProjectListItemDb[];
     pagination: {
         page: number;
         limit: number;
@@ -485,6 +500,97 @@ export async function updatePortfolioProject(
     }
 }
 
+export async function trashPortfolioProject(id: string) {
+    const project = await prisma.portfolioProject.findUnique({
+        where: { id },
+        select: { id: true, deletedAt: true },
+    });
+
+    if (!project) {
+        throw new PortfolioProjectServiceError(
+            "Portfolio project not found.",
+            404,
+        );
+    }
+
+    if (project.deletedAt) {
+        throw new PortfolioProjectServiceError(
+            "Portfolio project is already in the trash.",
+            409,
+        );
+    }
+
+    return prisma.portfolioProject.update({
+        where: { id },
+        data: {
+            deletedAt: new Date(),
+        },
+    });
+}
+
+export interface PortfolioCategoryWithCount extends PortfolioCategory {
+    projectCount: number;
+}
+
+export interface PortfolioCategoryListResult {
+    categories: PortfolioCategoryWithCount[];
+    pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+    };
+}
+
+export async function getPortfolioCategories(
+    query: PortfolioCategoryListQuery,
+): Promise<PortfolioCategoryListResult> {
+    const { search, includeDeleted, page, limit, sortBy, sortOrder } = query;
+
+    const where: Prisma.PortfolioCategoryWhereInput = {
+        ...(includeDeleted ? {} : { deletedAt: null }),
+        ...(search
+            ? {
+                OR: [
+                    { name: { contains: search, mode: "insensitive" } },
+                    { slug: { contains: search, mode: "insensitive" } },
+                    { description: { contains: search, mode: "insensitive" } },
+                ],
+            }
+            : {}),
+    };
+
+    const [categories, total] = await prisma.$transaction([
+        prisma.portfolioCategory.findMany({
+            where,
+            include: {
+                _count: {
+                    select: { projects: true },
+                },
+            },
+            orderBy: {
+                [sortBy]: sortOrder,
+            },
+            skip: (page - 1) * limit,
+            take: limit,
+        }),
+        prisma.portfolioCategory.count({ where }),
+    ]);
+
+    return {
+        categories: categories.map(({ _count, ...category }) => ({
+            ...category,
+            projectCount: _count.projects,
+        })),
+        pagination: {
+            page,
+            limit,
+            total,
+            totalPages: Math.ceil(total / limit),
+        },
+    };
+}
+
 export async function archivePortfolioProject(id: string) {
     const project = await prisma.portfolioProject.findUnique({
         where: { id },
@@ -575,5 +681,60 @@ export async function getPublicPortfolioProjectBySlug(slug: string) {
     return getPortfolioProjectBySlug(slug, {
         includeDeleted: false,
         publicOnly: true,
+    });
+}
+
+export async function replacePortfolioProjectMedia(
+    projectId: string,
+    items: {
+        mediaId: string;
+        sortOrder?: number;
+        isPrimary?: boolean;
+    }[],
+) {
+    const project = await prisma.portfolioProject.findUnique({
+        where: { id: projectId },
+        select: { id: true },
+    });
+
+    if (!project) {
+        throw new PortfolioProjectServiceError("Portfolio project not found.", 404);
+    }
+
+    if (items.length > 0) {
+        const mediaIds = items.map(item => item.mediaId);
+        const existingMedia = await prisma.media.findMany({
+            where: { id: { in: mediaIds }, deletedAt: null },
+            select: { id: true },
+        });
+
+        if (existingMedia.length !== [...new Set(mediaIds)].length) {
+            throw new PortfolioProjectServiceError("One or more media items were not found.", 404);
+        }
+    }
+
+    return prisma.$transaction(async (tx) => {
+        await tx.portfolioProjectMedia.deleteMany({
+            where: { projectId },
+        });
+
+        if (items.length === 0) {
+            return [];
+        }
+
+        await tx.portfolioProjectMedia.createMany({
+            data: items.map((item, index) => ({
+                projectId: projectId,
+                mediaId: item.mediaId,
+                sortOrder: item.sortOrder ?? index,
+                isPrimary: item.isPrimary ?? false,
+            })),
+        });
+
+        return tx.portfolioProjectMedia.findMany({
+            where: { projectId },
+            include: { media: true },
+            orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+        });
     });
 }

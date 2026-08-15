@@ -4,12 +4,14 @@ interface WorkspaceCardProps {
     children: React.ReactNode;
     className?: string;
     padding?: "none" | "sm" | "md" | "lg";
+    style?: React.CSSProperties;
 }
 
 export default function WorkspaceCard({
     children,
     className,
     padding = "md",
+    style,
 }: WorkspaceCardProps) {
     return (
         <div
@@ -23,6 +25,7 @@ export default function WorkspaceCard({
                 },
                 className
             )}
+            style={style}
         >
             {children}
         </div>

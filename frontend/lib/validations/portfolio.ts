@@ -213,6 +213,27 @@ export const portfolioProjectIdSchema = z.object({
     id: cuidSchema,
 });
 
+export const portfolioProjectMediaItemSchema = z.object({
+    mediaId: cuidSchema,
+    sortOrder: z.number().int().min(0),
+    isPrimary: z.boolean().default(false),
+    caption: optionalTrimmedString(300),
+    altText: optionalTrimmedString(300),
+});
+
+export const replacePortfolioProjectMediaSchema = z
+    .object({
+        items: z.array(portfolioProjectMediaItemSchema).max(50),
+    })
+    .refine(
+        (data) => data.items.filter((item) => item.isPrimary).length <= 1,
+        { message: "Only one media item can be marked as primary.", path: ["items"] },
+    );
+
+export type ReplacePortfolioProjectMediaInput = z.infer<
+    typeof replacePortfolioProjectMediaSchema
+>;
+
 export const portfolioProjectListQuerySchema = z.object({
     search: z
         .string()
@@ -262,3 +283,17 @@ export type CreatePortfolioProjectInput = z.infer<typeof createPortfolioProjectS
 export type UpdatePortfolioProjectInput = z.infer<typeof updatePortfolioProjectSchema>;
 export type PortfolioProjectIdInput = z.infer<typeof portfolioProjectIdSchema>;
 export type PortfolioProjectListQuery = z.infer<typeof portfolioProjectListQuerySchema>;
+
+export const createPortfolioTechnologySchema = z.object({
+    name: z
+        .string()
+        .trim()
+        .min(1, "Technology name is required.")
+        .max(100, "Technology name must be 100 characters or fewer."),
+
+    slug: slugSchema,
+
+    description: optionalTrimmedString(500),
+});
+
+export type CreatePortfolioTechnologyInput = z.infer<typeof createPortfolioTechnologySchema>;

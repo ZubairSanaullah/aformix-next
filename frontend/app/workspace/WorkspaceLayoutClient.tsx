@@ -120,6 +120,7 @@ export default function WorkspaceLayoutClient({
                 isOpen={isSidebarOpen}
                 isCollapsed={isSidebarCollapsed}
                 onClose={() => setIsSidebarOpen(false)}
+                user={user}
             />
 
             <div className="flex min-w-0 flex-1 flex-col">

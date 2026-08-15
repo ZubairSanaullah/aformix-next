@@ -32,6 +32,9 @@ model User {
   projects               Project[]
   portfolioProjects      PortfolioProject[]
   knowledgeArticles      KnowledgeArticle[]
+  financeTransactions    FinanceTransaction[]
+  financeImports         FinanceImport[]
+  financeAuditLogs       FinanceAuditLog[]
 }
 
 model UserSettings {
@@ -256,19 +259,132 @@ model Company {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
-  activities     Activity[]
-  owner          User            @relation(fields: [ownerId], references: [id])
-  contacts       Contact[]
-  deals          Deal[]
-  leads          Lead[]
-  notes          Note[]
-  tasks          Task[]
-  calendarEvents CalendarEvent[]
-  projects       Project[]
+  activities          Activity[]
+  owner               User                 @relation(fields: [ownerId], references: [id])
+  contacts            Contact[]
+  deals               Deal[]
+  leads               Lead[]
+  notes               Note[]
+  tasks               Task[]
+  calendarEvents      CalendarEvent[]
+  projects            Project[]
+  financeTransactions FinanceTransaction[]
 
   @@index([ownerId])
   @@index([status])
   @@index([name])
+}
+
+model FinanceCategory {
+  id          String              @id @default(cuid())
+  name        String
+  slug        String              @unique
+  description String?
+  type        FinanceCategoryType @default(ALL)
+  color       String?
+  sortOrder   Int                 @default(0)
+  deletedAt   DateTime?
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  transactions FinanceTransaction[]
+
+  @@index([type])
+  @@index([slug])
+  @@index([sortOrder])
+  @@index([deletedAt])
+  @@index([createdAt])
+}
+
+model FinanceImport {
+  id               String              @id @default(cuid())
+  filename         String
+  originalFilename String
+  fileSize         Int?
+  mimeType         String?
+  status           FinanceImportStatus @default(UPLOADED)
+  sourceHash       String?
+  sheetName        String?
+  totalRows        Int                 @default(0)
+  successfulRows   Int                 @default(0)
+  failedRows       Int                 @default(0)
+  skippedRows      Int                 @default(0)
+  errorSummary     String?
+  startedAt        DateTime?
+  completedAt      DateTime?
+  createdById      String
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+
+  createdBy    User                 @relation(fields: [createdById], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  transactions FinanceTransaction[]
+
+  @@index([createdAt])
+  @@index([status])
+  @@index([createdById])
+  @@index([sourceHash])
+}
+
+model FinanceTransaction {
+  id               String                 @id @default(cuid())
+  type             FinanceTransactionType
+  status           FinancePaymentStatus   @default(PENDING)
+  reference        String?
+  invoiceNumber    String?
+  invoiceReference String?
+  description      String?
+  notes            String?
+  amount           Decimal                @db.Decimal(18, 2)
+  paidAmount       Decimal                @default(0) @db.Decimal(18, 2)
+  pendingAmount    Decimal                @default(0) @db.Decimal(18, 2)
+  currency         String                 @default("USD")
+  transactionDate  DateTime
+  dueDate          DateTime?
+  paidAt           DateTime?
+  categoryId       String?
+  companyId        String?
+  createdById      String
+  sourceImportId   String?
+  deletedAt        DateTime?
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+
+  category     FinanceCategory? @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  company      Company?         @relation(fields: [companyId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  createdBy    User             @relation(fields: [createdById], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  sourceImport FinanceImport?   @relation(fields: [sourceImportId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([transactionDate])
+  @@index([dueDate])
+  @@index([paidAt])
+  @@index([type])
+  @@index([status])
+  @@index([categoryId])
+  @@index([companyId])
+  @@index([createdById])
+  @@index([deletedAt])
+  @@index([createdAt])
+  @@index([sourceImportId])
+  @@index([type, transactionDate])
+  @@index([status, pendingAmount])
+}
+
+model FinanceAuditLog {
+  id         String   @id @default(cuid())
+  userId     String
+  action     String
+  resource   String
+  resourceId String?
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([userId])
+  @@index([action])
+  @@index([resource])
+  @@index([resourceId])
+  @@index([createdAt])
 }
 
 model Project {
@@ -883,4 +999,30 @@ enum ProjectPriority {
   MEDIUM
   HIGH
   URGENT
+}
+
+enum FinanceTransactionType {
+  INCOME
+  EXPENSE
+}
+
+enum FinancePaymentStatus {
+  PENDING
+  PARTIALLY_PAID
+  PAID
+  CANCELLED
+}
+
+enum FinanceCategoryType {
+  INCOME
+  EXPENSE
+  ALL
+}
+
+enum FinanceImportStatus {
+  UPLOADED
+  PROCESSING
+  COMPLETED
+  PARTIAL
+  FAILED
 }

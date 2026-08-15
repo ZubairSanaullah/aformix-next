@@ -1,21 +1,18 @@
 import type { MetadataRoute } from "next";
-import { getAllResources } from "@/lib/resources";
 
-const baseUrl = "https://www.aformix.com";
+import { getKbSitemapEntries } from "@/lib/kb/sitemap";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const resources = getAllResources();
-  const routes = ["", "/resources", ...resources.map((resource) => `/resources/${resource.slug}`)];
-
-  return routes.map((route) => ({
-    url: `${baseUrl}${route}`,
-    lastModified:
-      route.startsWith("/resources/")
-        ? resources.find(
-          (resource) => `/resources/${resource.slug}` === route
-        )?.updatedAt
-        : new Date(),
-    changeFrequency: route === "" ? "weekly" : route === "/resources" ? "monthly" : "monthly",
-    priority: route === "" ? 1 : route === "/resources" ? 0.9 : 0.8,
-  }));
+/**
+ * ⚠️ CHECK BEFORE DROPPING THIS IN: Next.js only uses ONE sitemap.ts per
+ * route segment. If app/sitemap.ts already exists in your project (very
+ * possible, given you already have a Blog CMS with its own SEO setup),
+ * do NOT overwrite it with this file — instead, import
+ * getKbSitemapEntries() from lib/kb/sitemap.ts into your existing
+ * sitemap.ts and spread it into your existing array. See the usage
+ * example in that file's docblock.
+ *
+ * Only use this file as-is if app/sitemap.ts doesn't exist yet.
+ */
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+    return getKbSitemapEntries();
 }

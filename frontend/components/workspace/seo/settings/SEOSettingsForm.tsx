@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { useForm, type SubmitHandler, type Resolver } from "react-hook-form";
 import { Save } from "lucide-react";
 
 import WorkspaceCard from "@/components/workspace/ui/WorkspaceCard";
@@ -60,11 +60,11 @@ export default function SEOSettingsForm({
         watch,
         formState: { errors, isSubmitting },
     } = useForm<SEOSettingsInput>({
-        resolver: zodResolver(seoSettingsSchema) as any,
+        resolver: zodResolver(seoSettingsSchema) as Resolver<SEOSettingsInput>,
         defaultValues: {
             ...EMPTY_SEO_SETTINGS_VALUES,
             ...defaultValues,
-        } as SEOSettingsInput,
+        },
     });
 
     const watchedValues = watch();
@@ -79,7 +79,7 @@ export default function SEOSettingsForm({
         <div className="grid gap-6 lg:grid-cols-3">
             <form
                 id="seo-settings-form"
-                onSubmit={handleSubmit(onSubmit as SubmitHandler<SEOSettingsInput>)}
+                onSubmit={handleSubmit(onSubmit)}
                 className="space-y-5 lg:col-span-2"
             >
                 {isNew && (

@@ -1,19 +1,8 @@
 /**
- * Shared types for the Knowledge Base Admin UI (15.18 + 15.19).
+ * Shared types for the Knowledge Base Admin UI (15.18 + 15.19 + 15.20).
  *
- * NOTE: These describe the shapes the UI expects from:
- *   - getArticles() / getArticleById()     → lib/services/knowledge-articles.ts
- *   - getCategories() / getCategoryById()  → lib/services/knowledge-categories.ts
- *   - getKnowledgeBaseStats()              → lib/services/knowledge-stats.ts
- *
- * They were inferred from the Prisma model fields described in the
- * Phase 15 knowledge base (createArticleSchema / createCategorySchema)
- * plus the metrics listed for 15.11. If the actual service return
- * shapes differ, adjust this file — it's the single source of truth
- * the rest of the Knowledge Base UI imports from.
- *
- * This file REPLACES the types.ts shipped with 15.18 — it's additive,
- * nothing from the original was removed.
+ * This file REPLACES the types.ts shipped with 15.19 — it's additive,
+ * nothing from the prior versions was removed.
  */
 
 export type KnowledgeArticleStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED";
@@ -67,10 +56,6 @@ export interface KnowledgeBaseStats {
     totalCategories: number;
 }
 
-/* ---------------------------------------------------------------------- */
-/* 15.19 — Category Management additions                                  */
-/* ---------------------------------------------------------------------- */
-
 export interface KnowledgeCategoryListItem {
     id: string;
     name: string;
@@ -81,11 +66,6 @@ export interface KnowledgeCategoryListItem {
     deletedAt: string | Date | null;
     createdAt: string | Date;
     updatedAt: string | Date;
-    /**
-     * Optional — only populate this if getCategories() is extended to
-     * include counts (e.g. via a Prisma `_count` select). The UI treats
-     * a missing count as "unknown" and simply doesn't render a number.
-     */
     articleCount?: number;
 }
 
@@ -95,4 +75,30 @@ export interface KnowledgeCategoryFormValues {
     description: string;
     icon: string;
     sortOrder: number;
+}
+
+/* ---------------------------------------------------------------------- */
+/* 15.20 — Create/Edit Article additions                                  */
+/* ---------------------------------------------------------------------- */
+
+/**
+ * The full shape needed to populate the article form in edit mode.
+ * A superset of KnowledgeArticleListItem — adds the raw `content` and the
+ * SEO fields that the list view doesn't need.
+ */
+export interface KnowledgeArticleDetail {
+    id: string;
+    title: string;
+    slug: string;
+    excerpt: string | null;
+    content: string;
+    categoryId: string;
+    status: KnowledgeArticleStatus;
+    visibility: KnowledgeArticleVisibility;
+    featured: boolean;
+    sortOrder: number;
+    publishedAt: string | Date | null;
+    metaTitle: string | null;
+    metaDescription: string | null;
+    canonicalUrl: string | null;
 }

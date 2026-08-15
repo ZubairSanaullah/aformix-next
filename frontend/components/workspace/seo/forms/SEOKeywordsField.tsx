@@ -20,10 +20,10 @@ export default function SEOKeywordsField({
 
     return (
         <Controller
-            control={control as any}
+            control={control}
             name="keywords"
             render={({ field }) => {
-                const keywords = (field.value ?? []) as string[];
+                const keywords = field.value ?? [];
 
                 function addKeyword(rawValue: string) {
                     const value = rawValue.trim();
@@ -45,9 +45,7 @@ export default function SEOKeywordsField({
                 }
 
                 function removeKeyword(value: string) {
-                    field.onChange(
-                        keywords.filter((keyword: string) => keyword !== value)
-                    );
+                    field.onChange(keywords.filter((keyword) => keyword !== value));
                 }
 
                 function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
@@ -69,7 +67,7 @@ export default function SEOKeywordsField({
                 return (
                     <WorkspaceFormField label="Keywords" error={error?.message}>
                         <div className="flex flex-wrap items-center gap-1.5 rounded-lg border border-[var(--workspace-border)] bg-[var(--workspace-surface)] p-2">
-                            {keywords.map((keyword: string) => (
+                            {keywords.map((keyword) => (
                                 <span
                                     key={keyword}
                                     className="inline-flex items-center gap-1 rounded-full bg-[var(--workspace-primary-soft)] px-2 py-1 text-[11px] font-medium text-[var(--workspace-primary)]"

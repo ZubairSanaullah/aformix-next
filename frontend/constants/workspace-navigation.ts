@@ -105,6 +105,7 @@ export const workspaceNavigation = [
         title: "Analytics",
         href: "/workspace/analytics",
         icon: BarChart3,
+        adminOnly: true,
       },
       {
         title: "Finance",

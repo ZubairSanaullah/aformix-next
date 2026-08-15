@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, type SubmitHandler, type FieldError } from "react-hook-form";
+import { useForm, type SubmitHandler, type FieldError, type Resolver } from "react-hook-form";
 import { Save, Trash2 } from "lucide-react";
 
 import WorkspaceCard from "@/components/workspace/ui/WorkspaceCard";
@@ -56,11 +56,11 @@ export default function SEOPageForm({
         watch,
         formState: { errors, isSubmitting },
     } = useForm<SEOPageInput>({
-        resolver: zodResolver(seoPageSchema) as any,
+        resolver: zodResolver(seoPageSchema) as Resolver<SEOPageInput>,
         defaultValues: {
             ...EMPTY_SEO_PAGE_VALUES,
             ...defaultValues,
-        } as SEOPageInput,
+        },
     });
 
     const watchedValues = watch();
@@ -78,7 +78,7 @@ export default function SEOPageForm({
                         ? "create-seo-page-form"
                         : "edit-seo-page-form"
                 }
-                onSubmit={handleSubmit(onSubmit as SubmitHandler<SEOPageInput>)}
+                onSubmit={handleSubmit(onSubmit)}
                 className="space-y-5 lg:col-span-2"
             >
                 <WorkspaceCard padding="lg" className="space-y-5">

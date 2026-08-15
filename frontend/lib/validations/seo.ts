@@ -77,9 +77,9 @@ export const SEO_LIMITS = {
  */
 const normalizeNullableString = (
     value: string | null | undefined
-): string | null | undefined => {
+): string | null => {
     if (value === undefined || value === null) {
-        return value;
+        return null;
     }
 
     const normalized = value.trim();
