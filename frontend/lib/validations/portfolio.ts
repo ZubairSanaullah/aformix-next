@@ -75,7 +75,7 @@ export const portfolioProjectSortDirectionSchema = z.enum([
     "desc",
 ]);
 
-export const createPortfolioCategorySchema = z.object({
+const basePortfolioCategorySchema = z.object({
     name: z
         .string()
         .trim()
@@ -96,7 +96,9 @@ export const createPortfolioCategorySchema = z.object({
     sortOrder: sortOrderSchema.default(0),
 });
 
-export const updatePortfolioCategorySchema = createPortfolioCategorySchema
+export const createPortfolioCategorySchema = basePortfolioCategorySchema;
+
+export const updatePortfolioCategorySchema = basePortfolioCategorySchema
     .partial()
     .refine(
         (data) => Object.keys(data).length > 0,
@@ -125,8 +127,7 @@ export const portfolioCategoryListQuerySchema = z.object({
     sortOrder: portfolioCategorySortDirectionSchema.default("asc"),
 });
 
-export const createPortfolioProjectSchema = z
-    .object({
+const basePortfolioProjectSchema = z.object({
         title: z
             .string()
             .trim()
@@ -181,8 +182,9 @@ export const createPortfolioProjectSchema = z
         publishedAt: z.coerce.date().optional().nullable(),
 
         technologyIds: z.array(cuidSchema).default([]),
-    })
-    .superRefine((data, ctx) => {
+    });
+
+export const createPortfolioProjectSchema = basePortfolioProjectSchema.superRefine((data, ctx) => {
         if (data.startDate && data.completionDate && data.completionDate < data.startDate) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
@@ -200,7 +202,7 @@ export const createPortfolioProjectSchema = z
         }
     });
 
-export const updatePortfolioProjectSchema = createPortfolioProjectSchema
+export const updatePortfolioProjectSchema = basePortfolioProjectSchema
     .partial()
     .refine(
         (data) => Object.keys(data).length > 0,

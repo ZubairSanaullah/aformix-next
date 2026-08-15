@@ -87,7 +87,7 @@ export const knowledgeArticleSortDirectionSchema = z.enum([
     "desc",
 ]);
 
-export const createCategorySchema = z.object({
+const baseCategorySchema = z.object({
     name: z
         .string()
         .trim()
@@ -108,7 +108,9 @@ export const createCategorySchema = z.object({
     sortOrder: sortOrderSchema.default(0),
 });
 
-export const updateCategorySchema = createCategorySchema
+export const createCategorySchema = baseCategorySchema;
+
+export const updateCategorySchema = baseCategorySchema
     .partial()
     .refine(
         (data) => Object.keys(data).length > 0,
@@ -137,7 +139,7 @@ export const categoryListQuerySchema = z.object({
     sortOrder: knowledgeCategorySortDirectionSchema.default("asc"),
 });
 
-export const createArticleSchema = z.object({
+const baseArticleSchema = z.object({
     title: z
         .string()
         .trim()
@@ -185,7 +187,9 @@ export const createArticleSchema = z.object({
     canonicalUrl: optionalUrlSchema,
 });
 
-export const updateArticleSchema = createArticleSchema
+export const createArticleSchema = baseArticleSchema;
+
+export const updateArticleSchema = baseArticleSchema
     .partial()
     .refine(
         (data) => Object.keys(data).length > 0,
