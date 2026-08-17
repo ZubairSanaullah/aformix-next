@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { PostStatus } from "@prisma/client";
 
+export const dynamic = "force-dynamic";
+
 export default async function CreateTestPostPage() {
     let user = await prisma.user.findFirst();
     if (!user) {

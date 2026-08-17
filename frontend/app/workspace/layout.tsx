@@ -4,6 +4,8 @@ import { auth } from "@/auth";
 
 import WorkspaceLayoutClient from "./WorkspaceLayoutClient";
 
+export const dynamic = "force-dynamic";
+
 interface WorkspaceLayoutProps {
     children: ReactNode;
 }
