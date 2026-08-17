@@ -18,8 +18,12 @@ export class PortfolioCategoryServiceError extends Error {
     }
 }
 
+export type PortfolioCategoryWithCount = PortfolioCategory & {
+    projectCount: number;
+};
+
 export interface PortfolioCategoryListResult {
-    categories: PortfolioCategory[];
+    categories: PortfolioCategoryWithCount[];
     pagination: {
         page: number;
         limit: number;
@@ -71,9 +75,18 @@ export async function getPortfolioCategories(
             : {}),
     };
 
-    const [categories, total] = await prisma.$transaction([
+    const [categoriesWithCount, total] = await prisma.$transaction([
         prisma.portfolioCategory.findMany({
             where,
+            include: {
+                _count: {
+                    select: {
+                        projects: {
+                            where: { deletedAt: null },
+                        },
+                    },
+                },
+            },
             orderBy: {
                 [sortBy]: sortOrder,
             },
@@ -82,6 +95,19 @@ export async function getPortfolioCategories(
         }),
         prisma.portfolioCategory.count({ where }),
     ]);
+
+    const categories: PortfolioCategoryWithCount[] = categoriesWithCount.map((c) => ({
+        id: c.id,
+        name: c.name,
+        slug: c.slug,
+        description: c.description,
+        icon: c.icon,
+        sortOrder: c.sortOrder,
+        deletedAt: c.deletedAt,
+        createdAt: c.createdAt,
+        updatedAt: c.updatedAt,
+        projectCount: c._count?.projects ?? 0,
+    }));
 
     return {
         categories,

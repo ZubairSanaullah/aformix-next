@@ -8,6 +8,7 @@ import { useGSAP } from "@gsap/react";
 import Swal from "sweetalert2";
 
 import { trackEvent } from "@/lib/analytics";
+import { trackPostHogEvent, POSTHOG_EVENTS } from "@/lib/analytics/events";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -73,6 +74,7 @@ const Contact: React.FC = () => {
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitting, setSubmitting] = useState(false);
+  const formStartedRef = useRef(false);
 
   // ─── GSAP Animations ────────────────────────────────────────────────────────
   useGSAP(
@@ -154,6 +156,15 @@ const Contact: React.FC = () => {
     if (errors[name as keyof FormErrors]) {
       setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
+
+    // Track contact_form_started on first field interaction
+    if (!formStartedRef.current) {
+      formStartedRef.current = true;
+      trackPostHogEvent(POSTHOG_EVENTS.CONTACT_FORM_STARTED, {
+        form_name: "contact_form",
+        source_page: "/",
+      });
+    }
   };
 
   // ─── Submit ──────────────────────────────────────────────────────────────────
@@ -193,10 +204,21 @@ const Contact: React.FC = () => {
       const json = await res.json();
 
       if (json.success) {
+        // GA4: marketing conversion tracking (acquisition/lead attribution)
         trackEvent("generate_lead", {
           form_name: "contact_form",
           service: formState.service || "Not specified",
         });
+
+        // PostHog: behavioral funnel tracking (do NOT include form contents)
+        trackPostHogEvent(POSTHOG_EVENTS.CONTACT_FORM_SUBMITTED, {
+          form_name: "contact_form",
+          service_selected: formState.service || undefined,
+          source_page: "/",
+        });
+
+        // Reset form started flag so funnel restarts on next submission
+        formStartedRef.current = false;
 
         setFormState({ name: "", email: "", phone: "", service: "", message: "" });
         await Swal.fire({

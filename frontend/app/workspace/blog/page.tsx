@@ -1,6 +1,8 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { Trash2, Plus } from "lucide-react";
 
+import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { buildBlogQuery } from "@/lib/blog-query";
 
@@ -24,6 +26,12 @@ interface BlogPageProps {
 export default async function BlogPage({
     searchParams,
 }: BlogPageProps) {
+    const session = await auth();
+
+    if (!session?.user?.id) {
+        redirect("/login");
+    }
+
     const params = await searchParams;
 
     const page = Number(params.page ?? "1");
@@ -34,6 +42,10 @@ export default async function BlogPage({
         status: params.status,
         sort: params.sort,
     });
+
+    if (session.user.role !== "ADMIN") {
+        where.authorId = session.user.id;
+    }
 
     const [posts, total, categories, tags] = await Promise.all([
         prisma.post.findMany({

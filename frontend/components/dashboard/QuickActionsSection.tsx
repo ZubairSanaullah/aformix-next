@@ -15,7 +15,7 @@ export default function QuickActionsSection() {
                 </p>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 {quickActions.map((action) => (
                     <QuickActionCard
                         key={action.title}

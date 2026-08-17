@@ -1,9 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
+
+const STRENGTH_LABELS = ["Weak", "Fair", "Good", "Strong"] as const;
+
+function getPasswordStrength(password: string): number {
+    if (!password) return 0;
+    let score = 0;
+    if (password.length >= 8) score += 1;
+    if (password.length >= 12) score += 1;
+    if (/[A-Z]/.test(password) && /[a-z]/.test(password)) score += 1;
+    if (/\d/.test(password)) score += 1;
+    if (/[^A-Za-z0-9]/.test(password)) score += 1;
+    return Math.min(score, 4);
+}
 
 export default function RegisterPage() {
     const router = useRouter();
@@ -11,23 +24,41 @@ export default function RegisterPage() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const strength = useMemo(() => getPasswordStrength(password), [password]);
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
+
+        if (password.length < 8) {
+            toast.error("Password must be at least 8 characters.");
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            toast.error("Passwords do not match.");
+            return;
+        }
+
         setIsSubmitting(true);
 
         try {
+            const normalizedEmail = email.trim().toLowerCase();
+
             const response = await fetch("/api/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    name,
-                    email,
+                    name: name.trim(),
+                    email: normalizedEmail,
                     password,
+                    confirmPassword,
                 }),
             });
 
@@ -39,13 +70,10 @@ export default function RegisterPage() {
                 return;
             }
 
-            toast.success(data.message);
+            toast.success("Account created! Please check your email for the verification code.");
 
-            setName("");
-            setEmail("");
-            setPassword("");
-
-            router.push("/login");
+            // Redirect user directly to the OTP verification page
+            router.push(`/verify-email?email=${encodeURIComponent(normalizedEmail)}`);
         } catch (error) {
             console.error("Registration error:", error);
 
@@ -118,7 +146,7 @@ export default function RegisterPage() {
                                 htmlFor="name"
                                 className="mb-1.5 block text-xs font-medium text-slate-700"
                             >
-                                Name
+                                Full Name
                             </label>
                             <input
                                 id="name"
@@ -136,7 +164,7 @@ export default function RegisterPage() {
                                 htmlFor="email"
                                 className="mb-1.5 block text-xs font-medium text-slate-700"
                             >
-                                Email
+                                Email Address
                             </label>
                             <input
                                 id="email"
@@ -185,6 +213,71 @@ export default function RegisterPage() {
                                     )}
                                 </button>
                             </div>
+
+                            {password && (
+                                <div className="mt-2">
+                                    <div className="flex h-1.5 gap-1">
+                                        {[0, 1, 2, 3].map((index) => (
+                                            <span
+                                                key={index}
+                                                className={`h-full flex-1 rounded-full transition-colors ${
+                                                    index < strength
+                                                        ? strength <= 1
+                                                            ? "bg-red-400"
+                                                            : strength === 2
+                                                              ? "bg-amber-400"
+                                                               : "bg-[#31B98F]"
+                                                        : "bg-slate-200"
+                                                }`}
+                                            />
+                                        ))}
+                                    </div>
+                                    <p className="mt-1 text-[11px] text-slate-400">
+                                        Password strength:{" "}
+                                        <span className="font-medium text-slate-600">
+                                            {STRENGTH_LABELS[Math.max(strength - 1, 0)]}
+                                        </span>
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+
+                        <div>
+                            <label
+                                htmlFor="confirmPassword"
+                                className="mb-1.5 block text-xs font-medium text-slate-700"
+                            >
+                                Confirm Password
+                            </label>
+
+                            <div className="relative">
+                                <input
+                                    id="confirmPassword"
+                                    type={showConfirmPassword ? "text" : "password"}
+                                    required
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    className="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 pr-10 text-sm text-[#1A0F43] outline-none transition-all placeholder:text-slate-400 focus:border-[#31B98F] focus:ring-2 focus:ring-[#31B98F]/15"
+                                    placeholder="••••••••"
+                                />
+
+                                <button
+                                    type="button"
+                                    onClick={() => setShowConfirmPassword((v) => !v)}
+                                    aria-label={
+                                        showConfirmPassword
+                                            ? "Hide password"
+                                            : "Show password"
+                                    }
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition-colors hover:text-slate-600"
+                                >
+                                    {showConfirmPassword ? (
+                                        <EyeOff className="h-4 w-4" />
+                                    ) : (
+                                        <Eye className="h-4 w-4" />
+                                    )}
+                                </button>
+                            </div>
                         </div>
 
                         <button
@@ -210,6 +303,6 @@ export default function RegisterPage() {
                     </p>
                 </div>
             </div>
-        </main >
+        </main>
     );
 }

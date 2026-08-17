@@ -1,0 +1,91 @@
+================================================================================
+HOSTINGER EMAIL SETUP GUIDE FOR AFORMIX (no-reply@aformix.com)
+================================================================================
+
+This guide explains how to connect your Hostinger email (no-reply@aformix.com)
+to the Aformix Authentication & Transactional Email System.
+
+--------------------------------------------------------------------------------
+1. EXACT .ENV CONFIGURATION
+--------------------------------------------------------------------------------
+
+Open your "frontend/.env" file (or ".env.local") and paste the following block
+at the bottom of the file:
+
+# ------------------------------------------------------------------------------
+# AFORMIX APP & HOSTINGER SMTP CONFIGURATION
+# ------------------------------------------------------------------------------
+
+# Application URL (Used to generate links in verification & reset emails)
+APP_URL="https://www.aformix.com"
+
+# Hostinger SMTP Settings
+SMTP_HOST="smtp.hostinger.com"
+SMTP_PORT=465
+SMTP_USER="no-reply@aformix.com"
+SMTP_PASSWORD="YOUR_HOSTINGER_EMAIL_PASSWORD_HERE"
+SMTP_FROM_EMAIL="no-reply@aformix.com"
+SMTP_FROM_NAME="Aformix"
+
+
+--------------------------------------------------------------------------------
+2. HOW TO GET YOUR HOSTINGER EMAIL CREDENTIALS
+--------------------------------------------------------------------------------
+
+If you haven't created the "no-reply@aformix.com" mailbox yet in Hostinger:
+
+Step 1: Log in to your Hostinger hPanel (https://hpanel.hostinger.com).
+Step 2: In the left sidebar or dashboard, click on "Emails".
+Step 3: Select your domain: "aformix.com".
+Step 4: Click "Create Email Account" (or "Add Email Account").
+Step 5: Set the email username to "no-reply" (so full address is no-reply@aformix.com).
+Step 6: Create a strong password and remember it.
+Step 7: Copy that password and paste it into "SMTP_PASSWORD" in your .env file.
+
+
+--------------------------------------------------------------------------------
+3. HOSTINGER SMTP SERVER DETAILS REFERENCE
+--------------------------------------------------------------------------------
+
+Hostinger Standard Outgoing SMTP Settings:
+- SMTP Host Server : smtp.hostinger.com
+- Port             : 465 (SSL) or 587 (TLS)
+- Authentication   : Required (Yes)
+- Username         : no-reply@aformix.com  (must be the full email address)
+- Password         : Your Hostinger mailbox password
+
+
+--------------------------------------------------------------------------------
+4. HOW TO TEST AND VERIFY
+--------------------------------------------------------------------------------
+
+1. Save your ".env" file.
+2. Restart your development server:
+     npm run dev
+3. Open your browser and navigate to:
+     http://localhost:3000/register
+4. Register a test account with your personal email address.
+5. Check your inbox: you will receive the 6-digit Aformix verification code
+   sent directly from no-reply@aformix.com!
+6. Complete email verification: you will receive the official Aformix Welcome Email.
+7. Test "Forgot Password" on http://localhost:3000/forgot-password:
+   you will receive the password reset link from no-reply@aformix.com.
+
+
+--------------------------------------------------------------------------------
+5. TROUBLESHOOTING TIPS
+--------------------------------------------------------------------------------
+
+• Error: "Invalid login: 535 5.7.0 Authentication failed"
+  -> Check that your SMTP_PASSWORD matches your Hostinger webmail password.
+  -> Make sure SMTP_USER is the full email address: no-reply@aformix.com.
+
+• Error: "Connection timeout / port blocked"
+  -> If port 465 doesn't connect on your network, change to:
+     SMTP_PORT=587
+
+• Emails going to Spam:
+  -> In Hostinger hPanel, make sure your domain's SPF, DKIM, and DMARC DNS records
+     are enabled (Hostinger enables them automatically by default with 1 click
+     under Email -> Manage -> DNS / Deliverability).
+================================================================================

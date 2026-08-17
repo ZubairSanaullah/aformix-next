@@ -23,36 +23,36 @@ export default function ActiveFilters({
   if (!hasFilters) return null;
 
   return (
-    <div className="mt-6 flex flex-wrap items-center gap-3">
+    <div className="mt-4 flex flex-wrap items-center gap-2 sm:mt-6 sm:gap-3">
       {query && (
         <button
           onClick={onClearQuery}
-          className="inline-flex items-center gap-2 rounded-full border border-[var(--color-glass-border)] bg-[var(--color-surface)] px-4 py-2 text-sm transition hover:border-[var(--color-primary)]"
+          className="inline-flex max-w-[200px] items-center gap-1.5 rounded-full border border-[var(--color-glass-border)] bg-[var(--color-surface)] px-3 py-1.5 text-xs transition hover:border-[var(--color-primary)] sm:max-w-xs sm:px-4 sm:py-2 sm:text-sm cursor-pointer"
         >
-          "{query}"
-          <X size={14} />
+          <span className="truncate">"{query}"</span>
+          <X size={13} className="shrink-0 text-[var(--color-text-muted)]" />
         </button>
       )}
 
       {category !== "All" && (
         <button
           onClick={onClearCategory}
-          className="inline-flex items-center gap-2 rounded-full border border-[var(--color-glass-border)] bg-[var(--color-surface)] px-4 py-2 text-sm transition hover:border-[var(--color-primary)]"
+          className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-glass-border)] bg-[var(--color-surface)] px-3 py-1.5 text-xs transition hover:border-[var(--color-primary)] sm:px-4 sm:py-2 sm:text-sm cursor-pointer"
         >
-          {category}
-          <X size={14} />
+          <span>{category}</span>
+          <X size={13} className="shrink-0 text-[var(--color-text-muted)]" />
         </button>
       )}
 
       {sort !== "newest" && (
-        <span className="rounded-full border border-[var(--color-glass-border)] bg-[var(--color-surface)] px-4 py-2 text-sm">
+        <span className="rounded-full border border-[var(--color-glass-border)] bg-[var(--color-surface)] px-3 py-1.5 text-xs sm:px-4 sm:py-2 sm:text-sm">
           Sort: {sort}
         </span>
       )}
 
       <button
         onClick={onReset}
-        className="text-sm font-medium text-[var(--color-primary)] transition hover:underline"
+        className="text-xs font-semibold text-[var(--color-primary)] transition hover:underline sm:text-sm cursor-pointer ml-1"
       >
         Clear All
       </button>

@@ -47,6 +47,19 @@ export default async function PortfolioCategoriesPage({
 
     const { categories } = await getPortfolioCategories(query);
 
+    const serializedCategories = categories.map((c) => ({
+        id: c.id,
+        name: c.name,
+        slug: c.slug,
+        description: c.description,
+        icon: c.icon,
+        sortOrder: c.sortOrder,
+        deletedAt: c.deletedAt ? c.deletedAt.toISOString() : null,
+        createdAt: c.createdAt.toISOString(),
+        updatedAt: c.updatedAt.toISOString(),
+        projectCount: c.projectCount,
+    }));
+
     return (
         <div className="space-y-6">
             <WorkspacePageHeader
@@ -73,7 +86,7 @@ export default async function PortfolioCategoriesPage({
 
             <PortfolioCategoriesFilters />
 
-            <PortfolioCategoriesList initialCategories={categories} />
+            <PortfolioCategoriesList initialCategories={serializedCategories} />
         </div>
     );
 }

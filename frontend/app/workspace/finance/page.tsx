@@ -55,26 +55,18 @@ export default async function FinanceDashboardPage({
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                    <p className="text-xs font-medium text-[var(--workspace-primary)]">
-                        FINANCE
-                    </p>
-
-                    <h1 className="mt-1 text-2xl font-semibold tracking-tight text-[var(--workspace-text)]">
-                        Financial dashboard
-                    </h1>
-
-                    <p className="mt-1.5 max-w-2xl text-sm leading-6 text-[var(--workspace-text-muted)]">
-                        Track income, expenses, payments, and financial metrics in
-                        one centralized dashboard.
-                    </p>
-                </div>
-
-                <div className="flex flex-wrap gap-2">
-                    <Link
-                        href="/workspace/finance/transactions/new"
-                        className="
+            <WorkspacePageHeader
+                title="Financial dashboard"
+                description="Track income, expenses, payments, and financial metrics in one centralized dashboard."
+                breadcrumbs={[
+                    { label: "Workspace", href: "/workspace" },
+                    { label: "Finance" },
+                ]}
+                actions={
+                    <>
+                        <Link
+                            href="/workspace/finance/transactions/new"
+                            className="
               inline-flex
               h-9
               shrink-0
@@ -97,14 +89,14 @@ export default async function FinanceDashboardPage({
               focus:ring-offset-2
               focus:ring-offset-[var(--workspace-background)]
             "
-                    >
-                        <Plus className="h-4 w-4" />
-                        Add Transaction
-                    </Link>
+                        >
+                            <Plus className="h-4 w-4" />
+                            Add Transaction
+                        </Link>
 
-                    <Link
-                        href="/workspace/finance/import"
-                        className="
+                        <Link
+                            href="/workspace/finance/import"
+                            className="
               inline-flex
               h-9
               shrink-0
@@ -129,12 +121,13 @@ export default async function FinanceDashboardPage({
               focus:ring-offset-2
               focus:ring-offset-[var(--workspace-background)]
             "
-                    >
-                        <Upload className="h-4 w-4" />
-                        Import
-                    </Link>
-                </div>
-            </div>
+                        >
+                            <Upload className="h-4 w-4" />
+                            Import
+                        </Link>
+                    </>
+                }
+            />
 
             <Suspense fallback={<FinanceSkeleton />}>
                 <FinanceMetricCards stats={stats} />

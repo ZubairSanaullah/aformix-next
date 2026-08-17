@@ -1,9 +1,19 @@
 import { NextResponse } from "next/server";
+import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { MediaType, Prisma } from "@prisma/client";
 
 export async function GET(request: Request) {
     try {
+        const session = await auth();
+
+        if (!session?.user?.id) {
+            return NextResponse.json(
+                { message: "Unauthorized." },
+                { status: 401 }
+            );
+        }
+
         const { searchParams } = new URL(request.url);
 
         const status = searchParams.get("status");
@@ -27,16 +37,13 @@ export async function GET(request: Request) {
         /*
          * Build the Prisma Media filter.
          *
-         * Media.folder is a relation to Folder,
-         * therefore folder filtering must use:
-         *
-         * folder: {
-         *     is: {
-         *         id: folderId
-         *     }
-         * }
+         * Non-admin users can only see media that they uploaded.
          */
         const where: Prisma.MediaWhereInput = {
+            ...(session.user.role !== "ADMIN"
+                ? { userId: session.user.id }
+                : {}),
+
             /*
              * Active media:
              * deletedAt = null

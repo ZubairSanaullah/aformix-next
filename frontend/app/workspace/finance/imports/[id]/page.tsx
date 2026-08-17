@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft, CheckCircle, AlertCircle, Clock } from "lucide-react";
 
-import { WorkspaceCard, WorkspaceAlert } from "@/components/workspace/ui";
+import { WorkspaceCard, WorkspaceAlert, WorkspacePageHeader } from "@/components/workspace/ui";
 
 import {
     isAuthorizationError,
@@ -121,29 +121,16 @@ export default async function ImportDetailPage({
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center gap-4">
-                <Link
-                    href="/workspace/finance/imports"
-                    className="inline-flex items-center text-sm font-medium text-[var(--workspace-primary)] transition-colors hover:opacity-80"
-                >
-                    <ArrowLeft className="mr-2 h-4 w-4" />
-                    Back to Imports
-                </Link>
-            </div>
-
-            <div>
-                <p className="text-xs font-medium text-[var(--workspace-primary)]">
-                    FINANCE
-                </p>
-
-                <h1 className="mt-1 text-2xl font-semibold tracking-tight text-[var(--workspace-text)]">
-                    {importRecord.originalFilename}
-                </h1>
-
-                <p className="mt-1.5 max-w-2xl text-sm leading-6 text-[var(--workspace-text-muted)]">
-                    Import details and results.
-                </p>
-            </div>
+            <WorkspacePageHeader
+                title={importRecord.originalFilename}
+                description="Import details and results."
+                breadcrumbs={[
+                    { label: "Workspace", href: "/workspace" },
+                    { label: "Finance", href: "/workspace/finance" },
+                    { label: "Imports", href: "/workspace/finance/imports" },
+                    { label: "Detail" },
+                ]}
+            />
 
             {/* Status Banner */}
             <WorkspaceCard

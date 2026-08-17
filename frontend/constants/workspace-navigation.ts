@@ -29,47 +29,12 @@ export const workspaceNavigation = [
     ],
   },
   {
-    title: "Workspace",
-    items: [
-      {
-        title: "Projects",
-        href: "/workspace/projects",
-        icon: FolderKanban,
-      },
-      {
-        title: "Tasks",
-        href: "/workspace/tasks",
-        icon: CheckSquare,
-      },
-      {
-        title: "CRM",
-        href: "/workspace/crm",
-        icon: Users,
-      },
-      {
-        title: "Scheduler",
-        href: "/workspace/scheduler",
-        icon: CalendarDays,
-      },
-    ],
-  },
-  {
     title: "Content",
     items: [
       {
         title: "Blog CMS",
         href: "/workspace/blog",
         icon: FileText,
-      },
-      {
-        title: "Categories",
-        href: "/workspace/categories",
-        icon: FolderTree,
-      },
-      {
-        title: "Tags",
-        href: "/workspace/tags",
-        icon: Tags,
       },
       {
         title: "Media",
@@ -82,19 +47,63 @@ export const workspaceNavigation = [
         icon: Trash2,
       },
       {
+        title: "Categories",
+        href: "/workspace/categories",
+        icon: FolderTree,
+        adminOnly: true,
+      },
+      {
+        title: "Tags",
+        href: "/workspace/tags",
+        icon: Tags,
+        adminOnly: true,
+      },
+      {
         title: "Portfolio",
         href: "/workspace/portfolio",
         icon: Briefcase,
+        adminOnly: true,
       },
       {
         title: "Knowledge Base",
         href: "/workspace/knowledge",
         icon: BookOpen,
+        adminOnly: true,
       },
       {
         title: "SEO",
         href: "/workspace/seo",
         icon: Search,
+        adminOnly: true,
+      },
+    ],
+  },
+  {
+    title: "Operations",
+    items: [
+      {
+        title: "Projects",
+        href: "/workspace/projects",
+        icon: FolderKanban,
+        adminOnly: true,
+      },
+      {
+        title: "Tasks",
+        href: "/workspace/tasks",
+        icon: CheckSquare,
+        adminOnly: true,
+      },
+      {
+        title: "CRM",
+        href: "/workspace/crm",
+        icon: Users,
+        adminOnly: true,
+      },
+      {
+        title: "Scheduler",
+        href: "/workspace/scheduler",
+        icon: CalendarDays,
+        adminOnly: true,
       },
     ],
   },
@@ -111,6 +120,7 @@ export const workspaceNavigation = [
         title: "Finance",
         href: "/workspace/finance",
         icon: Wallet,
+        adminOnly: true,
       },
     ],
   },

@@ -1,5 +1,6 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
+import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import EditPostForm from "./EditPostForm";
 
@@ -12,6 +13,12 @@ interface EditPostPageProps {
 export default async function EditPostPage({
     params,
 }: EditPostPageProps) {
+    const session = await auth();
+
+    if (!session?.user?.id) {
+        redirect("/login");
+    }
+
     const { id } = await params;
 
     const [
@@ -62,6 +69,10 @@ export default async function EditPostPage({
 
     if (!post) {
         notFound();
+    }
+
+    if (session.user.role !== "ADMIN" && post.authorId !== session.user.id) {
+        redirect("/workspace/blog");
     }
 
     return (

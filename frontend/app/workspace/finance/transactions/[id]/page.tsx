@@ -4,6 +4,7 @@ import { ArrowLeft, Archive, RotateCcw, Trash2 } from "lucide-react";
 import {
     WorkspaceCard,
     WorkspaceAlert,
+    WorkspacePageHeader,
 } from "@/components/workspace/ui";
 
 import FinanceTransactionForm from "@/components/workspace/finance/FinanceTransactionForm";
@@ -94,34 +95,22 @@ export default async function TransactionDetailPage({
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                <div>
-                    <Link
-                        href="/workspace/finance/transactions"
-                        className="inline-flex items-center text-sm font-medium text-[var(--workspace-primary)] transition-colors hover:opacity-80"
-                    >
-                        <ArrowLeft className="mr-2 h-4 w-4" />
-                        Back to Transactions
-                    </Link>
-
-                    <p className="mt-3 text-xs font-medium text-[var(--workspace-primary)]">
-                        FINANCE
-                    </p>
-
-                    <h1 className="mt-1 text-2xl font-semibold tracking-tight text-[var(--workspace-text)]">
-                        {transaction.reference || "Untitled Transaction"}
-                    </h1>
-
-                    <p className="mt-1.5 max-w-2xl text-sm leading-6 text-[var(--workspace-text-muted)]">
-                        View and edit transaction details.
-                    </p>
-                </div>
-
-                <FinanceTransactionDetailActions
-                    transactionId={transaction.id}
-                    transactionStatus={transaction.status}
-                />
-            </div>
+            <WorkspacePageHeader
+                title={transaction.reference || "Untitled Transaction"}
+                description="View and edit transaction details."
+                breadcrumbs={[
+                    { label: "Workspace", href: "/workspace" },
+                    { label: "Finance", href: "/workspace/finance" },
+                    { label: "Transactions", href: "/workspace/finance/transactions" },
+                    { label: "Detail" },
+                ]}
+                actions={
+                    <FinanceTransactionDetailActions
+                        transactionId={transaction.id}
+                        transactionStatus={transaction.status}
+                    />
+                }
+            />
 
             {/* Transaction Overview */}
             <div className="grid gap-4 sm:grid-cols-4">

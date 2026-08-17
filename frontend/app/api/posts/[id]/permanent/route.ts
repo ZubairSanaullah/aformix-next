@@ -48,11 +48,14 @@ export async function DELETE(
             );
         }
 
-        if (session.user.role !== "ADMIN") {
+        const isAuthor = post.authorId === session.user.id;
+        const isAdmin = session.user.role === "ADMIN";
+
+        if (!isAdmin && !isAuthor) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: "Forbidden",
+                    message: "Forbidden: You cannot delete another author's post.",
                 },
                 { status: 403 }
             );

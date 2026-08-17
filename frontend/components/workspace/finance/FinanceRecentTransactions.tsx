@@ -9,7 +9,7 @@ import { WorkspaceCard } from "@/components/workspace/ui";
 interface RecentTransaction {
     id: string;
     reference: string | null;
-    amount: Prisma.Decimal;
+    amount: number;
     type: string;
     status: string;
     transactionDate: Date;

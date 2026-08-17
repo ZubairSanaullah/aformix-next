@@ -74,24 +74,18 @@ export default async function ImportsPage({
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                    <p className="text-xs font-medium text-[var(--workspace-primary)]">
-                        FINANCE
-                    </p>
-
-                    <h1 className="mt-1 text-2xl font-semibold tracking-tight text-[var(--workspace-text)]">
-                        Imports
-                    </h1>
-
-                    <p className="mt-1.5 max-w-2xl text-sm leading-6 text-[var(--workspace-text-muted)]">
-                        Upload and manage financial transaction imports.
-                    </p>
-                </div>
-
-                <Link
-                    href="/workspace/finance/imports/new"
-                    className="
+            <WorkspacePageHeader
+                title="Imports"
+                description="Upload and manage financial transaction imports."
+                breadcrumbs={[
+                    { label: "Workspace", href: "/workspace" },
+                    { label: "Finance", href: "/workspace/finance" },
+                    { label: "Imports" },
+                ]}
+                actions={
+                    <Link
+                        href="/workspace/finance/imports/new"
+                        className="
               inline-flex
               h-9
               shrink-0
@@ -114,11 +108,12 @@ export default async function ImportsPage({
               focus:ring-offset-2
               focus:ring-offset-[var(--workspace-background)]
             "
-                >
-                    <Plus className="h-4 w-4" />
-                    New Import
-                </Link>
-            </div>
+                    >
+                        <Plus className="h-4 w-4" />
+                        New Import
+                    </Link>
+                }
+            />
 
             <FinanceImportsPageClient
                 imports={imports}

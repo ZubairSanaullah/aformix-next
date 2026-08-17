@@ -75,7 +75,7 @@ export const portfolioProjectSortDirectionSchema = z.enum([
     "desc",
 ]);
 
-const basePortfolioCategorySchema = z.object({
+export const createPortfolioCategorySchema = z.object({
     name: z
         .string()
         .trim()
@@ -96,9 +96,7 @@ const basePortfolioCategorySchema = z.object({
     sortOrder: sortOrderSchema.default(0),
 });
 
-export const createPortfolioCategorySchema = basePortfolioCategorySchema;
-
-export const updatePortfolioCategorySchema = basePortfolioCategorySchema
+export const updatePortfolioCategorySchema = createPortfolioCategorySchema
     .partial()
     .refine(
         (data) => Object.keys(data).length > 0,
@@ -127,7 +125,8 @@ export const portfolioCategoryListQuerySchema = z.object({
     sortOrder: portfolioCategorySortDirectionSchema.default("asc"),
 });
 
-const basePortfolioProjectSchema = z.object({
+const basePortfolioProjectSchema = z
+    .object({
         title: z
             .string()
             .trim()
@@ -184,7 +183,8 @@ const basePortfolioProjectSchema = z.object({
         technologyIds: z.array(cuidSchema).default([]),
     });
 
-export const createPortfolioProjectSchema = basePortfolioProjectSchema.superRefine((data, ctx) => {
+export const createPortfolioProjectSchema = basePortfolioProjectSchema
+    .superRefine((data, ctx) => {
         if (data.startDate && data.completionDate && data.completionDate < data.startDate) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
@@ -212,27 +212,6 @@ export const updatePortfolioProjectSchema = basePortfolioProjectSchema
 export const portfolioProjectIdSchema = z.object({
     id: cuidSchema,
 });
-
-export const portfolioProjectMediaItemSchema = z.object({
-    mediaId: cuidSchema,
-    sortOrder: z.number().int().min(0),
-    isPrimary: z.boolean().default(false),
-    caption: optionalTrimmedString(300),
-    altText: optionalTrimmedString(300),
-});
-
-export const replacePortfolioProjectMediaSchema = z
-    .object({
-        items: z.array(portfolioProjectMediaItemSchema).max(50),
-    })
-    .refine(
-        (data) => data.items.filter((item) => item.isPrimary).length <= 1,
-        { message: "Only one media item can be marked as primary.", path: ["items"] },
-    );
-
-export type ReplacePortfolioProjectMediaInput = z.infer<
-    typeof replacePortfolioProjectMediaSchema
->;
 
 export const portfolioProjectListQuerySchema = z.object({
     search: z
@@ -274,16 +253,6 @@ export const portfolioSlugSchema = z.object({
     slug: slugSchema,
 });
 
-export type CreatePortfolioCategoryInput = z.infer<typeof createPortfolioCategorySchema>;
-export type UpdatePortfolioCategoryInput = z.infer<typeof updatePortfolioCategorySchema>;
-export type PortfolioCategoryIdInput = z.infer<typeof portfolioCategoryIdSchema>;
-export type PortfolioCategoryListQuery = z.infer<typeof portfolioCategoryListQuerySchema>;
-
-export type CreatePortfolioProjectInput = z.infer<typeof createPortfolioProjectSchema>;
-export type UpdatePortfolioProjectInput = z.infer<typeof updatePortfolioProjectSchema>;
-export type PortfolioProjectIdInput = z.infer<typeof portfolioProjectIdSchema>;
-export type PortfolioProjectListQuery = z.infer<typeof portfolioProjectListQuerySchema>;
-
 export const createPortfolioTechnologySchema = z.object({
     name: z
         .string()
@@ -296,4 +265,32 @@ export const createPortfolioTechnologySchema = z.object({
     description: optionalTrimmedString(500),
 });
 
+export const portfolioProjectMediaItemSchema = z.object({
+    mediaId: cuidSchema,
+    sortOrder: z.number().int().min(0),
+    isPrimary: z.boolean().default(false),
+    caption: optionalTrimmedString(300),
+    altText: optionalTrimmedString(300),
+});
+
+export const replacePortfolioProjectMediaSchema = z
+    .object({
+        items: z.array(portfolioProjectMediaItemSchema).max(50),
+    })
+    .refine(
+        (data) => data.items.filter((item) => item.isPrimary).length <= 1,
+        { message: "Only one media item can be marked as primary.", path: ["items"] },
+    );
+
+export type CreatePortfolioCategoryInput = z.infer<typeof createPortfolioCategorySchema>;
+export type UpdatePortfolioCategoryInput = z.infer<typeof updatePortfolioCategorySchema>;
+export type PortfolioCategoryIdInput = z.infer<typeof portfolioCategoryIdSchema>;
+export type PortfolioCategoryListQuery = z.infer<typeof portfolioCategoryListQuerySchema>;
+
+export type CreatePortfolioProjectInput = z.infer<typeof createPortfolioProjectSchema>;
+export type UpdatePortfolioProjectInput = z.infer<typeof updatePortfolioProjectSchema>;
+export type PortfolioProjectIdInput = z.infer<typeof portfolioProjectIdSchema>;
+export type PortfolioProjectListQuery = z.infer<typeof portfolioProjectListQuerySchema>;
+
 export type CreatePortfolioTechnologyInput = z.infer<typeof createPortfolioTechnologySchema>;
+export type ReplacePortfolioProjectMediaInput = z.infer<typeof replacePortfolioProjectMediaSchema>;

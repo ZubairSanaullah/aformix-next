@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import {
     WorkspaceCard,
     WorkspaceAlert,
+    WorkspacePageHeader,
 } from "@/components/workspace/ui";
 
 import FinanceCategoryForm from "@/components/workspace/finance/FinanceCategoryForm";
@@ -82,31 +83,19 @@ export default async function CategoryDetailPage({
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                <div>
-                    <Link
-                        href="/workspace/finance/categories"
-                        className="inline-flex items-center text-sm font-medium text-[var(--workspace-primary)] transition-colors hover:opacity-80"
-                    >
-                        <ArrowLeft className="mr-2 h-4 w-4" />
-                        Back to Categories
-                    </Link>
-
-                    <p className="mt-3 text-xs font-medium text-[var(--workspace-primary)]">
-                        FINANCE
-                    </p>
-
-                    <h1 className="mt-1 text-2xl font-semibold tracking-tight text-[var(--workspace-text)]">
-                        {category.name}
-                    </h1>
-
-                    <p className="mt-1.5 max-w-2xl text-sm leading-6 text-[var(--workspace-text-muted)]">
-                        View and edit category details.
-                    </p>
-                </div>
-
-                <FinanceCategoryDetailActions categoryId={category.id} />
-            </div>
+            <WorkspacePageHeader
+                title={category.name}
+                description="View and edit category details."
+                breadcrumbs={[
+                    { label: "Workspace", href: "/workspace" },
+                    { label: "Finance", href: "/workspace/finance" },
+                    { label: "Categories", href: "/workspace/finance/categories" },
+                    { label: "Detail" },
+                ]}
+                actions={
+                    <FinanceCategoryDetailActions categoryId={category.id} />
+                }
+            />
 
             {/* Category Overview */}
             <div className="grid gap-4 sm:grid-cols-4">

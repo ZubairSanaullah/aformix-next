@@ -1,10 +1,14 @@
-import NextAuth from "next-auth";
+import NextAuth, { CredentialsSignin } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import bcrypt from "bcryptjs";
 
 import { prisma } from "@/lib/prisma";
 import { loginSchema } from "@/lib/validations/auth";
+
+export class EmailNotVerifiedError extends CredentialsSignin {
+    code = "email_not_verified";
+}
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
     adapter: PrismaAdapter(prisma),
@@ -36,10 +40,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 }
 
                 const { email, password } = result.data;
+                const normalizedEmail = email.trim().toLowerCase();
 
                 const user = await prisma.user.findUnique({
                     where: {
-                        email,
+                        email: normalizedEmail,
                     },
                 });
 
@@ -56,12 +61,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     return null;
                 }
 
+                if (!user.emailVerified) {
+                    throw new EmailNotVerifiedError();
+                }
+
                 return {
                     id: user.id,
                     name: user.name,
                     email: user.email,
                     image: user.image,
                     role: user.role,
+                    emailVerified: user.emailVerified,
                 };
             },
         }),
@@ -75,6 +85,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         async jwt({ token, user }) {
             if (user) {
                 token.role = user.role;
+                token.emailVerified = user.emailVerified;
             }
 
             return token;
@@ -84,6 +95,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             if (session.user) {
                 session.user.id = token.sub!;
                 session.user.role = token.role as string;
+                session.user.emailVerified = (token.emailVerified as Date | null) ?? null;
             }
 
             return session;

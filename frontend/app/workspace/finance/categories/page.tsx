@@ -88,24 +88,18 @@ export default async function CategoriesPage({
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                    <p className="text-xs font-medium text-[var(--workspace-primary)]">
-                        FINANCE
-                    </p>
-
-                    <h1 className="mt-1 text-2xl font-semibold tracking-tight text-[var(--workspace-text)]">
-                        Categories
-                    </h1>
-
-                    <p className="mt-1.5 max-w-2xl text-sm leading-6 text-[var(--workspace-text-muted)]">
-                        Browse and manage financial transaction categories.
-                    </p>
-                </div>
-
-                <Link
-                    href="/workspace/finance/categories/new"
-                    className="
+            <WorkspacePageHeader
+                title="Categories"
+                description="Browse and manage financial transaction categories."
+                breadcrumbs={[
+                    { label: "Workspace", href: "/workspace" },
+                    { label: "Finance", href: "/workspace/finance" },
+                    { label: "Categories" },
+                ]}
+                actions={
+                    <Link
+                        href="/workspace/finance/categories/new"
+                        className="
               inline-flex
               h-9
               shrink-0
@@ -128,11 +122,12 @@ export default async function CategoriesPage({
               focus:ring-offset-2
               focus:ring-offset-[var(--workspace-background)]
             "
-                >
-                    <Plus className="h-4 w-4" />
-                    New Category
-                </Link>
-            </div>
+                    >
+                        <Plus className="h-4 w-4" />
+                        New Category
+                    </Link>
+                }
+            />
 
             <FinanceCategoriesPageClient
                 categories={result.categories}

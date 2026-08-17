@@ -28,48 +28,46 @@ export default function DownloadCard({
   };
 
   return (
-    <GlassCard className="p-8">
+    <GlassCard className="p-5 sm:p-8 rounded-2xl sm:rounded-[2rem]">
       <CardHeader
-        icon={<FileText className="h-7 w-7" />}
+        icon={<FileText className="h-5 w-5 sm:h-7 sm:w-7" />}
         title="Download this resource"
         description="Get instant access to the PDF and keep it for offline reading, sharing with your team, or future reference."
       />
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2">
-
+      <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4">
         <InfoItem
-          icon={<FileText size={18} />}
+          icon={<FileText className="h-4 w-4 sm:h-5 sm:w-5" />}
           label="Pages"
           value={`${resource.pages} Pages`}
         />
 
         <InfoItem
-          icon={<Clock size={18} />}
+          icon={<Clock className="h-4 w-4 sm:h-5 sm:w-5" />}
           label="Reading Time"
           value={`${resource.readingTime} min`}
         />
 
         <InfoItem
-          icon={<HardDrive size={18} />}
+          icon={<HardDrive className="h-4 w-4 sm:h-5 sm:w-5" />}
           label="File Size"
           value={resource.fileSize}
         />
 
         <InfoItem
-          icon={<BadgeInfo size={18} />}
+          icon={<BadgeInfo className="h-4 w-4 sm:h-5 sm:w-5" />}
           label="Version"
           value={resource.version}
         />
-
       </div>
 
-      <div className="mt-10 border-t border-[var(--color-glass-border)] pt-8">
+      <div className="mt-6 border-t border-[var(--color-glass-border)] pt-6 sm:mt-8 sm:pt-8">
         <DownloadButton
           href={resource.pdf}
           className="w-full justify-center"
           onClick={handleDownload}
         >
-          <Download className="h-5 w-5" />
+          <Download className="h-4 w-4 sm:h-5 sm:w-5" />
           Download PDF
         </DownloadButton>
       </div>

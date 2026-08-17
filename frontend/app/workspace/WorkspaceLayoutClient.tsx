@@ -4,6 +4,7 @@ import { ReactNode, useCallback, useEffect, useState } from "react";
 
 import Header from "@/components/workspace/Header";
 import Sidebar from "@/components/workspace/Sidebar";
+import PostHogIdentify from "@/lib/analytics/PostHogIdentify";
 
 interface WorkspaceUser {
     id: string;
@@ -116,6 +117,9 @@ export default function WorkspaceLayoutClient({
 
     return (
         <div className="flex min-h-screen min-w-0 flex-1 bg-[var(--workspace-background)]">
+            {/* Identify the authenticated user in PostHog — uses stable internal ID only */}
+            <PostHogIdentify userId={user.id} role={user.role} />
+
             <Sidebar
                 isOpen={isSidebarOpen}
                 isCollapsed={isSidebarCollapsed}

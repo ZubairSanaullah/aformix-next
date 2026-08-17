@@ -6,6 +6,7 @@ import { FaLinkedin, FaInstagram, FaFacebookF, FaDiscord, FaTiktok, FaXTwitter, 
 import Image from "next/image";
 import FooterNewsletter from "./FooterNewsletter";
 import { serviceNavItems, getServicePath } from "../constants/serviceNav";
+import { trackPostHogEvent, POSTHOG_EVENTS } from "@/lib/analytics/events";
 
 const socialLinks = [
   { name: "LinkedIn", icon: FaLinkedin, href: "https://www.linkedin.com/in/aformix-tech-173393413/" },
@@ -71,7 +72,7 @@ const Footer: React.FC = () => {
                 { label: "Resources", href: "/resources" },
                 { label: "Blog", href: "/blog" },
                 { label: "Contact", href: "/#contact" },
-                { label: "Book a Meeting", href: "https://calendly.com/aformixtech/30min", target: "_blank", rel: "noopener noreferrer" },
+                { label: "Book a Meeting", href: "https://calendly.com/aformixtech/30min", target: "_blank", rel: "noopener noreferrer", isCalendly: true },
               ].map((item) => (
                 <li key={item.label}>
                   {item.href.startsWith("http") ? (
@@ -80,6 +81,14 @@ const Footer: React.FC = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="footer-link text-[var(--color-text-muted)] hover:text-primary font-bold transition-all text-sm sm:text-base"
+                      onClick={() => {
+                        if (item.isCalendly) {
+                          trackPostHogEvent(POSTHOG_EVENTS.CALENDLY_CLICKED, {
+                            location: "footer",
+                            page: "/",
+                          });
+                        }
+                      }}
                     >
                       {item.label}
                     </a>
@@ -114,8 +123,20 @@ const Footer: React.FC = () => {
                 aria-label={`Visit Aformix on ${link.name}`}
                 href={link.href}
                 className="w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:border-primary transition-all duration-300 relative group border border-[var(--color-border)] rounded-full"
-                target="_blank"
-                rel="noopener noreferrer"
+                target={link.href.startsWith("mailto:") ? undefined : "_blank"}
+                rel={link.href.startsWith("mailto:") ? undefined : "noopener noreferrer"}
+                onClick={() => {
+                  if (link.href.startsWith("mailto:")) {
+                    trackPostHogEvent(POSTHOG_EVENTS.EMAIL_CLICKED, {
+                      location: "footer",
+                    });
+                  } else {
+                    trackPostHogEvent(POSTHOG_EVENTS.SOCIAL_LINK_CLICKED, {
+                      platform: link.name,
+                      location: "footer",
+                    });
+                  }
+                }}
               >
                 <link.icon size={16} className="sm:size-5 group-hover:text-primary group-hover:scale-110 transition-all duration-300" aria-hidden="true"/>
               </a>

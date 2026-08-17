@@ -230,6 +230,9 @@ const Hero: React.FC = () => {
                   button: "hero_get_started",
                   location: "homepage",
                 }}
+                trackCta
+                ctaName="Get Started"
+                ctaLocation="hero"
               >
                 <span>Get Started</span>
                 <ArrowRight size={18} className="hero-cta-arrow" />
@@ -242,6 +245,9 @@ const Hero: React.FC = () => {
                   button: "hero_view_portfolio",
                   location: "homepage",
                 }}
+                trackCta
+                ctaName="View Portfolio"
+                ctaLocation="hero"
               >
                 <span>View Portfolio</span>
                 <ExternalLink size={16} />

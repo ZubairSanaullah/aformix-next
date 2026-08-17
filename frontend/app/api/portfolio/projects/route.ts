@@ -87,7 +87,8 @@ export async function POST(request: NextRequest) {
 
         // authorId is never trusted from the client — always the
         // authenticated admin, regardless of what the request body
-        // contains.
+        // contains. Without this, any client could submit any user's
+        // ID as the author.
         const parsed = createPortfolioProjectSchema.safeParse({
             ...(typeof body === "object" && body !== null ? body : {}),
             authorId: admin.id,
@@ -105,7 +106,12 @@ export async function POST(request: NextRequest) {
 
         const project = await createPortfolioProject(parsed.data);
 
-        return NextResponse.json({ project }, { status: 201 });
+        return NextResponse.json(
+            {
+                project,
+            },
+            { status: 201 },
+        );
     } catch (error) {
         return handleError(error);
     }

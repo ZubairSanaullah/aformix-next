@@ -216,6 +216,7 @@ export async function POST(request: Request) {
                 width,
                 height,
                 folderId: resolvedFolderId,
+                userId: session.user.id,
                 alt: null,
             },
 

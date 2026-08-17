@@ -15,6 +15,14 @@ interface PortfolioFeaturedImagePanelProps {
     onChange: (gallery: GalleryImage[]) => void;
 }
 
+/**
+ * PortfolioProject has no separate `featuredImage` column (unlike Post).
+ * The featured image is simply the gallery item flagged `isPrimary`, so
+ * this panel is a view into the shared gallery array passed down from
+ * PortfolioProjectForm — not independent state. Selecting a new image
+ * here adds it to the gallery (or promotes an existing gallery item) and
+ * marks it primary; removing it just unsets isPrimary / drops the item.
+ */
 export default function PortfolioFeaturedImagePanel({
     gallery,
     onChange,

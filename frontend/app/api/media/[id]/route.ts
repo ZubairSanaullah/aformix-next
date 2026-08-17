@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
 export async function DELETE(
@@ -7,6 +8,15 @@ export async function DELETE(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const session = await auth();
+
+        if (!session?.user?.id) {
+            return NextResponse.json(
+                { error: "Unauthorized" },
+                { status: 401 }
+            );
+        }
+
         const { id } = await params;
 
         const existing = await prisma.media.findUnique({
@@ -17,6 +27,13 @@ export async function DELETE(
             return NextResponse.json(
                 { error: "Media not found" },
                 { status: 404 }
+            );
+        }
+
+        if (session.user.role !== "ADMIN" && existing.userId !== session.user.id) {
+            return NextResponse.json(
+                { error: "Forbidden: You cannot delete media uploaded by another user" },
+                { status: 403 }
             );
         }
 
@@ -53,6 +70,15 @@ export async function PATCH(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const session = await auth();
+
+        if (!session?.user?.id) {
+            return NextResponse.json(
+                { error: "Unauthorized" },
+                { status: 401 }
+            );
+        }
+
         const { id } = await params;
         const body = await request.json().catch(() => ({}));
 
@@ -68,6 +94,13 @@ export async function PATCH(
                 return NextResponse.json(
                     { error: "Media not found in trash" },
                     { status: 404 }
+                );
+            }
+
+            if (session.user.role !== "ADMIN" && existing.userId !== session.user.id) {
+                return NextResponse.json(
+                    { error: "Forbidden: You cannot restore media uploaded by another user" },
+                    { status: 403 }
                 );
             }
 
@@ -113,6 +146,13 @@ export async function PATCH(
             return NextResponse.json(
                 { error: "Media not found" },
                 { status: 404 }
+            );
+        }
+
+        if (session.user.role !== "ADMIN" && existing.userId !== session.user.id) {
+            return NextResponse.json(
+                { error: "Forbidden: You cannot update media uploaded by another user" },
+                { status: 403 }
             );
         }
 

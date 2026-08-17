@@ -23,6 +23,18 @@ export async function POST(request: Request) {
             );
         }
 
+        if (session.user.role !== "ADMIN") {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Forbidden: Admin access required",
+                },
+                {
+                    status: 403,
+                }
+            );
+        }
+
         const result = categorySchema.safeParse(body);
 
         if (!result.success) {

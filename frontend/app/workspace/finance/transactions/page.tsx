@@ -124,24 +124,18 @@ export default async function TransactionsPage({
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                    <p className="text-xs font-medium text-[var(--workspace-primary)]">
-                        FINANCE
-                    </p>
-
-                    <h1 className="mt-1 text-2xl font-semibold tracking-tight text-[var(--workspace-text)]">
-                        Transactions
-                    </h1>
-
-                    <p className="mt-1.5 max-w-2xl text-sm leading-6 text-[var(--workspace-text-muted)]">
-                        Browse, search, and filter all financial transactions.
-                    </p>
-                </div>
-
-                <Link
-                    href="/workspace/finance/transactions/new"
-                    className="
+            <WorkspacePageHeader
+                title="Transactions"
+                description="Browse, search, and filter all financial transactions."
+                breadcrumbs={[
+                    { label: "Workspace", href: "/workspace" },
+                    { label: "Finance", href: "/workspace/finance" },
+                    { label: "Transactions" },
+                ]}
+                actions={
+                    <Link
+                        href="/workspace/finance/transactions/new"
+                        className="
               inline-flex
               h-9
               shrink-0
@@ -164,11 +158,12 @@ export default async function TransactionsPage({
               focus:ring-offset-2
               focus:ring-offset-[var(--workspace-background)]
             "
-                >
-                    <Plus className="h-4 w-4" />
-                    New Transaction
-                </Link>
-            </div>
+                    >
+                        <Plus className="h-4 w-4" />
+                        New Transaction
+                    </Link>
+                }
+            />
 
             <FinanceTransactionsPageClient
                 transactions={result.transactions}

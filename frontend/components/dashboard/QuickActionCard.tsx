@@ -1,4 +1,5 @@
 import type { LucideIcon } from "lucide-react";
+import Link from "next/link";
 
 import WorkspaceCard from "@/components/workspace/ui/WorkspaceCard";
 
@@ -6,16 +7,18 @@ interface QuickActionCardProps {
     title: string;
     description: string;
     icon: LucideIcon;
+    href: string;
 }
 
 export default function QuickActionCard({
     title,
     description,
     icon: Icon,
+    href,
 }: QuickActionCardProps) {
     return (
-        <button
-            type="button"
+        <Link
+            href={href}
             className="
                 group
                 w-full
@@ -32,6 +35,8 @@ export default function QuickActionCard({
                 hover:shadow-[var(--workspace-shadow-md)]
                 active:scale-[0.99]
                 cursor-pointer
+                flex
+                flex-col
             "
         >
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--workspace-primary-soft)] transition-transform duration-200 group-hover:scale-105">
@@ -45,6 +50,6 @@ export default function QuickActionCard({
             <p className="mt-1 text-[10px] leading-5 text-[var(--workspace-text-muted)]">
                 {description}
             </p>
-        </button>
+        </Link>
     );
 }

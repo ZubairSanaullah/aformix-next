@@ -39,7 +39,7 @@ export default function ShareButtons({ title, url }: ShareButtonsProps) {
   };
 
   return (
-    <div className="flex flex-wrap gap-2.5" aria-label="Share this resource">
+    <div className="flex flex-wrap items-center gap-2 sm:gap-2.5" aria-label="Share this resource">
       {shareLinks.map((link) => {
         const Icon = link.icon;
         return (
@@ -48,20 +48,20 @@ export default function ShareButtons({ title, url }: ShareButtonsProps) {
             href={link.href(url, title)}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-full border border-[var(--color-glass-border)] bg-[var(--color-surface)] px-3.5 py-2 text-xs font-semibold text-[var(--color-text)] transition-all duration-300 hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white shadow-xs"
+            className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-glass-border)] bg-[var(--color-surface)] px-3 py-1.5 text-xs font-semibold text-[var(--color-text)] transition-all duration-300 active:scale-95 hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white shadow-xs sm:px-3.5 sm:py-2"
           >
             <Icon className="h-3.5 w-3.5 shrink-0" />
-            {link.label}
+            <span>{link.label}</span>
           </a>
         );
       })}
       <button
         type="button"
         onClick={copyLink}
-        className="inline-flex items-center gap-2 rounded-full border border-[var(--color-glass-border)] bg-[var(--color-surface)] px-3.5 py-2 text-xs font-semibold text-[var(--color-text)] transition-all duration-300 hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white cursor-pointer shadow-xs"
+        className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-glass-border)] bg-[var(--color-surface)] px-3 py-1.5 text-xs font-semibold text-[var(--color-text)] transition-all duration-300 active:scale-95 hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white cursor-pointer shadow-xs sm:px-3.5 sm:py-2"
       >
         <Copy className="h-3.5 w-3.5 shrink-0" />
-        {copied ? "Copied" : "Copy Link"}
+        <span>{copied ? "Copied!" : "Copy Link"}</span>
       </button>
     </div>
   );

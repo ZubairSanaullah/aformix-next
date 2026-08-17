@@ -1,8 +1,19 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { requireAdmin, isAuthorizationError } from "@/lib/auth/authorization";
 import CategoriesTable from "@/components/workspace/categories/CategoriesTable";
 
 export default async function CategoriesPage() {
+    try {
+        await requireAdmin();
+    } catch (error) {
+        if (isAuthorizationError(error)) {
+            redirect("/workspace");
+        }
+        throw error;
+    }
+
     const categories = await prisma.category.findMany({
         include: {
             _count: {

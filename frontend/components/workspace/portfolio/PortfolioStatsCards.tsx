@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 
 import WorkspaceCard from "@/components/workspace/ui/WorkspaceCard";
-import type { PortfolioStats } from "@/lib/api/portfolio";
+import type { PortfolioStats } from "@/lib/services/portfolio-stats";
 
 interface PortfolioStatsCardsProps {
     stats: PortfolioStats;

@@ -88,6 +88,13 @@ export async function getProjectAnalytics(startDate: Date, endDate: Date) {
             overdue: overdueProjects,
             averageProgress: Number(averageProjectProgress.toFixed(2)),
             completionRate: Number(projectCompletionRate.toFixed(2)),
+            byStatus: [
+                { status: "Planning", count: planningProjects },
+                { status: "Active", count: activeProjects },
+                { status: "On Hold", count: onHoldProjects },
+                { status: "Completed", count: completedProjects },
+                { status: "Cancelled", count: cancelledProjects },
+            ].filter(s => s.count > 0),
         },
         tasks: {
             total: totalTasks,

@@ -59,13 +59,13 @@ export default function ResourceInfoCard({
   ];
 
   return (
-    <GlassCard className="p-8">
+    <GlassCard className="p-5 sm:p-8 rounded-2xl sm:rounded-[2rem]">
       <SectionHeading
         title="Resource Details"
         description="Everything you need to know about this resource at a glance."
       />
 
-      <div className="mt-8 grid gap-5 sm:grid-cols-2">
+      <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-5">
         {items.map((item) => (
           <InfoItem
             key={item.id}

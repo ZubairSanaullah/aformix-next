@@ -1,0 +1,427 @@
+==============================================================
+  AFORMIX -- POSTHOG SETUP GUIDE (Brand New Account)
+==============================================================
+
+This guide walks you through setting up PostHog from scratch:
+creating an account, a project, getting your API key, connecting
+it to Aformix, and verifying that events are flowing correctly.
+
+Estimated time: 10-15 minutes.
+
+
+==============================================================
+  STEP 1 -- CREATE A POSTHOG ACCOUNT
+==============================================================
+
+1. Open your browser and go to:
+   https://app.posthog.com/signup
+
+2. Sign up with your email address.
+   (Google and GitHub OAuth are also available.)
+   Use your Aformix business email if you have one.
+
+3. Check your inbox for a verification email.
+   Click the link inside to verify your account.
+
+4. PostHog will ask a few onboarding questions:
+   - "What are you building?" -> Web app / SaaS
+   - "What is your role?"     -> Choose appropriately
+   These answers only affect onboarding tips, not functionality.
+
+
+==============================================================
+  STEP 2 -- CHOOSE YOUR HOSTING REGION
+==============================================================
+
+Right after sign-up, PostHog asks you to pick a data region.
+
+   US Cloud -> data stored in the United States
+   EU Cloud -> data stored in Europe (GDPR-friendly)
+
+Which one to pick:
+   - Clients in Pakistan / Asia / global -> US Cloud
+     (generally faster from South Asia)
+   - EU clients where GDPR is a hard requirement -> EU Cloud
+
+IMPORTANT: Your choice here determines what value you put in
+NEXT_PUBLIC_POSTHOG_HOST in your .env.local file:
+
+   US Cloud: NEXT_PUBLIC_POSTHOG_HOST=https://us.i.posthog.com
+   EU Cloud: NEXT_PUBLIC_POSTHOG_HOST=https://eu.i.posthog.com
+
+You cannot change the region after project creation.
+
+
+==============================================================
+  STEP 3 -- CREATE YOUR PROJECT
+==============================================================
+
+After choosing a region, PostHog will prompt you to create
+your first project.
+
+1. Click "Create a new project"
+
+2. Fill in the form:
+   - Project name: Aformix
+   - Website URL:  https://www.aformix.com
+
+3. Click "Create project"
+
+You are now inside your Aformix PostHog project dashboard.
+
+
+==============================================================
+  STEP 4 -- GET YOUR API KEY
+==============================================================
+
+1. In the left sidebar, click "Settings"
+   (the gear icon near the bottom of the sidebar)
+
+2. Under the "Project" section, click "Project settings"
+   Or go directly to: https://app.posthog.com/settings/project
+
+3. Scroll down to find the section labeled "Project API key"
+   Your key will look like this:
+   phc_AbCdEf1234567890AbCdEf1234567890AbCd
+
+4. Click the copy icon next to the key.
+
+!! IMPORTANT !!
+   This is your PUBLIC project key.
+   It is specifically designed to be safe in client-side code.
+   The NEXT_PUBLIC_ prefix in Next.js is correct for this key.
+   
+   Do NOT confuse it with the "Personal API Key" which IS secret
+   and should never be in NEXT_PUBLIC_ variables.
+
+
+==============================================================
+  STEP 5 -- ADD THE KEY TO AFORMIX
+==============================================================
+
+Open this file in VS Code:
+   d:\Download\aformix-next\frontend\.env.local
+
+Find these two lines (added during Phase 18 implementation):
+
+   NEXT_PUBLIC_POSTHOG_KEY=phc_REPLACE_WITH_YOUR_POSTHOG_PROJECT_KEY
+   NEXT_PUBLIC_POSTHOG_HOST=https://us.i.posthog.com
+
+Replace them with your actual values from Steps 3 and 4:
+
+   NEXT_PUBLIC_POSTHOG_KEY=phc_YOUR_ACTUAL_KEY_PASTED_HERE
+   NEXT_PUBLIC_POSTHOG_HOST=https://us.i.posthog.com
+
+   (Use https://eu.i.posthog.com if you chose EU Cloud in Step 2)
+
+Save the file.
+
+!! IMPORTANT -- RESTART REQUIRED !!
+   Next.js reads .env.local only at startup.
+   You MUST restart the dev server after saving:
+   1. In the terminal, press Ctrl+C to stop the server
+   2. Run: npm run dev
+
+
+==============================================================
+  STEP 6 -- VERIFY EVENTS ARE FLOWING
+==============================================================
+
+1. Make sure your dev server is running:
+      npm run dev
+
+2. Open your browser to: http://localhost:3000
+
+3. Open browser DevTools (press F12)
+
+4. Go to the Console tab.
+   In development mode you should see messages like:
+      [PostHog.js] Loaded
+      [PostHog.js] Sending event: page_view
+
+5. Go to the Network tab. In the filter box, type: posthog
+   You should see network requests going to:
+      https://us.i.posthog.com/e/      <- events
+      https://us.i.posthog.com/decide/ <- feature flags
+
+6. Now go back to PostHog in your browser:
+   https://app.posthog.com
+
+7. Click "Activity" in the left sidebar, then "Live Events"
+
+8. Switch back to your Aformix site and navigate between pages.
+
+9. Watch the Live Events screen -- you should see "page_view"
+   events appearing within a few seconds.
+
+Test all specific events by doing these actions on the site:
+
+   ACTION                              EVENT YOU SHOULD SEE
+   ----------------------------------------------------------------
+   Click into the Contact form         contact_form_started
+   Successfully submit the form        contact_form_submitted
+   Click "Book a Meeting" in footer    calendly_clicked
+   Click a social media icon           social_link_clicked
+   Click "Get Started" in hero         cta_clicked
+   Log in to workspace and log out     user_logged_out
+   Visit /workspace/analytics          analytics_viewed
+
+If you see these events in Live Events -> PostHog is working.
+
+
+==============================================================
+  STEP 7 -- ENABLE SESSION REPLAY
+==============================================================
+
+Session Replay records real user sessions so you can watch
+how visitors navigate your site (with all inputs masked).
+
+To enable it:
+
+1. In PostHog, go to: Settings -> Project settings
+2. Scroll to the "Session Recording" section
+3. Toggle "Enable session recording" -> ON
+4. Under "Recording mode" choose one of:
+   - "Record all sessions"       <- good for development/low traffic
+   - "Sample" at 20-30%          <- recommended for production
+5. Click Save
+
+After enabling, visit your site again.
+Then check: PostHog -> Session Replay (left sidebar)
+Recordings appear after 2-3 minutes.
+
+!! PRIVACY -- NO ACTION NEEDED !!
+   Aformix is already pre-configured with:
+   - maskAllInputs: true  (all form fields masked)
+   - autocapture: false   (no automatic DOM event capture)
+   - respect_dnt: true    (respects browser Do Not Track)
+   
+   Passwords, emails, phone numbers all appear as asterisks.
+   You do NOT need to configure anything extra for privacy.
+
+
+==============================================================
+  STEP 8 -- CREATE A CONTACT FORM FUNNEL
+==============================================================
+
+A funnel shows your visitor-to-lead conversion rate.
+
+1. In PostHog: Product analytics -> Funnels -> New funnel
+
+2. Add these 3 steps in this exact order:
+   Step 1: Event = page_view
+   Step 2: Event = contact_form_started
+   Step 3: Event = contact_form_submitted
+
+3. Set conversion window: 7 days
+
+4. Click "Save as" -> name it: Contact Form Funnel
+
+Once you have traffic, this funnel shows:
+   - How many visitors start the contact form
+   - What % actually complete and submit it
+   - Where visitors drop off in the process
+
+
+==============================================================
+  STEP 9 -- CREATE USEFUL INSIGHTS (OPTIONAL BUT RECOMMENDED)
+==============================================================
+
+Go to: Product analytics -> Trends -> New insight
+
+Create and save each of these insights:
+
+INSIGHT 1: Page Popularity
+   Event: page_view
+   Breakdown by: path
+   -> Shows which pages get the most traffic
+
+INSIGHT 2: CTA Performance
+   Event: cta_clicked
+   Breakdown by: cta_name
+   -> Shows which call-to-action buttons get clicked most
+
+INSIGHT 3: Social Media Engagement
+   Event: social_link_clicked
+   Breakdown by: platform
+   -> Shows which social platform drives most clicks
+
+INSIGHT 4: Calendly Booking Interest
+   Event: calendly_clicked
+   -> Shows how many visitors want to book a meeting
+
+After saving all insights:
+1. Go to: Dashboards -> New dashboard
+2. Name it: Aformix Behavioral Analytics
+3. Click "Add insight" and add all 4 saved insights
+4. Arrange them how you like -> Save
+
+
+==============================================================
+  STEP 10 -- SEPARATE DEV AND PROD PROJECTS (RECOMMENDED)
+==============================================================
+
+Right now your dev events (from localhost) and production events
+(from aformix.com) will go into the same PostHog project.
+This pollutes your analytics with test data.
+
+To fix this, create two separate PostHog projects:
+
+   Project 1: "Aformix Production"  <- for https://aformix.com
+   Project 2: "Aformix Dev"         <- for localhost / testing
+
+Steps:
+1. In PostHog, click your project name (top left)
+2. Click "New project"
+3. Name it "Aformix Dev"
+4. Get the phc_ key from its Project Settings
+
+5. In your .env.local (local development):
+   NEXT_PUBLIC_POSTHOG_KEY=phc_YOUR_DEV_PROJECT_KEY
+
+6. On your hosting platform (production):
+   NEXT_PUBLIC_POSTHOG_KEY=phc_YOUR_PRODUCTION_PROJECT_KEY
+
+Now your local testing never pollutes your real analytics.
+
+
+==============================================================
+  STEP 11 -- CONFIGURE PRODUCTION HOSTING
+==============================================================
+
+When you deploy Aformix to production (Vercel, Hostinger, VPS),
+add these two environment variables:
+
+   Variable:  NEXT_PUBLIC_POSTHOG_KEY
+   Value:     phc_YOUR_PRODUCTION_PROJECT_KEY
+
+   Variable:  NEXT_PUBLIC_POSTHOG_HOST
+   Value:     https://us.i.posthog.com
+
+--- On Vercel ---
+   1. Go to your Vercel project dashboard
+   2. Settings -> Environment Variables
+   3. Add both variables, set Environment to "Production"
+   4. Click Save
+   5. Redeploy (Deployments -> three dots -> Redeploy)
+
+--- On Hostinger or any VPS ---
+   1. SSH into your server
+   2. Open your production .env file
+   3. Add both lines
+   4. Save the file
+   5. Restart Next.js (pm2 restart all, or your process manager)
+
+
+==============================================================
+  POSTHOG FREE PLAN -- WHAT YOU GET
+==============================================================
+
+PostHog has a very generous free tier. Here is what is included:
+
+   Events:           1,000,000 per month   (FREE)
+   Session Replay:   5,000 recordings/mo   (FREE)
+   Feature Flags:    1,000,000 req/month   (FREE)
+   Team Members:     Unlimited             (FREE)
+   Data Retention:   1 year                (FREE)
+
+For Aformix at its current scale, the free tier is more than
+sufficient. You would only need a paid plan if you exceed
+1 million events per month.
+
+No credit card is required to get started.
+
+
+==============================================================
+  QUICK REFERENCE -- ALL EVENTS AFORMIX TRACKS
+==============================================================
+
+EVENT NAME              WHERE IT FIRES
+------------------------------------------------------------------
+page_view               Every page navigation (fully automatic)
+cta_clicked             Hero "Get Started" + "View Portfolio"
+contact_form_started    When visitor first clicks into contact form
+contact_form_submitted  When contact form is submitted successfully
+calendly_clicked        "Book a Meeting" link in footer
+email_clicked           Email link in footer
+social_link_clicked     LinkedIn, Instagram, Facebook, etc. icons
+user_logged_out         When workspace user clicks logout
+analytics_viewed        When admin opens /workspace/analytics
+
+NOTE: GA4 also tracks generate_lead on form submit (existing).
+Both PostHog and GA4 fire on contact form submission -- this is
+intentional. GA4 owns marketing attribution, PostHog owns the
+behavioral funnel.
+
+
+==============================================================
+  TROUBLESHOOTING
+==============================================================
+
+PROBLEM: No events appearing in PostHog Live Events
+---------------------------------------------------------
+Check 1: Open .env.local -- is the key a real phc_ key or
+         does it still say "phc_REPLACE_WITH_YOUR..."?
+Check 2: Did you restart the dev server after changing .env.local?
+         (Ctrl+C then npm run dev)
+Check 3: DevTools -> Network -> type "posthog" in filter
+         Are there any requests going out?
+Check 4: DevTools -> Console -> do you see [PostHog.js] messages?
+Check 5: Is your browser ad blocker blocking posthog.com?
+         Temporarily disable it for localhost.
+
+PROBLEM: I see events but the properties look wrong
+---------------------------------------------------------
+Click on any event in PostHog Live Events.
+The right panel shows all properties sent with that event.
+Compare them to what you expect from the guide above.
+
+PROBLEM: User identity not showing in PostHog People
+---------------------------------------------------------
+User identification only happens inside the /workspace area.
+The PostHogIdentify component only mounts in the workspace layout.
+Steps to verify:
+1. Log in to Aformix workspace
+2. Visit /workspace (any page)
+3. Go to PostHog -> People
+4. You should see a person record with your user ID
+
+PROBLEM: Session recordings are not appearing
+---------------------------------------------------------
+Check 1: Did you enable Session Recording in PostHog Settings?
+         (Settings -> Project Settings -> Session Recording -> ON)
+Check 2: Recordings have a 2-3 minute delay. Wait and refresh.
+Check 3: Stay on the site for at least 30 seconds per session.
+
+PROBLEM: Events from localhost appearing in production project
+---------------------------------------------------------
+Solution: Use two separate projects (Step 10 above).
+Set different NEXT_PUBLIC_POSTHOG_KEY values for local vs production.
+
+PROBLEM: PostHog not initializing (no Console messages)
+---------------------------------------------------------
+Check that your NEXT_PUBLIC_POSTHOG_KEY value does NOT start with
+"phc_REPLACE" -- the code deliberately skips initialization when
+it detects the placeholder text to prevent errors.
+
+
+==============================================================
+  IMPORTANT LINKS
+==============================================================
+
+Create Account:    https://app.posthog.com/signup
+Dashboard:         https://app.posthog.com
+Project Settings:  https://app.posthog.com/settings/project
+Live Events:       https://app.posthog.com/activity/explore
+Session Replay:    https://app.posthog.com/replay/recent
+
+Documentation:
+   Main docs:      https://posthog.com/docs
+   Next.js guide:  https://posthog.com/docs/libraries/next-js
+   Session replay: https://posthog.com/docs/session-replay
+   Funnels:        https://posthog.com/docs/product-analytics/funnels
+   Privacy:        https://posthog.com/docs/privacy
+
+==============================================================
+  END OF GUIDE
+==============================================================

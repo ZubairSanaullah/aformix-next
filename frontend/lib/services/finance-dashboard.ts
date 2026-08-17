@@ -30,7 +30,7 @@ export interface FinanceDashboardStats {
     recentTransactions: Array<{
         id: string;
         reference: string | null;
-        amount: Prisma.Decimal;
+        amount: number;
         type: string;
         status: string;
         transactionDate: Date;
@@ -174,6 +174,9 @@ export async function getFinanceDashboardStats(): Promise<FinanceDashboardStats>
         cancelledCount: cancelledTransactions,
         topCategories: topCategoriesData,
         topCompanies: topCompaniesData,
-        recentTransactions,
+        recentTransactions: recentTransactions.map((t) => ({
+            ...t,
+            amount: Number(t.amount),
+        })),
     };
 }

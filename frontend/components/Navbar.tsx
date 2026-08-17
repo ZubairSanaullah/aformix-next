@@ -9,6 +9,7 @@ import { Menu, X, ArrowRight, Sun, Moon, Monitor, Layout, Users, ChevronDown, Sm
 import { useTheme } from "../contexts/ThemeContext";
 import Image from "next/image";
 import { trackEvent } from "@/lib/analytics";
+import { trackPostHogEvent, resetPostHogUser, POSTHOG_EVENTS } from "@/lib/analytics/events";
 
 const Navbar: React.FC = () => {
   const { theme, setTheme } = useTheme();
@@ -47,9 +48,14 @@ const Navbar: React.FC = () => {
   }, []);
 
   const handleLogout = async () => {
+    // GA4: existing marketing event preserved
     trackEvent("logout", {
       location: "navbar",
     });
+
+    // PostHog: product event + reset session identity
+    trackPostHogEvent(POSTHOG_EVENTS.USER_LOGGED_OUT, {});
+    resetPostHogUser();
 
     try {
       await fetch(`${apiUrl}/api/auth/logout`, {

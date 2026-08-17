@@ -29,15 +29,32 @@ export async function getAnalyticsTrends(startDate: Date, endDate: Date) {
         };
     }
 
-    // 1. Finance Transactions
-    const transactions = await prisma.financeTransaction.findMany({
-        where: {
-            transactionDate: { gte: startDate, lte: endDate },
-            deletedAt: null,
-            status: { not: "CANCELLED" }
-        },
-        select: { type: true, amount: true, pendingAmount: true, transactionDate: true, status: true }
-    });
+    const [transactions, leads, deals, projects] = await Promise.all([
+        prisma.financeTransaction.findMany({
+            where: {
+                transactionDate: { gte: startDate, lte: endDate },
+                deletedAt: null,
+                status: { not: "CANCELLED" }
+            },
+            select: { type: true, amount: true, pendingAmount: true, transactionDate: true, status: true }
+        }),
+        prisma.lead.findMany({
+            where: { createdAt: { gte: startDate, lte: endDate } },
+            select: { createdAt: true }
+        }),
+        prisma.deal.findMany({
+            where: { createdAt: { gte: startDate, lte: endDate } },
+            select: { createdAt: true }
+        }),
+        prisma.project.findMany({
+            where: { 
+                completedAt: { gte: startDate, lte: endDate },
+                status: "COMPLETED",
+                deletedAt: null
+            },
+            select: { completedAt: true }
+        })
+    ]);
 
     for (const t of transactions) {
         const year = t.transactionDate.getFullYear();
@@ -60,12 +77,6 @@ export async function getAnalyticsTrends(startDate: Date, endDate: Date) {
         }
     }
 
-    // 2. CRM Leads
-    const leads = await prisma.lead.findMany({
-        where: { createdAt: { gte: startDate, lte: endDate } },
-        select: { createdAt: true }
-    });
-
     for (const lead of leads) {
         const year = lead.createdAt.getFullYear();
         const month = String(lead.createdAt.getMonth() + 1).padStart(2, '0');
@@ -73,28 +84,12 @@ export async function getAnalyticsTrends(startDate: Date, endDate: Date) {
         if (trendsData[period]) trendsData[period].leads++;
     }
 
-    // 3. CRM Deals
-    const deals = await prisma.deal.findMany({
-        where: { createdAt: { gte: startDate, lte: endDate } },
-        select: { createdAt: true }
-    });
-
     for (const deal of deals) {
         const year = deal.createdAt.getFullYear();
         const month = String(deal.createdAt.getMonth() + 1).padStart(2, '0');
         const period = `${year}-${month}`;
         if (trendsData[period]) trendsData[period].deals++;
     }
-
-    // 4. Projects Completed
-    const projects = await prisma.project.findMany({
-        where: { 
-            completedAt: { gte: startDate, lte: endDate },
-            status: "COMPLETED",
-            deletedAt: null
-        },
-        select: { completedAt: true }
-    });
 
     for (const project of projects) {
         if (project.completedAt) {
@@ -105,6 +100,5 @@ export async function getAnalyticsTrends(startDate: Date, endDate: Date) {
         }
     }
 
-    // Return array ordered by period
     return Object.values(trendsData).sort((a, b) => a.period.localeCompare(b.period));
 }

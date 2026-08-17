@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { toast } from "sonner";
 import { fetchAnalyticsData } from "./actions";
 import { DateRangeValue } from "@/components/workspace/analytics/AnalyticsDateRange";
@@ -13,6 +13,7 @@ import AnalyticsContent from "@/components/workspace/analytics/AnalyticsContent"
 import AnalyticsActivity from "@/components/workspace/analytics/AnalyticsActivity";
 import AnalyticsTrendChart from "@/components/workspace/analytics/AnalyticsTrendChart";
 import AnalyticsTopPerformers, { TopPerformerItem } from "@/components/workspace/analytics/AnalyticsTopPerformers";
+import { trackPostHogEvent, POSTHOG_EVENTS } from "@/lib/analytics/events";
 
 function getDatesFromPeriod(period: string, customStart?: string, customEnd?: string) {
     const today = new Date();
@@ -84,6 +85,12 @@ function getDatesFromPeriod(period: string, customStart?: string, customEnd?: st
     return { startDate: start, endDate: end };
 }
 
+// The analytics data shape is validated by the server action and the
+// analytics service layer. We store it as `unknown` here and cast at
+// the component boundary — the child components enforce their own types.
+// This avoids duplicating the full type tree in this orchestration layer.
+type AnalyticsResult = Awaited<ReturnType<typeof fetchAnalyticsData>>;
+
 export default function AnalyticsDashboardClient() {
     const [dateRange, setDateRange] = useState<DateRangeValue>({
         period: "this_month",
@@ -92,7 +99,8 @@ export default function AnalyticsDashboardClient() {
     
     const [isLoading, setIsLoading] = useState(true);
     const [isRefreshing, setIsRefreshing] = useState(false);
-    const [data, setData] = useState<any>(null);
+    const [data, setData] = useState<AnalyticsResult | null>(null);
+    const viewTrackedRef = useRef(false);
 
     const loadData = useCallback(async (isInitial = false) => {
         if (isInitial) setIsLoading(true);
@@ -131,21 +139,32 @@ export default function AnalyticsDashboardClient() {
         loadData(true);
     }, [dateRange, compare, loadData]);
 
+    // Track analytics_viewed once per mount (not on every filter change)
+    useEffect(() => {
+        if (viewTrackedRef.current) return;
+        viewTrackedRef.current = true;
+        trackPostHogEvent(POSTHOG_EVENTS.ANALYTICS_VIEWED, {
+            date_range: dateRange.period,
+            compare_enabled: compare,
+        });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     const handleRefresh = () => {
         loadData(false);
     };
 
-    const topLeadSources: TopPerformerItem[] = data?.overview?.current?.crm?.leads?.bySource
+    const topLeadSources: TopPerformerItem[] = data?.overview?.current?.crm?.leads?.sources
         ?.slice(0, 5)
-        ?.map((item: any) => ({
+        ?.map((item) => ({
             id: item.source,
             name: item.source,
-            value: item.count,
+            value: item.leadCount,
         })) || [];
 
     const topProjects: TopPerformerItem[] = data?.overview?.current?.projects?.projects?.byStatus
         ?.slice(0, 5)
-        ?.map((item: any) => ({
+        ?.map((item) => ({
             id: item.status,
             name: item.status,
             value: item.count,
@@ -164,51 +183,64 @@ export default function AnalyticsDashboardClient() {
             />
 
             <AnalyticsOverview 
+                key={`overview-${isLoading ? 'loading' : 'loaded'}`}
                 data={data?.overview} 
                 isLoading={isLoading} 
             />
 
             <AnalyticsFinance 
+                key={`finance-${isLoading ? 'loading' : 'loaded'}`}
                 data={data?.overview?.current?.finance} 
                 trendsData={data?.trends}
                 isLoading={isLoading} 
             />
 
             <AnalyticsTrendChart
+                key={`trend-${isLoading ? 'loading' : 'loaded'}`}
                 data={data?.trends}
                 isLoading={isLoading}
             />
 
             <AnalyticsCRM 
-                data={data?.overview?.current?.crm} 
+                key={`crm-${isLoading ? 'loading' : 'loaded'}`}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                data={data?.overview?.current?.crm as any} 
                 isLoading={isLoading} 
             />
 
             <AnalyticsProjects 
-                data={data?.overview?.current?.projects} 
+                key={`projects-${isLoading ? 'loading' : 'loaded'}`}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                data={data?.overview?.current?.projects as any} 
                 isLoading={isLoading} 
             />
 
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <AnalyticsContent 
-                    data={data?.overview?.current?.content} 
+                    key={`content-${isLoading ? 'loading' : 'loaded'}`}
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    data={data?.overview?.current?.content as any} 
                     isLoading={isLoading} 
                 />
                 
                 <AnalyticsActivity 
-                    data={data?.overview?.current?.activity} 
+                    key={`activity-${isLoading ? 'loading' : 'loaded'}`}
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    data={data?.overview?.current?.activity as any} 
                     isLoading={isLoading} 
                 />
             </div>
 
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <AnalyticsTopPerformers 
+                    key={`top-leads-${isLoading ? 'loading' : 'loaded'}`}
                     title="Lead Sources" 
                     items={topLeadSources} 
                     isLoading={isLoading} 
                 />
                 
                 <AnalyticsTopPerformers 
+                    key={`top-projects-${isLoading ? 'loading' : 'loaded'}`}
                     title="Project Statuses" 
                     items={topProjects} 
                     isLoading={isLoading} 

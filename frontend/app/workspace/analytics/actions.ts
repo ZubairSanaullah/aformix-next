@@ -10,10 +10,10 @@ export async function fetchAnalyticsData(startDateStr: string, endDateStr: strin
     const startDate = new Date(startDateStr);
     const endDate = new Date(endDateStr);
 
-    const overview = await getAnalyticsOverview(startDate, endDate, compare);
-    
-    // We get trend data for finance and business trend charts
-    const trends = await getAnalyticsTrends(startDate, endDate);
+    const [overview, trends] = await Promise.all([
+        getAnalyticsOverview(startDate, endDate, compare),
+        getAnalyticsTrends(startDate, endDate)
+    ]);
 
     return {
         overview,

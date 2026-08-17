@@ -611,7 +611,7 @@ export default async function CompanyDetailPage({
                                         </p>
 
                                         <p className="mt-0.5 truncate text-xs text-[var(--workspace-text-muted)]">
-                                            {deal.stage || "Deal"}
+                                            {deal.stage?.name || "Deal"}
                                         </p>
                                     </div>
                                 </div>

@@ -44,21 +44,25 @@ export const quickActions = [
         title: "New Project",
         description: "Create a new workspace project.",
         icon: FolderPlus,
+        href: "/workspace/projects/create",
     },
     {
         title: "New Client",
         description: "Add a new client profile.",
         icon: UserPlus,
+        href: "/workspace/crm/contacts/create",
     },
     {
         title: "Publish Blog",
         description: "Create a new blog article.",
         icon: PenLine,
+        href: "/workspace/blog/create",
     },
     {
         title: "Upload Portfolio",
         description: "Add a portfolio project.",
         icon: ImagePlus,
+        href: "/workspace/portfolio/create",
     },
 ];
 

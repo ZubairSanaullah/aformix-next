@@ -1,32 +1,51 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { AlertCircle, CheckCircle2, Eye, EyeOff, Loader2, Mail } from "lucide-react";
 
-export default function LoginPage() {
+function LoginForm() {
     const router = useRouter();
+    const searchParams = useSearchParams();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
+    const [justVerified, setJustVerified] = useState(false);
+
+    useEffect(() => {
+        if (searchParams.get("verified") === "true") {
+            setJustVerified(true);
+        }
+    }, [searchParams]);
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setIsSubmitting(true);
+        setUnverifiedEmail(null);
 
         try {
+            const normalizedEmail = email.trim().toLowerCase();
+
             const result = await signIn("credentials", {
-                email,
+                email: normalizedEmail,
                 password,
                 redirect: false,
             });
 
             if (result?.error) {
-                toast.error("Invalid email or password.");
+                // Check if the sign-in failed due to unverified email
+                if (result.error === "email_not_verified" || result.code === "email_not_verified") {
+                    setUnverifiedEmail(normalizedEmail);
+                    toast.error("Please verify your email address to continue.");
+                } else {
+                    toast.error("Invalid email or password.");
+                }
                 setIsSubmitting(false);
                 return;
             }
@@ -92,6 +111,34 @@ export default function LoginPage() {
                         </span>
                     </div>
 
+                    {justVerified && (
+                        <div className="mb-6 flex items-center gap-3 rounded-xl border border-[#31B98F]/20 bg-[#31B98F]/10 p-3.5 text-xs text-[#238968]">
+                            <CheckCircle2 className="h-4 w-4 shrink-0" />
+                            <span>Your email has been verified! Sign in to access your workspace.</span>
+                        </div>
+                    )}
+
+                    {unverifiedEmail && (
+                        <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-xs text-amber-900">
+                            <div className="flex items-start gap-2.5">
+                                <AlertCircle className="h-4 w-4 shrink-0 text-amber-600 mt-0.5" />
+                                <div>
+                                    <p className="font-semibold">Email Verification Required</p>
+                                    <p className="mt-1 text-amber-800">
+                                        Your account is registered but the email has not been verified yet.
+                                    </p>
+                                    <Link
+                                        href={`/verify-email?email=${encodeURIComponent(unverifiedEmail)}`}
+                                        className="mt-2.5 inline-flex items-center gap-1.5 font-semibold text-[#007D8C] underline hover:text-[#1A0F43]"
+                                    >
+                                        <Mail className="h-3.5 w-3.5" />
+                                        Verify Email Now
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     <h1 className="text-2xl font-semibold tracking-tight text-[#1A0F43]">
                         Welcome back
                     </h1>
@@ -127,12 +174,12 @@ export default function LoginPage() {
                                     Password
                                 </label>
 
-                                <a
+                                <Link
                                     href="/forgot-password"
                                     className="text-xs font-medium text-[#007D8C] transition-colors hover:text-[#1A0F43]"
                                 >
                                     Forgot password?
-                                </a>
+                                </Link>
                             </div>
 
                             <div className="relative">
@@ -179,15 +226,29 @@ export default function LoginPage() {
 
                     <p className="mt-6 text-center text-sm text-slate-500">
                         Don&apos;t have an account?{" "}
-                        <a
+                        <Link
                             href="/register"
                             className="font-medium text-[#007D8C] transition-colors hover:text-[#1A0F43]"
                         >
                             Create one
-                        </a>
+                        </Link>
                     </p>
                 </div>
             </div>
         </main>
     );
-}
+}
+
+export default function LoginPage() {
+    return (
+        <Suspense
+            fallback={
+                <main className="flex min-h-screen items-center justify-center bg-white">
+                    <Loader2 className="h-8 w-8 animate-spin text-[#1A0F43]" />
+                </main>
+            }
+        >
+            <LoginForm />
+        </Suspense>
+    );
+}

@@ -35,19 +35,16 @@ export default async function NewImportPage() {
 
     return (
         <div className="space-y-6">
-            <div>
-                <p className="text-xs font-medium text-[var(--workspace-primary)]">
-                    FINANCE
-                </p>
-
-                <h1 className="mt-1 text-2xl font-semibold tracking-tight text-[var(--workspace-text)]">
-                    Upload Import
-                </h1>
-
-                <p className="mt-1.5 max-w-2xl text-sm leading-6 text-[var(--workspace-text-muted)]">
-                    Import financial transactions from a CSV or Excel file. The file should contain columns for transaction type, amount, date, and other details.
-                </p>
-            </div>
+            <WorkspacePageHeader
+                title="Upload Import"
+                description="Import financial transactions from a CSV or Excel file."
+                breadcrumbs={[
+                    { label: "Workspace", href: "/workspace" },
+                    { label: "Finance", href: "/workspace/finance" },
+                    { label: "Imports", href: "/workspace/finance/imports" },
+                    { label: "New" },
+                ]}
+            />
 
             <WorkspaceCard>
                 <FinanceImportUploader />

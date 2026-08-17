@@ -49,19 +49,16 @@ export default async function NewTransactionPage() {
 
     return (
         <div className="space-y-6">
-            <div>
-                <p className="text-xs font-medium text-[var(--workspace-primary)]">
-                    FINANCE
-                </p>
-
-                <h1 className="mt-1 text-2xl font-semibold tracking-tight text-[var(--workspace-text)]">
-                    New Transaction
-                </h1>
-
-                <p className="mt-1.5 max-w-2xl text-sm leading-6 text-[var(--workspace-text-muted)]">
-                    Add a new financial transaction to your records.
-                </p>
-            </div>
+            <WorkspacePageHeader
+                title="New Transaction"
+                description="Add a new financial transaction to your records."
+                breadcrumbs={[
+                    { label: "Workspace", href: "/workspace" },
+                    { label: "Finance", href: "/workspace/finance" },
+                    { label: "Transactions", href: "/workspace/finance/transactions" },
+                    { label: "New" },
+                ]}
+            />
 
             <WorkspaceCard>
                 <FinanceTransactionForm

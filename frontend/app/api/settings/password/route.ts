@@ -3,6 +3,9 @@ import bcrypt from "bcryptjs";
 
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { changePasswordSchema } from "@/lib/validations/auth";
+import { checkRateLimit } from "@/lib/security/rate-limit";
+import { sendPasswordChangedEmail } from "@/lib/email";
 
 export async function PATCH(request: Request) {
     try {
@@ -15,54 +18,34 @@ export async function PATCH(request: Request) {
             );
         }
 
+        // Rate limit: 5 password change attempts per 15 minutes per user
+        const rateLimit = checkRateLimit(`change-password:${session.user.id}`, 5, 15 * 60 * 1000);
+        if (!rateLimit.success) {
+            return NextResponse.json(
+                {
+                    error: `Too many password change attempts. Please try again in ${rateLimit.retryAfterSeconds} seconds.`,
+                },
+                { status: 429 }
+            );
+        }
+
         const body = await request.json();
+        const parseResult = changePasswordSchema.safeParse({
+            currentPassword: body.currentPassword,
+            newPassword: body.newPassword,
+            confirmPassword: body.confirmPassword || body.newPassword,
+        });
 
-        const currentPassword =
-            typeof body.currentPassword === "string"
-                ? body.currentPassword
-                : "";
-
-        const newPassword =
-            typeof body.newPassword === "string"
-                ? body.newPassword
-                : "";
-
-        if (!currentPassword || !newPassword) {
+        if (!parseResult.success) {
             return NextResponse.json(
                 {
-                    error: "Current password and new password are required.",
+                    error: parseResult.error.issues[0].message,
                 },
                 { status: 400 },
             );
         }
 
-        if (newPassword.length < 8) {
-            return NextResponse.json(
-                {
-                    error: "New password must be at least 8 characters.",
-                },
-                { status: 400 },
-            );
-        }
-
-        if (newPassword.length > 128) {
-            return NextResponse.json(
-                {
-                    error: "New password must be 128 characters or less.",
-                },
-                { status: 400 },
-            );
-        }
-
-        if (currentPassword === newPassword) {
-            return NextResponse.json(
-                {
-                    error:
-                        "New password must be different from the current password.",
-                },
-                { status: 400 },
-            );
-        }
+        const { currentPassword, newPassword } = parseResult.data;
 
         const user = await prisma.user.findUnique({
             where: {
@@ -70,6 +53,8 @@ export async function PATCH(request: Request) {
             },
             select: {
                 id: true,
+                email: true,
+                name: true,
                 password: true,
             },
         });
@@ -85,7 +70,7 @@ export async function PATCH(request: Request) {
             return NextResponse.json(
                 {
                     error:
-                        "Password authentication is not available for this account.",
+                        "Password authentication is not configured for this account.",
                 },
                 { status: 400 },
             );
@@ -104,6 +89,7 @@ export async function PATCH(request: Request) {
         }
 
         const hashedPassword = await bcrypt.hash(newPassword, 12);
+        const updateTime = new Date();
 
         await prisma.user.update({
             where: {
@@ -114,6 +100,13 @@ export async function PATCH(request: Request) {
             },
         });
 
+        // Send security alert notification email
+        await sendPasswordChangedEmail({
+            to: user.email,
+            name: user.name,
+            timestamp: updateTime,
+        });
+
         return NextResponse.json({
             success: true,
             message: "Password updated successfully.",
@@ -122,7 +115,7 @@ export async function PATCH(request: Request) {
         console.error("PATCH /api/settings/password error:", error);
 
         return NextResponse.json(
-            { error: "Failed to update password." },
+            { error: "Failed to update password. Please try again." },
             { status: 500 },
         );
     }

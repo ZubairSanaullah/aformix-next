@@ -31,8 +31,6 @@ import {
     type PortfolioProjectFormPayload,
 } from "@/lib/api/portfolio";
 
-import type { MediaItem } from "@/components/workspace/media/MediaCard";
-
 function slugify(value: string) {
     return value
         .trim()
@@ -94,7 +92,7 @@ function detailToGalleryImages(project?: PortfolioProjectDetail): GalleryImage[]
                 id: item.media.id,
                 url: item.media.url,
                 alt: item.media.alt,
-            } as MediaItem,
+            } as GalleryImage["media"],
             isPrimary: item.isPrimary,
             caption: item.caption ?? "",
         }));
@@ -108,6 +106,11 @@ export default function PortfolioProjectForm({
 }: PortfolioProjectFormProps) {
     const router = useRouter();
     const [slugTouched, setSlugTouched] = useState(mode === "edit");
+
+    // Single source of truth for both the featured-image panel and the
+    // gallery panel — PortfolioProject has no separate featuredImage
+    // column, the featured image is just the gallery item flagged
+    // isPrimary. See PortfolioFeaturedImagePanel for details.
     const [gallery, setGallery] = useState<GalleryImage[]>(
         detailToGalleryImages(initialProject),
     );
@@ -156,6 +159,12 @@ export default function PortfolioProjectForm({
             seoKeywords: data.seoKeywords || undefined,
             canonicalUrl: data.canonicalUrl || undefined,
             technologyIds: data.technologyIds,
+            // Workaround for a schema/service ordering gap: the backend's
+            // superRefine requires publishedAt to already be present when
+            // status is PUBLISHED, rather than auto-filling it as the
+            // service's normalizePublishingState intends. Flagged to
+            // Zubair as a backend fix candidate, not silently patched
+            // server-side.
             publishedAt:
                 data.status === "PUBLISHED"
                     ? (initialProject?.publishedAt ?? new Date().toISOString())
@@ -430,7 +439,6 @@ export default function PortfolioProjectForm({
                     </div>
                 </div>
 
-                {values.status === "PUBLIC" as never && null}
                 {values.visibility === "PUBLIC" && values.status === "DRAFT" && (
                     <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700">
                         This project is set to Public visibility but is still a

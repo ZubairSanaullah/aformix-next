@@ -14,6 +14,7 @@ model User {
   email                  String                  @unique
   password               String
   image                  String?
+  emailVerified          DateTime?
   createdAt              DateTime                @default(now())
   updatedAt              DateTime                @updatedAt
   role                   Role                    @default(USER)
@@ -35,6 +36,9 @@ model User {
   financeTransactions    FinanceTransaction[]
   financeImports         FinanceImport[]
   financeAuditLogs       FinanceAuditLog[]
+  emailVerificationOtps  EmailVerificationOtp[]
+  passwordResetTokens    PasswordResetToken[]
+  media                  Media[]
 }
 
 model UserSettings {
@@ -148,13 +152,16 @@ model Media {
   updatedAt    DateTime  @updatedAt
   deletedAt    DateTime?
   folderId     String?
+  userId       String?
 
   folder                Folder?                 @relation(fields: [folderId], references: [id])
   portfolioProjectMedia PortfolioProjectMedia[]
+  user                  User?                   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([deletedAt])
   @@index([type])
   @@index([folderId])
+  @@index([userId])
 }
 
 model PostRevision {
@@ -1025,4 +1032,44 @@ enum FinanceImportStatus {
   COMPLETED
   PARTIAL
   FAILED
+}
+
+model EmailVerificationOtp {
+  id          String    @id @default(cuid())
+  userId      String
+  email       String
+  otpHash     String
+  purpose     String    @default("EMAIL_VERIFICATION")
+  expiresAt   DateTime
+  attempts    Int       @default(0)
+  maxAttempts Int       @default(5)
+  usedAt      DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([email])
+  @@index([expiresAt])
+}
+
+model PasswordResetToken {
+  id          String    @id @default(cuid())
+  userId      String
+  email       String
+  tokenHash   String    @unique
+  expiresAt   DateTime
+  attempts    Int       @default(0)
+  maxAttempts Int       @default(5)
+  usedAt      DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([email])
+  @@index([tokenHash])
+  @@index([expiresAt])
 }

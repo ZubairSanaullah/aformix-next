@@ -97,7 +97,7 @@ export default function ResourcesClient() {
 
   return (
     <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
-      <div className="mx-auto flex max-w-7xl flex-col gap-10 px-4 pb-24 pt-36 sm:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-7xl flex-col gap-8 px-4 pb-20 pt-28 sm:gap-10 sm:px-6 sm:pb-24 sm:pt-36 lg:px-8">
 
         <Hero
           eyebrow="Free resources"
@@ -111,18 +111,22 @@ export default function ResourcesClient() {
 
         <FeaturedResources resources={featuredResources} />
 
-        <section className="rounded-[2rem] border border-[var(--color-glass-border)] bg-[var(--color-surface)]/70 p-6 shadow-[0_20px_70px_rgba(0,0,0,0.16)] sm:p-8">
+        <section className="rounded-2xl border border-[var(--color-glass-border)] bg-[var(--color-surface)]/70 p-4 sm:rounded-[2rem] sm:p-6 lg:p-8 shadow-[0_20px_70px_rgba(0,0,0,0.14)]">
           <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
             <div className="max-w-2xl">
-              <h2 className="text-2xl font-semibold text-[var(--color-text)]">Browse premium downloads</h2>
-              <p className="mt-2 text-[var(--color-text-muted)]">Search instantly by topic, category, or keyword.</p>
-
-              <p className="mt-3 text-sm font-medium text-[var(--color-primary)]">
-                Showing {resources.length} of {totalResources} resources
+              <h2 className="text-xl font-bold text-[var(--color-text)] sm:text-2xl">
+                Browse premium downloads
+              </h2>
+              <p className="mt-1.5 text-xs text-[var(--color-text-muted)] sm:mt-2 sm:text-sm">
+                Search instantly by topic, category, or keyword.
               </p>
 
+              <p className="mt-2 text-xs font-semibold text-[var(--color-primary)] sm:mt-3 sm:text-sm">
+                Showing {resources.length} of {totalResources} resources
+              </p>
             </div>
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
+
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <SearchBar
                 value={query}
                 onChange={setQuery}
@@ -134,6 +138,7 @@ export default function ResourcesClient() {
               />
             </div>
           </div>
+
           <ActiveFilters
             query={query}
             category={activeCategory}
@@ -143,8 +148,12 @@ export default function ResourcesClient() {
             onReset={resetFilters}
           />
 
-          <div className="mt-8">
-            <CategoryFilter categories={getResourceCategories()} activeCategory={activeCategory} onChange={setActiveCategory} />
+          <div className="mt-6 sm:mt-8">
+            <CategoryFilter
+              categories={getResourceCategories()}
+              activeCategory={activeCategory}
+              onChange={setActiveCategory}
+            />
           </div>
         </section>
 
@@ -160,7 +169,7 @@ export default function ResourcesClient() {
               All Resources
             </h2>
 
-            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-5 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
               {resources.map((resource) => (
                 <ResourceCard
                   key={resource.slug}
@@ -170,7 +179,10 @@ export default function ResourcesClient() {
             </div>
           </section>
         ) : (
-          <EmptyState title="No resources matched your search" description="Try another keyword or filter to discover more useful guides." />
+          <EmptyState
+            title="No resources matched your search"
+            description="Try another keyword or filter to discover more useful guides."
+          />
         )}
       </div>
     </div>

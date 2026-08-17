@@ -1,6 +1,8 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 
+import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
 import WorkspacePageHeader from "@/components/workspace/ui/WorkspacePageHeader";
@@ -11,11 +13,20 @@ import PostsTable from "@/components/workspace/blog/PostsTable";
 import EmptyTrashButton from "@/components/workspace/blog/EmptyTrashButton";
 
 export default async function BlogTrashPage() {
+    const session = await auth();
+
+    if (!session?.user?.id) {
+        redirect("/login");
+    }
+
     const posts = await prisma.post.findMany({
         where: {
             deletedAt: {
                 not: null,
             },
+            ...(session.user.role !== "ADMIN"
+                ? { authorId: session.user.id }
+                : {}),
         },
         orderBy: {
             deletedAt: "desc",
