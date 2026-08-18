@@ -642,23 +642,26 @@ html.light .hero-headline-gradient {
 }
 
 .pulse-indicator {
+  position: relative;
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background-color: #27b990;
+  box-shadow: 0 0 6px #27b990;
+  will-change: opacity, transform;
   animation: pulse-glow 1.5s ease-in-out infinite;
 }
 
 @keyframes pulse-glow {
-
   0%,
   100% {
     opacity: 0.4;
+    transform: scale(0.9);
   }
 
   50% {
     opacity: 1;
-    box-shadow: 0 0 6px #27b990;
+    transform: scale(1.2);
   }
 }
 
@@ -822,6 +825,7 @@ html.light .hero-headline-gradient {
 
 .workflow-connector-line {
   stroke-dasharray: 8 6;
+  will-change: stroke-dashoffset;
   animation: flow-dash 3.5s linear infinite;
 }
 

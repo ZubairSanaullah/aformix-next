@@ -1,12 +1,20 @@
 import type { ReactNode } from "react";
+import dynamic from "next/dynamic";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import CookieConsent from "@/components/CookieConsent";
-import WhatsAppBtn from "@/components/WhatsAppBtn";
-import OrbitAI from "@/components/OrbitAI";
 import RevealInitializer from "@/components/RevealInitializer";
 import StructuredData from "@/components/StructuredData";
+
+const CookieConsent = dynamic(() => import("@/components/CookieConsent"), {
+  ssr: false,
+});
+const WhatsAppBtn = dynamic(() => import("@/components/WhatsAppBtn"), {
+  ssr: false,
+});
+const OrbitAI = dynamic(() => import("@/components/OrbitAI"), {
+  ssr: false,
+});
 
 interface PublicLayoutProps {
   children: ReactNode;

@@ -21,21 +21,48 @@ const fallbackRates: Rates = {
   PKR: 280,
 };
 
-const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);
+const CACHE_KEY = "aformix_exchange_rates";
+const CACHE_TTL_MS = 12 * 60 * 60 * 1000; // 12 hours
 
 export const CurrencyProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [currency, setCurrencyState] = useState<string>(getSelectedCurrency());
-  const [rates, setRates] = useState<Rates>(fallbackRates);
-  const [isLoadingRates, setIsLoadingRates] = useState(true);
+  const [rates, setRates] = useState<Rates>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (parsed.timestamp && Date.now() - parsed.timestamp < CACHE_TTL_MS && parsed.rates) {
+            return parsed.rates;
+          }
+        }
+      } catch (e) {
+        // ignore storage error
+      }
+    }
+    return fallbackRates;
+  });
+  const [isLoadingRates, setIsLoadingRates] = useState(false);
 
-  // Fetch real-time rates
+  // Fetch real-time rates with caching
   useEffect(() => {
+    let isCancelled = false;
+
     const fetchRates = async () => {
       try {
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (parsed.timestamp && Date.now() - parsed.timestamp < CACHE_TTL_MS && parsed.rates) {
+            setRates(parsed.rates);
+            return;
+          }
+        }
+
+        setIsLoadingRates(true);
         const response = await fetch('https://open.er-api.com/v6/latest/USD');
         const data = await response.json();
-        if (data && data.rates) {
-          // We only care about our supported currencies
+        if (data && data.rates && !isCancelled) {
           const updatedRates: Rates = { ...fallbackRates };
           CURRENCIES.forEach((c) => {
             if (data.rates[c]) {
@@ -43,15 +70,32 @@ export const CurrencyProvider: React.FC<{ children: ReactNode }> = ({ children }
             }
           });
           setRates(updatedRates);
+          localStorage.setItem(
+            CACHE_KEY,
+            JSON.stringify({ timestamp: Date.now(), rates: updatedRates })
+          );
         }
       } catch (error) {
         console.error('Failed to fetch real-time exchange rates:', error);
       } finally {
-        setIsLoadingRates(false);
+        if (!isCancelled) setIsLoadingRates(false);
       }
     };
 
-    fetchRates();
+    // Defer network request so it doesn't block critical hydration
+    if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+      const handle = (window as any).requestIdleCallback(fetchRates);
+      return () => {
+        isCancelled = true;
+        (window as any).cancelIdleCallback?.(handle);
+      };
+    } else {
+      const timer = setTimeout(fetchRates, 1500);
+      return () => {
+        isCancelled = true;
+        clearTimeout(timer);
+      };
+    }
   }, []);
 
   const setCurrency = (newCurrency: string) => {

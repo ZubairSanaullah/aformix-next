@@ -235,19 +235,12 @@
     scroll-padding-top: 5rem;
   }
 
-  *,
-  ::before,
-  ::after {
-    transition-property: background-color, border-color, color, fill, stroke, box-shadow;
-    transition-duration: 0.5s;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
   body {
     background-color: var(--color-bg);
     color: var(--color-text);
     overflow-x: hidden;
     font-family: "Outfit", sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   /* Smoother anchor scrolling */

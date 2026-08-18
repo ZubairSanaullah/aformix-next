@@ -33,17 +33,6 @@ const useReveal = (selector = ".reveal", rootMargin = "0px 0px -8% 0px", trigger
 
     elements.forEach((el) => observer.observe(el));
 
-    // Safety: reveal any elements already in viewport on mount
-    requestAnimationFrame(() => {
-      elements.forEach((el) => {
-        const rect = el.getBoundingClientRect();
-        if (rect.top < window.innerHeight && rect.bottom > 0) {
-          el.classList.add("reveal-visible");
-          observer.unobserve(el);
-        }
-      });
-    });
-
     // Fallback: if for any reason IntersectionObserver didn't run (hydration edge-cases),
     // ensure reveal elements are visible after a short delay to avoid blank pages.
     const fallbackTimer = window.setTimeout(() => {

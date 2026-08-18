@@ -26,15 +26,17 @@ if (typeof window !== "undefined") {
 
 /* ───────────────────── Background Particles ───────────────────── */
 const ParticleField: React.FC = () => {
-  const particles = Array.from({ length: 40 }, (_, i) => ({
-    id: i,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    size: Math.random() * 3 + 1,
-    duration: Math.random() * 20 + 20,
-    delay: Math.random() * 10,
-    opacity: Math.random() * 0.3 + 0.1,
-  }));
+  const particles = React.useMemo(() => {
+    return Array.from({ length: 16 }, (_, i) => ({
+      id: i,
+      x: Math.floor(Math.random() * 100),
+      y: Math.floor(Math.random() * 100),
+      size: Math.floor(Math.random() * 3 + 1),
+      duration: Math.floor(Math.random() * 20 + 20),
+      delay: Math.floor(Math.random() * 10),
+      opacity: Number((Math.random() * 0.3 + 0.1).toFixed(2)),
+    }));
+  }, []);
 
   return (
     <div className="hero-particles" aria-hidden="true">
@@ -61,17 +63,18 @@ const ParticleField: React.FC = () => {
 const Hero: React.FC = () => {
   const heroRef = useRef<HTMLDivElement>(null);
 
-  // Mouse move handler for premium 3D parallax layers
-  const handleMouseMove = (e: React.MouseEvent) => {
+  // Mouse move handler for premium 3D parallax layers using client measurements
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const hero = heroRef.current;
     if (!hero) return;
-    const rect = hero.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5; // -0.5 to 0.5
-    const y = (e.clientY - rect.top) / rect.height - 0.5; // -0.5 to 0.5
+    const width = hero.offsetWidth || window.innerWidth;
+    const height = hero.offsetHeight || window.innerHeight;
+    const x = e.clientX / width - 0.5; // -0.5 to 0.5
+    const y = e.clientY / height - 0.5; // -0.5 to 0.5
 
     // Apply values to CSS custom variables for performant CSS transition transforms
-    hero.style.setProperty("--mouse-x", x.toFixed(4));
-    hero.style.setProperty("--mouse-y", y.toFixed(4));
+    hero.style.setProperty("--mouse-x", x.toFixed(3));
+    hero.style.setProperty("--mouse-y", y.toFixed(3));
   };
 
   const handleMouseLeave = () => {
@@ -87,17 +90,17 @@ const Hero: React.FC = () => {
   };
 
   useGSAP(() => {
-    // Entrance Timeline
+    // Entrance Timeline - LCP optimized: headline stays visible
     const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
 
-    tl.fromTo(".hero-badge", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8 })
-      .fromTo(".hero-title-chunk", { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9, stagger: 0.1 }, "-=0.5")
-      .fromTo(".hero-description", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8 }, "-=0.5")
-      .fromTo(".hero-cta-btn", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, stagger: 0.12 }, "-=0.4")
-      .fromTo(".hero-trust-badge", { scale: 0.8, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.6, stagger: 0.08, ease: "back.out(1.5)" }, "-=0.3")
-      .fromTo(".mascot-outer-container", { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.2, ease: "power3.out" }, "-=0.9")
-      .fromTo(".floating-card-ui", { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.7, stagger: 0.12, ease: "back.out(1.6)" }, "-=0.7")
-      .fromTo(".workflow-connector-line", { strokeDashoffset: 150, opacity: 0 }, { strokeDashoffset: 0, opacity: 1, duration: 1, stagger: 0.2 }, "-=0.5");
+    tl.fromTo(".hero-badge", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6 })
+      .fromTo(".hero-title-chunk", { y: 24 }, { y: 0, duration: 0.7, stagger: 0.08 }, "-=0.4")
+      .fromTo(".hero-description", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6 }, "-=0.4")
+      .fromTo(".hero-cta-btn", { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, stagger: 0.1 }, "-=0.3")
+      .fromTo(".hero-trust-badge", { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, stagger: 0.06, ease: "back.out(1.4)" }, "-=0.3")
+      .fromTo(".mascot-outer-container", { scale: 0.95, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.9, ease: "power3.out" }, "-=0.7")
+      .fromTo(".floating-card-ui", { scale: 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.6, stagger: 0.1, ease: "back.out(1.5)" }, "-=0.6")
+      .fromTo(".workflow-connector-line", { opacity: 0 }, { opacity: 1, duration: 0.8, stagger: 0.15 }, "-=0.4");
 
     // Scroll ScrollTrigger Animations
     // 1. Mascot floats upward and scales up slightly
