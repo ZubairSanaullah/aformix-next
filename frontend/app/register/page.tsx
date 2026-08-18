@@ -1,9 +1,27 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
 import { toast } from "sonner";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import {
+    Eye,
+    EyeOff,
+    Loader2,
+    Lock,
+    Mail,
+    Moon,
+    Monitor,
+    ShieldCheck,
+    Sun,
+    User,
+} from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+
+import { useTheme } from "@/contexts/ThemeContext";
+
+/* ── Constants ───────────────────────────────────────── */
 
 const STRENGTH_LABELS = ["Weak", "Fair", "Good", "Strong"] as const;
 
@@ -18,8 +36,201 @@ function getPasswordStrength(password: string): number {
     return Math.min(score, 4);
 }
 
-export default function RegisterPage() {
+function getStrengthClass(strength: number): string {
+    if (strength <= 1) return "register-strength--weak";
+    if (strength === 2) return "register-strength--fair";
+    if (strength === 3) return "register-strength--good";
+    return "register-strength--strong";
+}
+
+/* ── Framer Motion Variants ──────────────────────────── */
+
+const staggerContainer = {
+    hidden: {},
+    show: {
+        transition: {
+            staggerChildren: 0.06,
+            delayChildren: 0.08,
+        },
+    },
+};
+
+const fadeSlideUp = {
+    hidden: { opacity: 0, y: 14 },
+    show: {
+        opacity: 1,
+        y: 0,
+        transition: {
+            duration: 0.4,
+            ease: [0.22, 0.61, 0.36, 1] as [number, number, number, number],
+        },
+    },
+};
+
+const ringDrift = (delay: number, yRange: number) => ({
+    y: [0, -yRange, 0],
+    transition: {
+        duration: 9 + delay * 2,
+        repeat: Infinity,
+        ease: "easeInOut" as const,
+        delay,
+    },
+});
+
+/* ── Ring Decorations ────────────────────────────────── */
+
+function RingDecorations({ reduced }: { reduced: boolean }) {
+    if (reduced) return null;
+
+    return (
+        <>
+            <motion.div
+                className="register-ring register-ring--1"
+                animate={ringDrift(0, 12)}
+            />
+            <motion.div
+                className="register-ring register-ring--2"
+                animate={ringDrift(1.2, 10)}
+            />
+            <motion.div
+                className="register-ring register-ring--3"
+                animate={ringDrift(0.6, 8)}
+            />
+            <motion.div
+                className="register-ring register-ring--4"
+                animate={ringDrift(1.8, 14)}
+            />
+            <motion.div
+                className="register-ring register-ring--5"
+                animate={ringDrift(0.4, 10)}
+            />
+            <motion.div
+                className="register-ring register-ring--6"
+                animate={ringDrift(1, 12)}
+            />
+        </>
+    );
+}
+
+/* ── Visual Panel (Desktop Right) ────────────────────── */
+
+function VisualPanel({ reduced }: { reduced: boolean }) {
+    return (
+        <div className="register-visual-panel">
+            {/* Diagonal grid */}
+            <div className="register-visual-grid" />
+
+            {/* Ring decorations */}
+            <RingDecorations reduced={reduced} />
+
+            {/* Orbit mascot + tagline */}
+            <motion.div
+                className="register-orbit-wrapper"
+                initial={reduced ? false : { opacity: 0, scale: 0.88, y: 30 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{
+                    duration: 0.9,
+                    ease: [0.22, 0.61, 0.36, 1],
+                    delay: 0.15,
+                }}
+            >
+                <Image
+                    src="/images/register.png"
+                    alt="Orbit — Aformix AI Mascot"
+                    width={300}
+                    height={400}
+                    className="register-orbit-img"
+                    priority
+                    draggable={false}
+                />
+                <div className="register-visual-tagline">
+                    Your{" "}
+                    <span className="register-visual-tagline-accent">
+                        workspace
+                    </span>{" "}
+                    awaits
+                    <span className="register-visual-tagline-muted">
+                        Projects, content, and clients — all in one place.
+                    </span>
+                </div>
+            </motion.div>
+        </div>
+    );
+}
+
+/* ── Theme Toggle ────────────────────────────────────── */
+
+function ThemeToggle() {
+    const { theme, setTheme } = useTheme();
+
+    const toggleTheme = () => {
+        if (theme === "light") setTheme("dark");
+        else if (theme === "dark") setTheme("light");
+        else {
+            const isDark = window.matchMedia(
+                "(prefers-color-scheme: dark)"
+            ).matches;
+            setTheme(isDark ? "light" : "dark");
+        }
+    };
+
+    const ThemeIcon =
+        theme === "light" ? Sun : theme === "dark" ? Moon : Monitor;
+
+    return (
+        <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+            title={
+                theme === "light"
+                    ? "Switch to dark mode"
+                    : theme === "dark"
+                      ? "Switch to light mode"
+                      : "Toggle theme"
+            }
+            className="register-theme-toggle"
+        >
+            <ThemeIcon />
+        </button>
+    );
+}
+
+/* ── Password Strength Bar ───────────────────────────── */
+
+function PasswordStrength({ strength }: { strength: number }) {
+    const strengthClass = getStrengthClass(strength);
+
+    return (
+        <div className="register-strength">
+            <div className="register-strength-track">
+                {[0, 1, 2, 3].map((index) => (
+                    <div
+                        key={index}
+                        className={`register-strength-bar${
+                            index < strength
+                                ? ` register-strength-bar--active ${strengthClass}`
+                                : ""
+                        }`}
+                    />
+                ))}
+            </div>
+            <p className="register-strength-label">
+                Password strength:{" "}
+                <strong>
+                    {STRENGTH_LABELS[Math.max(strength - 1, 0)]}
+                </strong>
+            </p>
+        </div>
+    );
+}
+
+/* ── Register Form ───────────────────────────────────── */
+
+function RegisterForm() {
     const router = useRouter();
+    const prefersReduced = useReducedMotion();
+    const reduced = !!prefersReduced;
 
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
@@ -29,7 +240,15 @@ export default function RegisterPage() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    const nameRef = useRef<HTMLInputElement>(null);
+
     const strength = useMemo(() => getPasswordStrength(password), [password]);
+
+    // Auto-focus name field on mount
+    useEffect(() => {
+        const timer = setTimeout(() => nameRef.current?.focus(), 600);
+        return () => clearTimeout(timer);
+    }, []);
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -85,224 +304,308 @@ export default function RegisterPage() {
     }
 
     return (
-        <main className="flex min-h-screen bg-white">
-            {/* Brand panel */}
-            <div className="relative hidden w-full max-w-[480px] shrink-0 overflow-hidden bg-[#1A0F43] lg:flex lg:flex-col lg:justify-between">
-                <div className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-[#31B98F]/20 blur-3xl" />
-                <div className="pointer-events-none absolute -bottom-32 -right-16 h-80 w-80 rounded-full bg-[#00BFDE]/20 blur-3xl" />
-                <div className="pointer-events-none absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#684B9E]/10 blur-3xl" />
+        <div className="register-page">
+            {/* Theme toggle */}
+            <ThemeToggle />
 
-                <div className="relative z-10 px-10 pt-10">
-                    <div className="flex items-center gap-2.5">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#00BFDE] to-[#31B98F] text-sm font-bold text-[#1A0F43]">
-                            A
-                        </div>
-                        <span className="text-lg font-semibold tracking-tight text-white">
-                            Aformix
+            {/* Left — Form panel */}
+            <div className="register-form-panel">
+                {/* Mobile mascot */}
+                <motion.div
+                    className="register-orbit-mobile"
+                    initial={reduced ? false : { opacity: 0, scale: 0.85 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.6, ease: [0.22, 0.61, 0.36, 1] }}
+                >
+                    <Image
+                        src="/images/register.png"
+                        alt="Orbit — Aformix AI Mascot"
+                        width={160}
+                        height={216}
+                        className="register-orbit-img"
+                        priority
+                        draggable={false}
+                    />
+                </motion.div>
+
+                {/* Form card */}
+                <motion.div
+                    className="register-card"
+                    variants={staggerContainer}
+                    initial="hidden"
+                    animate="show"
+                >
+                    {/* Logo */}
+                    <motion.div className="register-logo" variants={fadeSlideUp}>
+                        <Image
+                            src="/images/logo.png"
+                            alt="Aformix"
+                            width={36}
+                            height={36}
+                            className="register-logo-icon"
+                            draggable={false}
+                        />
+                        <span className="register-logo-text">Aformix</span>
+                    </motion.div>
+
+                    {/* Heading */}
+                    <motion.h1
+                        className="register-heading"
+                        variants={fadeSlideUp}
+                    >
+                        Create your{" "}
+                        <span className="register-heading-accent">
+                            workspace
                         </span>
-                    </div>
-                </div>
+                    </motion.h1>
 
-                <div className="relative z-10 px-10 pb-14">
-                    <h2 className="max-w-xs text-2xl font-semibold leading-snug tracking-tight text-white">
-                        Set up your workspace in minutes.
-                    </h2>
+                    <motion.p
+                        className="register-subtitle"
+                        variants={fadeSlideUp}
+                    >
+                        Set up your account and start managing projects, content,
+                        and clients.
+                    </motion.p>
 
-                    <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/60">
-                        Create an account to start managing your projects,
-                        content, and clients.
-                    </p>
-
-                    <div className="mt-8 flex items-center gap-1.5">
-                        <span className="h-1.5 w-6 rounded-full bg-[#31B98F]" />
-                        <span className="h-1.5 w-1.5 rounded-full bg-white/20" />
-                        <span className="h-1.5 w-1.5 rounded-full bg-white/20" />
-                    </div>
-                </div>
-            </div>
-
-            {/* Form panel */}
-            <div className="flex flex-1 items-center justify-center px-6 py-12">
-                <div className="w-full max-w-sm">
-                    <div className="mb-8 flex items-center gap-2.5 lg:hidden">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#007D8C] to-[#31B98F] text-sm font-bold text-white">
-                            A
-                        </div>
-                        <span className="text-lg font-semibold tracking-tight text-[#1A0F43]">
-                            Aformix
-                        </span>
-                    </div>
-
-                    <h1 className="text-2xl font-semibold tracking-tight text-[#1A0F43]">
-                        Create your account
-                    </h1>
-                    <p className="mt-1.5 text-sm text-slate-500">
-                        Get started with your Aformix workspace.
-                    </p>
-
-                    <form onSubmit={handleSubmit} className="mt-8 space-y-4">
-                        <div>
+                    {/* Form */}
+                    <form
+                        onSubmit={handleSubmit}
+                        className="register-form"
+                        noValidate
+                    >
+                        {/* Full Name */}
+                        <motion.div
+                            className="register-field"
+                            variants={fadeSlideUp}
+                        >
                             <label
-                                htmlFor="name"
-                                className="mb-1.5 block text-xs font-medium text-slate-700"
+                                htmlFor="register-name"
+                                className="register-label"
                             >
                                 Full Name
                             </label>
-                            <input
-                                id="name"
-                                type="text"
-                                required
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                className="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm text-[#1A0F43] outline-none transition-all placeholder:text-slate-400 focus:border-[#31B98F] focus:ring-2 focus:ring-[#31B98F]/15"
-                                placeholder="John Doe"
-                            />
-                        </div>
+                            <div className="register-input-wrapper">
+                                <User className="register-input-icon" />
+                                <input
+                                    ref={nameRef}
+                                    id="register-name"
+                                    type="text"
+                                    required
+                                    autoComplete="name"
+                                    className="register-input"
+                                    placeholder="John Doe"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                />
+                            </div>
+                        </motion.div>
 
-                        <div>
+                        {/* Email */}
+                        <motion.div
+                            className="register-field"
+                            variants={fadeSlideUp}
+                        >
                             <label
-                                htmlFor="email"
-                                className="mb-1.5 block text-xs font-medium text-slate-700"
+                                htmlFor="register-email"
+                                className="register-label"
                             >
                                 Email Address
                             </label>
-                            <input
-                                id="email"
-                                type="email"
-                                required
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm text-[#1A0F43] outline-none transition-all placeholder:text-slate-400 focus:border-[#31B98F] focus:ring-2 focus:ring-[#31B98F]/15"
-                                placeholder="john@example.com"
-                            />
-                        </div>
+                            <div className="register-input-wrapper">
+                                <Mail className="register-input-icon" />
+                                <input
+                                    id="register-email"
+                                    type="email"
+                                    required
+                                    autoComplete="email"
+                                    className="register-input"
+                                    placeholder="john@example.com"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                />
+                            </div>
+                        </motion.div>
 
-                        <div>
+                        {/* Password */}
+                        <motion.div
+                            className="register-field"
+                            variants={fadeSlideUp}
+                        >
                             <label
-                                htmlFor="password"
-                                className="mb-1.5 block text-xs font-medium text-slate-700"
+                                htmlFor="register-password"
+                                className="register-label"
                             >
                                 Password
                             </label>
-
-                            <div className="relative">
+                            <div className="register-input-wrapper">
+                                <Lock className="register-input-icon" />
                                 <input
-                                    id="password"
+                                    id="register-password"
                                     type={showPassword ? "text" : "password"}
                                     required
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 pr-10 text-sm text-[#1A0F43] outline-none transition-all placeholder:text-slate-400 focus:border-[#31B98F] focus:ring-2 focus:ring-[#31B98F]/15"
+                                    autoComplete="new-password"
+                                    className="register-input"
+                                    style={{ paddingRight: "2.75rem" }}
                                     placeholder="••••••••"
+                                    value={password}
+                                    onChange={(e) =>
+                                        setPassword(e.target.value)
+                                    }
                                 />
-
                                 <button
                                     type="button"
-                                    onClick={() => setShowPassword((v) => !v)}
+                                    onClick={() =>
+                                        setShowPassword((v) => !v)
+                                    }
                                     aria-label={
                                         showPassword
                                             ? "Hide password"
                                             : "Show password"
                                     }
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition-colors hover:text-slate-600"
+                                    className="register-password-toggle"
                                 >
-                                    {showPassword ? (
-                                        <EyeOff className="h-4 w-4" />
-                                    ) : (
-                                        <Eye className="h-4 w-4" />
-                                    )}
+                                    {showPassword ? <EyeOff /> : <Eye />}
                                 </button>
                             </div>
 
                             {password && (
-                                <div className="mt-2">
-                                    <div className="flex h-1.5 gap-1">
-                                        {[0, 1, 2, 3].map((index) => (
-                                            <span
-                                                key={index}
-                                                className={`h-full flex-1 rounded-full transition-colors ${
-                                                    index < strength
-                                                        ? strength <= 1
-                                                            ? "bg-red-400"
-                                                            : strength === 2
-                                                              ? "bg-amber-400"
-                                                               : "bg-[#31B98F]"
-                                                        : "bg-slate-200"
-                                                }`}
-                                            />
-                                        ))}
-                                    </div>
-                                    <p className="mt-1 text-[11px] text-slate-400">
-                                        Password strength:{" "}
-                                        <span className="font-medium text-slate-600">
-                                            {STRENGTH_LABELS[Math.max(strength - 1, 0)]}
-                                        </span>
-                                    </p>
-                                </div>
+                                <PasswordStrength strength={strength} />
                             )}
-                        </div>
+                        </motion.div>
 
-                        <div>
+                        {/* Confirm Password */}
+                        <motion.div
+                            className="register-field"
+                            variants={fadeSlideUp}
+                        >
                             <label
-                                htmlFor="confirmPassword"
-                                className="mb-1.5 block text-xs font-medium text-slate-700"
+                                htmlFor="register-confirm-password"
+                                className="register-label"
                             >
                                 Confirm Password
                             </label>
-
-                            <div className="relative">
+                            <div className="register-input-wrapper">
+                                <ShieldCheck className="register-input-icon" />
                                 <input
-                                    id="confirmPassword"
-                                    type={showConfirmPassword ? "text" : "password"}
+                                    id="register-confirm-password"
+                                    type={
+                                        showConfirmPassword
+                                            ? "text"
+                                            : "password"
+                                    }
                                     required
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                    className="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 pr-10 text-sm text-[#1A0F43] outline-none transition-all placeholder:text-slate-400 focus:border-[#31B98F] focus:ring-2 focus:ring-[#31B98F]/15"
+                                    autoComplete="new-password"
+                                    className="register-input"
+                                    style={{ paddingRight: "2.75rem" }}
                                     placeholder="••••••••"
+                                    value={confirmPassword}
+                                    onChange={(e) =>
+                                        setConfirmPassword(e.target.value)
+                                    }
                                 />
-
                                 <button
                                     type="button"
-                                    onClick={() => setShowConfirmPassword((v) => !v)}
+                                    onClick={() =>
+                                        setShowConfirmPassword((v) => !v)
+                                    }
                                     aria-label={
                                         showConfirmPassword
                                             ? "Hide password"
                                             : "Show password"
                                     }
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition-colors hover:text-slate-600"
+                                    className="register-password-toggle"
                                 >
                                     {showConfirmPassword ? (
-                                        <EyeOff className="h-4 w-4" />
+                                        <EyeOff />
                                     ) : (
-                                        <Eye className="h-4 w-4" />
+                                        <Eye />
                                     )}
                                 </button>
                             </div>
-                        </div>
+                        </motion.div>
 
-                        <button
-                            type="submit"
-                            disabled={isSubmitting}
-                            className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#1A0F43] py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-[#1A0F43]/90 disabled:cursor-not-allowed disabled:opacity-60"
+                        {/* Terms */}
+                        <motion.p
+                            className="register-terms"
+                            variants={fadeSlideUp}
                         >
-                            {isSubmitting && (
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                            )}
-                            {isSubmitting ? "Creating account..." : "Create Account"}
-                        </button>
+                            By creating an account, you agree to our{" "}
+                            <a href="#">Terms of Service</a> and{" "}
+                            <a href="#">Privacy Policy</a>.
+                        </motion.p>
+
+                        {/* Submit */}
+                        <motion.div variants={fadeSlideUp}>
+                            <button
+                                type="submit"
+                                disabled={isSubmitting}
+                                className="register-submit-btn"
+                            >
+                                {isSubmitting && (
+                                    <Loader2 className="register-submit-spinner" />
+                                )}
+                                {isSubmitting
+                                    ? "Creating workspace…"
+                                    : "Create Account"}
+                            </button>
+                        </motion.div>
                     </form>
 
-                    <p className="mt-6 text-center text-sm text-slate-500">
+                    {/* Login CTA */}
+                    <motion.p
+                        className="register-cta"
+                        variants={fadeSlideUp}
+                    >
                         Already have an account?{" "}
-                        <a
-                            href="/login"
-                            className="font-medium text-[#007D8C] transition-colors hover:text-[#1A0F43]"
-                        >
+                        <Link href="/login" className="register-cta-link">
                             Sign in
-                        </a>
-                    </p>
-                </div>
+                        </Link>
+                    </motion.p>
+
+                    {/* Progress dots */}
+                    <motion.div
+                        className="register-progress-dots"
+                        variants={fadeSlideUp}
+                    >
+                        <span className="register-progress-dot register-progress-dot--active" />
+                        <span className="register-progress-dot" />
+                        <span className="register-progress-dot" />
+                    </motion.div>
+                </motion.div>
             </div>
-        </main>
+
+            {/* Right — Visual panel (desktop) */}
+            <VisualPanel reduced={reduced} />
+        </div>
+    );
+}
+
+/* ── Page Export ──────────────────────────────────────── */
+
+export default function RegisterPage() {
+    return (
+        <Suspense
+            fallback={
+                <div className="register-page">
+                    <div className="register-form-panel">
+                        <div
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                minHeight: "100vh",
+                            }}
+                        >
+                            <Loader2
+                                className="register-submit-spinner"
+                                style={{ width: 32, height: 32 }}
+                            />
+                        </div>
+                    </div>
+                </div>
+            }
+        >
+            <RegisterForm />
+        </Suspense>
     );
 }
